@@ -1,2 +1,2 @@
-# CMPS3350-Project
+# Scribble-Hop
 The group project for CMPS 3350 Software Engineering.
