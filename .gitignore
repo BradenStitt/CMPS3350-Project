@@ -11,6 +11,7 @@
 *.settings.json
 vscode/
 output/
+.*x.x
 
 # Precompiled Headers
 *.gch
