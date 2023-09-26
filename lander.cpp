@@ -1,15 +1,15 @@
-//author: Gordon Griesel
-//date: Fall 2023
-//purpose: 1. learn OpenGL
-//         2. write an aerospace related program
-//         3. prepare to apply for a job at SpaceX
+// author: Gordon Griesel
+// date: Fall 2023
+// purpose: 1. learn OpenGL
+//          2. write an aerospace related program
+//          3. prepare to apply for a job at SpaceX
 //
-//This is a game in which we try to land the rocket booster back on
-//the launch pad. You must add code to check for a good landing, and
-//also show the rocket landed and secure on the pad.
+// This is a game in which we try to land the rocket booster back on
+// the launch pad. You must add code to check for a good landing, and
+// also show the rocket landed and secure on the pad.
 //
-//If the rocket doesn't land safely, then you can show some kind of
-//explosion or whatever.
+// If the rocket doesn't land safely, then you can show some kind of
+// explosion or whatever.
 //
 #include <iostream>
 using namespace std;
@@ -23,81 +23,90 @@ using namespace std;
 #include <X11/keysym.h>
 #include <GL/glx.h>
 #include "log.h"
+#include "bstitt.h"
 
-
-//floating point random numbers
+// floating point random numbers
 #define rnd() (float)rand() / (float)RAND_MAX
 
-//gravity pulling the rocket straight down
-const float GRAVITY = 0.005; 
+// gravity pulling the rocket straight down
+const float GRAVITY = 0.005;
 
-class Global {
+class Global
+{
 public:
 	int xres, yres;
-	int landed; 
+	int landed;
 	unsigned int keys[65536];
 	int failed_landing;
- 
-	Global() {
-		xres = 400; 
+
+	Global()
+	{
+		xres = 400;
 		yres = 600;
 		landed = 0;
-		failed_landing = 0; 
+		failed_landing = 0;
 	}
 } g;
 
-class Lz {
-	//landing zone
-	public:
+class Lz
+{
+	// landing zone
+public:
 	float pos[2];
 	float width;
 	float height;
-	Lz() {
-		pos[0] = 100.0f; 
-		pos[1] = 20.0f; 
-		width =  50.0f;
-		height =  8.0f;
+	Lz()
+	{
+		pos[0] = 100.0f;
+		pos[1] = 20.0f;
+		width = 50.0f;
+		height = 8.0f;
 	}
 } lz;
 
-class Lander {
-	//the rocket
-	public:
+class Lander
+{
+	// the rocket
+public:
 	float pos[2];
 	float vel[2];
 	float verts[3][2];
 	float thrust;
 	double angle;
-	Lander() {
+	Lander()
+	{
 		init();
 	}
-	void init() {
+	void init()
+	{
 		pos[0] = 200.0f;
 		pos[1] = g.yres - 60.0f;
 
 #ifdef TESTING
-		pos[0] = 100.0f; 
-		pos[1] = 40.0f; 
+		pos[0] = 100.0f;
+		pos[1] = 40.0f;
 #endif
 		vel[0] = vel[1] = 0.0f;
-		//3 vertices of triangle-shaped rocket lander
+		// 3 vertices of triangle-shaped rocket lander
 		verts[0][0] = -10.0f;
-		verts[0][1] =   0.0f;
-		verts[1][0] =   0.0f;
-		verts[1][1] =  30.0f;
-		verts[2][0] =  10.0f;
-		verts[2][1] =   0.0f;
+		verts[0][1] = 0.0f;
+		verts[1][0] = 0.0f;
+		verts[1][1] = 30.0f;
+		verts[2][0] = 10.0f;
+		verts[2][1] = 0.0f;
 		angle = 0.0;
 		thrust = 0.0f;
 		g.failed_landing = 0;
 	}
 } lander;
 
-class X11_wrapper {
+class X11_wrapper
+{
 private:
 	Display *dpy;
 	Window win;
 	GLXContext glc;
+
 public:
 	~X11_wrapper();
 	X11_wrapper();
@@ -111,12 +120,10 @@ public:
 	int check_keys(XEvent *e);
 } x11;
 
-//Function prototypes
+// Function prototypes
 void init_opengl(void);
 void physics(void);
 void render(void);
-
-
 
 //=====================================
 // MAIN FUNCTION IS HERE
@@ -127,11 +134,13 @@ int main()
 	init_opengl();
 	printf("Press T or Up-arrow for thrust.\n");
 	printf("Press Left or Right arrows for rocket thrust vector.\n");
-	//Main loop
+	// Main loop
 	int done = 0;
-	while (!done) {
-		//Process external events.
-		while (x11.getXPending()) {
+	while (!done)
+	{
+		// Process external events.
+		while (x11.getXPending())
+		{
 			XEvent e = x11.getXNextEvent();
 			x11.check_resize(&e);
 			x11.check_mouse(&e);
@@ -155,19 +164,23 @@ X11_wrapper::~X11_wrapper()
 
 X11_wrapper::X11_wrapper()
 {
-	GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
+	GLint att[] = {GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None};
 	int w = g.xres, h = g.yres;
 	dpy = XOpenDisplay(NULL);
-	if (dpy == NULL) {
-		cout << "\n\tcannot connect to X server\n" << endl;
+	if (dpy == NULL)
+	{
+		cout << "\n\tcannot connect to X server\n"
+			 << endl;
 		exit(EXIT_FAILURE);
 	}
 	Window root = DefaultRootWindow(dpy);
 	XVisualInfo *vi = glXChooseVisual(dpy, 0, att);
-	if (vi == NULL) {
-		cout << "\n\tno appropriate visual found\n" << endl;
+	if (vi == NULL)
+	{
+		cout << "\n\tno appropriate visual found\n"
+			 << endl;
 		exit(EXIT_FAILURE);
-	} 
+	}
 	Colormap cmap = XCreateColormap(dpy, root, vi->visual, AllocNone);
 	XSetWindowAttributes swa;
 	swa.colormap = cmap;
@@ -177,7 +190,7 @@ X11_wrapper::X11_wrapper()
 		PointerMotionMask |
 		StructureNotifyMask | SubstructureNotifyMask;
 	win = XCreateWindow(dpy, root, 0, 0, w, h, 0, vi->depth,
-		InputOutput, vi->visual, CWColormap | CWEventMask, &swa);
+						InputOutput, vi->visual, CWColormap | CWEventMask, &swa);
 	set_title();
 	glc = glXCreateContext(dpy, vi, NULL, GL_TRUE);
 	glXMakeCurrent(dpy, win, glc);
@@ -185,20 +198,20 @@ X11_wrapper::X11_wrapper()
 
 void X11_wrapper::set_title()
 {
-	//Set the window title bar.
+	// Set the window title bar.
 	XMapWindow(dpy, win);
 	XStoreName(dpy, win, "3350 Aerospace Lander Challenge");
 }
 
 bool X11_wrapper::getXPending()
 {
-	//See if there are pending events.
+	// See if there are pending events.
 	return XPending(dpy);
 }
 
 XEvent X11_wrapper::getXNextEvent()
 {
-	//Get a pending event.
+	// Get a pending event.
 	XEvent e;
 	XNextEvent(dpy, &e);
 	return e;
@@ -211,25 +224,28 @@ void X11_wrapper::swapBuffers()
 
 void X11_wrapper::reshape_window(int width, int height)
 {
-	//window has been resized.
+	// window has been resized.
 	g.xres = width;
 	g.yres = height;
 	//
 	glViewport(0, 0, (GLint)width, (GLint)height);
-	glMatrixMode(GL_PROJECTION); glLoadIdentity();
-	glMatrixMode(GL_MODELVIEW); glLoadIdentity();
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 	glOrtho(0, g.xres, 0, g.yres, -1, 1);
 }
 
 void X11_wrapper::check_resize(XEvent *e)
 {
-	//The ConfigureNotify is sent by the
-	//server if the window is resized.
+	// The ConfigureNotify is sent by the
+	// server if the window is resized.
 	if (e->type != ConfigureNotify)
 		return;
 	XConfigureEvent xce = e->xconfigure;
-	if (xce.width != g.xres || xce.height != g.yres) {
-		//Window size did change.
+	if (xce.width != g.xres || xce.height != g.yres)
+	{
+		// Window size did change.
 		reshape_window(xce.width, xce.height);
 	}
 }
@@ -240,36 +256,41 @@ void X11_wrapper::check_mouse(XEvent *e)
 	static int savex = 0;
 	static int savey = 0;
 
-	//Weed out non-mouse events
+	// Weed out non-mouse events
 	if (e->type != ButtonRelease &&
 		e->type != ButtonPress &&
-		e->type != MotionNotify) {
-		//This is not a mouse event that we care about.
+		e->type != MotionNotify)
+	{
+		// This is not a mouse event that we care about.
 		return;
 	}
 	//
-	if (e->type == ButtonRelease) {
+	if (e->type == ButtonRelease)
+	{
 		return;
 	}
-	if (e->type == ButtonPress) {
-		if (e->xbutton.button==1) {
-			//Left button was pressed.
-			//int y = g.yres - e->xbutton.y;
+	if (e->type == ButtonPress)
+	{
+		if (e->xbutton.button == 1)
+		{
+			// Left button was pressed.
+			// int y = g.yres - e->xbutton.y;
 			return;
 		}
-		if (e->xbutton.button==3) {
-			//Right button was pressed.
+		if (e->xbutton.button == 3)
+		{
+			// Right button was pressed.
 			return;
 		}
 	}
-	if (e->type == MotionNotify) {
-		//The mouse moved!
-		if (savex != e->xbutton.x || savey != e->xbutton.y) {
+	if (e->type == MotionNotify)
+	{
+		// The mouse moved!
+		if (savex != e->xbutton.x || savey != e->xbutton.y)
+		{
 			savex = e->xbutton.x;
 			savey = e->xbutton.y;
-			//Code placed here will execute whenever the mouse moves.
-
-
+			// Code placed here will execute whenever the mouse moves.
 		}
 	}
 }
@@ -283,16 +304,18 @@ int X11_wrapper::check_keys(XEvent *e)
 		g.keys[key] = 1;
 	if (e->type == KeyRelease)
 		g.keys[key] = 0;
-	if (e->type == KeyPress) {
-		switch (key) {
-			case XK_r:
-				//Key R was pressed
-				lander.init();
-				g.landed = 0;
-				break;
-			case XK_Escape:
-				//Escape key was pressed
-				return 1;
+	if (e->type == KeyPress)
+	{
+		switch (key)
+		{
+		case XK_r:
+			// Key R was pressed
+			lander.init();
+			g.landed = 0;
+			break;
+		case XK_Escape:
+			// Escape key was pressed
+			return 1;
 		}
 	}
 	return 0;
@@ -300,44 +323,48 @@ int X11_wrapper::check_keys(XEvent *e)
 
 void init_opengl(void)
 {
-	//OpenGL initialization
+	// OpenGL initialization
 	glViewport(0, 0, g.xres, g.yres);
-	//Initialize matrices
-	glMatrixMode(GL_PROJECTION); glLoadIdentity();
-	glMatrixMode(GL_MODELVIEW); glLoadIdentity();
-	//Set 2D mode (no perspective)
+	// Initialize matrices
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	// Set 2D mode (no perspective)
 	glOrtho(0, g.xres, 0, g.yres, -1, 1);
-	//Set the screen background color
-	glClearColor(0.1, 0.1, 0.1, 1.0); 
+	// Set the screen background color
+	glClearColor(0.1, 0.1, 0.1, 1.0);
 }
 
 void physics()
 {
-	//Lander physics
+	// Lander physics
 	if (g.failed_landing)
-	   return;
-	lander.pos[0] += lander.vel[0]; 
+		return;
+	lander.pos[0] += lander.vel[0];
 	lander.pos[1] += lander.vel[1];
 	lander.vel[1] -= GRAVITY;
-	//apply thrust
-	//convert angle to radians...
-	float ang = ((lander.angle+90.0) / 360.0) * (3.14159 * 2.0);
-	//make a thrust vector...
+	// apply thrust
+	// convert angle to radians...
+	float ang = ((lander.angle + 90.0) / 360.0) * (3.14159 * 2.0);
+	// make a thrust vector...
 	float xthrust = cos(ang) * lander.thrust;
 	float ythrust = sin(ang) * lander.thrust;
-	lander.vel[0] += xthrust; 
-	lander.vel[1] += ythrust; 
+	lander.vel[0] += xthrust;
+	lander.vel[1] += ythrust;
 	lander.thrust *= 0.95f;
-	if (g.keys[XK_t] || g.keys[XK_Up]) {
-		//Thrust for the rocket
+	if (g.keys[XK_t] || g.keys[XK_Up])
+	{
+		// Thrust for the rocket
 		lander.thrust = 0.01;
 	}
 	if (g.keys[XK_Left])
 		lander.angle += 0.5;
 	if (g.keys[XK_Right])
 		lander.angle -= 0.5;
-	//check for landing failure...
-	if (lander.pos[1] < 0.0) {
+	// check for landing failure...
+	if (lander.pos[1] < 0.0)
+	{
 		g.failed_landing = 1;
 	}
 }
@@ -345,83 +372,92 @@ void physics()
 void render()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
-	//Draw Sky
+	// Draw Sky
 	glPushMatrix();
-	glBegin(GL_QUADS); 
-		//Each vertex has a color.
-		glColor3ub(250, 200,  90); glVertex2i(0, 0);
-		glColor3ub(100,  80, 200); glVertex2i(0, g.yres);
-		glColor3ub(100,  80, 200); glVertex2i(g.xres, g.yres);
-		glColor3ub(250, 200,  90); glVertex2i(g.xres, 0);
+	glBegin(GL_QUADS);
+	// Each vertex has a color.
+	glColor3ub(250, 200, 90);
+	glVertex2i(0, 0);
+	glColor3ub(100, 80, 200);
+	glVertex2i(0, g.yres);
+	glColor3ub(100, 80, 200);
+	glVertex2i(g.xres, g.yres);
+	glColor3ub(250, 200, 90);
+	glVertex2i(g.xres, 0);
 	glEnd();
 	glPopMatrix();
 
-	//Draw LZ
-	glPushMatrix(); 
+	// Draw LZ
+	glPushMatrix();
 	glColor3ub(250, 250, 20);
 	glTranslatef(lz.pos[0], lz.pos[1], 0.0f);
 	glBegin(GL_QUADS);
-		glVertex2f(-lz.width, -lz.height);
-		glVertex2f(-lz.width,  lz.height);
-		glVertex2f( lz.width,  lz.height);
-		glVertex2f( lz.width, -lz.height);
+	glVertex2f(-lz.width, -lz.height);
+	glVertex2f(-lz.width, lz.height);
+	glVertex2f(lz.width, lz.height);
+	glVertex2f(lz.width, -lz.height);
 	glEnd();
 	glColor3ub(20, 20, 20);
-	glBegin(GL_LINE_LOOP); 
-		glVertex2f(-lz.width, -lz.height);
-		glVertex2f(-lz.width,  lz.height);
-		glVertex2f( lz.width,  lz.height);
-		glVertex2f( lz.width, -lz.height);
-		glVertex2f(-lz.width, -lz.height);
+	glBegin(GL_LINE_LOOP);
+	glVertex2f(-lz.width, -lz.height);
+	glVertex2f(-lz.width, lz.height);
+	glVertex2f(lz.width, lz.height);
+	glVertex2f(lz.width, -lz.height);
+	glVertex2f(-lz.width, -lz.height);
 	glEnd();
 	glPopMatrix();
-	//Draw Lander
+	// Draw Lander
 	glPushMatrix();
-	glColor3ub(250, 250, 250); 
+	glColor3ub(250, 250, 250);
 	if (g.failed_landing)
 		glColor3ub(250, 0, 0);
 	if (g.landed)
-		glColor3ub(0, 250, 0);  
-	glTranslatef(lander.pos[0], lander.pos[1], 0.0f); 
+		glColor3ub(0, 250, 0);
+	glTranslatef(lander.pos[0], lander.pos[1], 0.0f);
 	glRotated(lander.angle, 0.0, 0.0, 1.0);
 	glBegin(GL_TRIANGLES);
-		for (int i=0; i<3; i++) {
-			glVertex2f(lander.verts[i][0], lander.verts[i][1]);
-		}
+	for (int i = 0; i < 3; i++)
+	{
+		glVertex2f(lander.verts[i][0], lander.verts[i][1]);
+	}
 	glEnd();
-	//Lander thrust
-	if (lander.thrust > 0.0) {
-		//draw the thrust vector
+	// Lander thrust
+	if (lander.thrust > 0.0)
+	{
+		// draw the thrust vector
 		glBegin(GL_LINES);
-			for (int i=0; i<25; i++) {
-				glColor3ub(0, 0, 255);
-				glVertex2f(rnd()*10.0-5.0, 0.0);
-				glColor3ub(250, 250, 0);
-				glVertex2f(0.0+rnd()*14.0-7.0,
-					lander.thrust * (-4000.0 - rnd() * 2000.0));
-			}
+		for (int i = 0; i < 25; i++)
+		{
+			glColor3ub(0, 0, 255);
+			glVertex2f(rnd() * 10.0 - 5.0, 0.0);
+			glColor3ub(250, 250, 0);
+			glVertex2f(0.0 + rnd() * 14.0 - 7.0,
+					   lander.thrust * (-4000.0 - rnd() * 2000.0));
+		}
 		glEnd();
 	}
 
-	if (lander.pos[0] > (lz.pos[0] - lz.width) && lander.pos[0] < (lz.pos[0] + lz.width)) 
+	if (lander.pos[0] > (lz.pos[0] - lz.width) && lander.pos[0] < (lz.pos[0] + lz.width))
 	{
-		if (lander.pos[1] > (lz.pos[1] - lz.height) && lander.pos[1] < (lz.pos[1] + lz.height)) 
+		if (lander.pos[1] > (lz.pos[1] - lz.height) && lander.pos[1] < (lz.pos[1] + lz.height))
 		{
-			lander.pos[1] = lz.pos[1] + lz.height; 
+			lander.pos[1] = lz.pos[1] + lz.height;
 			lander.vel[1] = 0.0;
 			lander.vel[0] = 0.0;
-			if (lander.angle > 0.0 || lander.angle < 0.0) {
+			if (lander.angle > 0.0 || lander.angle < 0.0)
+			{
 				g.failed_landing = 1;
 			}
-			else {
+			else
+			{
 				g.landed = 1;
 			}
 		}
 	}
 
-	if (g.failed_landing) {
-		//show crash graphics here...
-			   
+	if (g.failed_landing)
+	{
+		// show crash graphics here...
 	}
 	glPopMatrix();
 }
