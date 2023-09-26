@@ -5,17 +5,17 @@
 void display_borderint x, int y)
 {
     // draw a border around the window
-    int b =  50; 
+    int b = 50;
     glColor3f(1.0f, 1.0f, 0.0f);
     glPushMatrix();
     glBegin(GL_TRIANGLE_STRIP);
-        glVertex2i(0, 0);
-        glVertex2i(0 + b, 0 + b);
-        glVertex2i(0 , 0 + yres);
-        glVertex2i(0, 0);
+    glVertex2i(0, 0);
+    glVertex2i(0 + b, 0 + b);
+    glVertex2i(0, 0 + yres);
+    glVertex2i(0, 0);
 
-        glEnd();
-        glPopMatrix();
+    glEnd();
+    glPopMatrix();
 }
 void display_name(int x, int y)
 {

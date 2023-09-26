@@ -16,20 +16,26 @@ using namespace std;
 void display_border(int xres, int yres)
 {
     // Draw a border around the window
-    GLfloat red[] = {1.0f, 0.0f, 0.0f};
-    glColor3fv(red);
+    int b = 50;
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
+    glColor4f(1.0f, 0.0f, 0.0f, 0.5f);
     glPushMatrix();
     glBegin(GL_TRIANGLE_STRIP);
-    glVertex2i(0, 0);
-    glVertex2i(0 + 100, 0 + 100);
-    glVertex2i(0, 0 + yres);
+        glVertex2i(0, 0);
+        glVertex2i(0 + b, 0 + b);
+        glVertex2i(0, 0 + yres);
+
+        glVertex2i(0 + b, 0 + yres - b);
+        glVertex2i(xres, 0 + yres);
+        glVertex2i(xres - b, 0 + yres - b);
+
+        glVertex2i(xres, 0);
+        glVertex2i(xres - b, b);
+        glVertex2i(0, 0);
+
+        glVertex2i(0 + b, 0 + b);
 
     glEnd();
     glPopMatrix();
-}
-
-int main()
-{
-    cout << "Hello, World!\n";
-    return 0;
 }
