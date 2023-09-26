@@ -38,13 +38,17 @@ public:
 	int landed;
 	unsigned int keys[65536];
 	int failed_landing;
-
+	int test_mode;
 	Global()
 	{
 		xres = 400;
 		yres = 600;
 		landed = 0;
 		failed_landing = 0;
+		test_mode = 0;
+#ifdef TESTING
+		test_mode = 1;
+#endif
 	}
 } g;
 
@@ -313,6 +317,7 @@ int X11_wrapper::check_keys(XEvent *e)
 			lander.init();
 			g.landed = 0;
 			break;
+
 		case XK_Escape:
 			// Escape key was pressed
 			return 1;
@@ -406,6 +411,13 @@ void render()
 	glVertex2f(-lz.width, -lz.height);
 	glEnd();
 	glPopMatrix();
+
+	// // Test mode display
+	// if (g.test_mode)
+	// {
+	// 	display_border(g.xres, g.yres);
+	// }
+
 	// Draw Lander
 	glPushMatrix();
 	glColor3ub(250, 250, 250);
