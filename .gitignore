@@ -8,8 +8,9 @@
 *.obj
 
 #
-.vscode
-.output
+*.settings.json
+vscode/
+output/
 
 # Precompiled Headers
 *.gch
