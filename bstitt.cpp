@@ -77,7 +77,7 @@ Platform::void spawnPlatformRandom()
     // Draw the platform
     glPushMatrix();
     glColor3ub(90, 140, 90);
-    glTranslatef(platform.pos[0], platform.pos[1], platform.pos[2]);
+    glTranslatef(platform.pos[0], platform.pos[1], 0.0f);
     glBegin(GL_QUADS);
     glVertex2i(-platform.width, 0);
     glVertex2i(-platform.width, platform.height);
