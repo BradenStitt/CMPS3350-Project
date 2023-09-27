@@ -22,19 +22,19 @@ void display_border(int xres, int yres)
     glColor4f(1.0f, 0.0f, 0.0f, 0.5f);
     glPushMatrix();
     glBegin(GL_TRIANGLE_STRIP);
-        glVertex2i(0, 0);
-        glVertex2i(0 + b, 0 + b);
-        glVertex2i(0, 0 + yres);
+    glVertex2i(0, 0);
+    glVertex2i(0 + b, 0 + b);
+    glVertex2i(0, 0 + yres);
 
-        glVertex2i(0 + b, 0 + yres - b);
-        glVertex2i(xres, 0 + yres);
-        glVertex2i(xres - b, 0 + yres - b);
+    glVertex2i(0 + b, 0 + yres - b);
+    glVertex2i(xres, 0 + yres);
+    glVertex2i(xres - b, 0 + yres - b);
 
-        glVertex2i(xres, 0);
-        glVertex2i(xres - b, b);
-        glVertex2i(0, 0);
+    glVertex2i(xres, 0);
+    glVertex2i(xres - b, b);
+    glVertex2i(0, 0);
 
-        glVertex2i(0 + b, 0 + b);
+    glVertex2i(0 + b, 0 + b);
 
     glEnd();
     glPopMatrix();

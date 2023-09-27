@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "CMPS3350-Project",
+			"path": "."
+		},
+		{
+			"name": "SSH FS - odin",
+			"uri": "ssh://odin/home/stu/bstitt"
+		}
+	],
+	"settings": {}
+}
