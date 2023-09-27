@@ -68,7 +68,7 @@ Platform::void draw_platform()
 
 Platform::void spawnPlatformRandom()
 {
-    // Spawn a platform at a random location
+    // Intialize platform vertices at a random location
     platform.pos[0] = rand() % 600 + 100; // 100 - 700
     platform.pos[1] = rand() % 400 + 100; // 100 - 500
     platform.width = 50.0f;
