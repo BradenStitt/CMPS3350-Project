@@ -11,18 +11,18 @@
 #include "defs.h"
 #include "log.h"
 #include "bstitt.h"
+//#include "fonts.h"
 
-#ifdef
 using namespace std;
 
-void display_name(int x, int y, const char *name)
-{
-    Rect r;
-    r.bot = y;
-    r.left = x;
-    r.center = 0;
-    ggprint8b(&r, 16, 0x00ff0000, "%s", name);
-}
+// void display_name(int x, int y, const char *name)
+// {
+//     Rect r;
+//     r.bot = y;
+//     r.left = x;
+//     r.center = 0;
+//     ggprint8b(&r, 16, 0x00ff0000, "%s", name);
+// }
 
 void display_border(int xres, int yres)
 {
@@ -51,38 +51,55 @@ void display_border(int xres, int yres)
     glPopMatrix();
 }
 
-Platform::void draw_platform()
+Platform::Platform() {
+    pos[0] = rand() % 600 + 100; // Random x coordinate
+    pos[1] = 600; // Random y coordinate
+    width = 50.0f;
+    height = 8.0f;
+}
+
+void Platform::draw_platform_fixed(float x, float y)
 {
-    // Draw the platform
+    // Draw the platform using the specified coordinates
     glPushMatrix();
-    glColor3ub(90, 140, 90);
-    glTranslatef(platform.pos[0], platform.pos[1], platform.pos[2]);
+    glColor3ub(250, 250, 20);
+    glTranslatef(x, y, 0.0f);
     glBegin(GL_QUADS);
-    glVertex2i(-platform.width, 0);
-    glVertex2i(-platform.width, platform.height);
-    glVertex2i(platform.width, platform.height);
-    glVertex2i(platform.width, 0);
+    glVertex2f(-width, -height);
+    glVertex2f(-width, height);
+    glVertex2f(width, height);
+    glVertex2f(width, -height);
+    glEnd();
+    glColor3ub(20, 20, 20);
+    glBegin(GL_LINE_LOOP);
+    glVertex2f(-width, -height);
+    glVertex2f(-width, height);
+    glVertex2f(width, height);
+    glVertex2f(width, -height);
+    glVertex2f(-width, -height);
     glEnd();
     glPopMatrix();
 }
 
-Platform::void spawnPlatformRandom()
+void Platform::draw_platform_random()
 {
-    // Intialize platform vertices at a random location
-    platform.pos[0] = rand() % 600 + 100; // 100 - 700
-    platform.pos[1] = rand() % 400 + 100; // 100 - 500
-    platform.width = 50.0f;
-    platform.height = 8.0f;
-
-    // Draw the platform
+    // Draw the platform using the specified coordinates
     glPushMatrix();
-    glColor3ub(90, 140, 90);
-    glTranslatef(platform.pos[0], platform.pos[1], 0.0f);
+    glColor3ub(250, 250, 20);
+    glTranslatef(pos[0], pos[1], 0.0f);
     glBegin(GL_QUADS);
-    glVertex2i(-platform.width, 0);
-    glVertex2i(-platform.width, platform.height);
-    glVertex2i(platform.width, platform.height);
-    glVertex2i(platform.width, 0);
+    glVertex2f(-width, -height);
+    glVertex2f(-width, height);
+    glVertex2f(width, height);
+    glVertex2f(width, -height);
+    glEnd();
+    glColor3ub(20, 20, 20);
+    glBegin(GL_LINE_LOOP);
+    glVertex2f(-width, -height);
+    glVertex2f(-width, height);
+    glVertex2f(width, height);
+    glVertex2f(width, -height);
+    glVertex2f(-width, -height);
     glEnd();
     glPopMatrix();
 }
