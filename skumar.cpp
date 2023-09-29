@@ -4,17 +4,13 @@
  **/
 
 #include <iostream>
-#include <cmath>
 #include <GL/gl.h>
 #include <iostream>
-#include <cstdlib>
 #include <cstring>
 #include <unistd.h>
 #include <ctime>
-#include <cmath>
-#include <vector>
 #include "defs.h"
-#include "fonts.h"
+// #include "fonts.h"
 #include "log.h"
 #include "skumar.h"
 
