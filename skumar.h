@@ -3,10 +3,10 @@
 
 #include <GL/gl.h> 
 
-extern void display_border(int xres, int yres);
+extern void display_border(int xres, int yres); 
 
 class Player {
-	//the player rocket
+	//the player
 	public:
 	float pos[2];
 	float vel[2];
@@ -14,8 +14,9 @@ class Player {
 	// float thrust;
 	double angle;
 
-	Player();
 	void init();
+	
+	Player(); 
 	void physics();
 	void draw_player();
 };

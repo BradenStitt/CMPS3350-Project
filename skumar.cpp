@@ -12,9 +12,13 @@
 #include "defs.h"
 // #include "fonts.h"
 #include "log.h"
+#include "global.h"
 #include "skumar.h"
 
 using namespace std;
+
+extern Global g;
+extern Player player;
 
 void display_border(int xres, int yres)
 {
@@ -63,7 +67,7 @@ void Player:: init()
 	pos[1] = 40.0f; 
 
 	vel[0] = vel[1] = 0.0f;
-	//3 vertices of triangle-shaped rocket player
+	//3 vertices of triangle-shaped player
 	verts[0][0] = -10.0f;
 	verts[0][1] =   0.0f;
 	verts[1][0] =   0.0f;
@@ -71,8 +75,8 @@ void Player:: init()
 	verts[2][0] =  10.0f;
 	verts[2][1] =   0.0f;
 	angle = 0.0;
-	
 }
+
 // Physics for pressing keys and moving the player
 void Player::physics()
 {
