@@ -67,7 +67,7 @@ void Player:: init()
 	pos[1] = 40.0f; 
 
 	vel[0] = vel[1] = 0.0f;
-	//3 vertices of triangle-shaped 	verts[0][0] = -10.0f;
+	//3 vertices of triangle-shaped player verts[0][0] = -10.0f;
 	verts[0][1] =   0.0f;
 	verts[1][0] =   0.0f;
 	verts[1][1] =  30.0f;
@@ -76,7 +76,7 @@ void Player:: init()
 	angle = 0.0;
 }
 
-// Physics for pressing keys and moving the 
+// Physics for pressing keys and moving the player
 void Player::physics()
 {
     //Player physics
