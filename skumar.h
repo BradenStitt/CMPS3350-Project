@@ -13,6 +13,7 @@ class Player {
 	float verts[3][2];
 	// float thrust;
 	double angle;
+	
 	Player();
 	void init();
 	void physics():

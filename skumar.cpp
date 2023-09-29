@@ -52,7 +52,7 @@ void display_border(int xres, int yres)
 //     ggprint8b(&r, 0, 0x00000000, "Snehal");
 // }
 
-void Player:: Player()
+Player:: Player()
 {
 	init();
 }
@@ -74,7 +74,7 @@ void Player:: init()
 	
 }
 // Physics for pressing keys and moving the player
-void Player:: physics()
+void Player::physics()
 {
     //Player physics
 	if (g.failed_landing)
@@ -98,7 +98,7 @@ void Player:: physics()
 }
 
 // Draws the player
-void Player:: draw_player()
+void Player::draw_player()
 {
     glPushMatrix();
 	glColor3ub(0, 0, 0); 
