@@ -77,7 +77,7 @@ void Player:: init()
 	angle = 0.0;
 }
 
-// Physics for pressing keys and moving the player
+// Physics for moving the player
 void Player::physics()
 {
     //Player physics
