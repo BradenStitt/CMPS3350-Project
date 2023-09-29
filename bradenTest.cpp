@@ -25,6 +25,7 @@ using namespace std;
 #include "log.h"
 #include "bstitt.h"
 #include <vector>
+#include "global.h"
 
 // floating point random numbers
 #define rnd() (float)rand() / (float)RAND_MAX
@@ -32,26 +33,7 @@ using namespace std;
 // gravity pulling the rocket straight down
 const float GRAVITY = 0.005;
 
-class Global
-{
-public:
-	int xres, yres;
-	int landed;
-	unsigned int keys[65536];
-	int failed_landing;
-	int test_mode;
-	Global()
-	{
-		xres = 400;
-		yres = 600;
-		landed = 0;
-		failed_landing = 0;
-		test_mode = 0;
-#ifdef TESTING
-		test_mode = 1;
-#endif
-	}
-} g;
+Global g;
 
 class Lz
 {
