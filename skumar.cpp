@@ -50,6 +50,7 @@ void display_name(int x, int y)
     ggprint8b(&r, 0, 0x00000000, "Snehal");
 }
 
+// Physics for pressing keys and moving the player
 Player::void physics()
 {
     //Player physics
@@ -73,6 +74,7 @@ Player::void physics()
 	}
 }
 
+// Draws the player
 Player::void draw_player()
 {
     glPushMatrix();
