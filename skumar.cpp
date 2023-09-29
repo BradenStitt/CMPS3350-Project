@@ -52,6 +52,27 @@ void display_border(int xres, int yres)
 //     ggprint8b(&r, 0, 0x00000000, "Snehal");
 // }
 
+void Player:: Player()
+{
+	init();
+}
+
+void Player:: init()
+{
+	pos[0] = 100.0f; 
+	pos[1] = 40.0f; 
+
+	vel[0] = vel[1] = 0.0f;
+	//3 vertices of triangle-shaped rocket player
+	verts[0][0] = -10.0f;
+	verts[0][1] =   0.0f;
+	verts[1][0] =   0.0f;
+	verts[1][1] =  30.0f;
+	verts[2][0] =  10.0f;
+	verts[2][1] =   0.0f;
+	angle = 0.0;
+	
+}
 // Physics for pressing keys and moving the player
 void Player:: physics()
 {
