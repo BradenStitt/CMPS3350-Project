@@ -24,6 +24,7 @@ using namespace std;
 #include <GL/glx.h>
 #include "log.h"
 #include "bstitt.h"
+#include <vector>
 
 // floating point random numbers
 #define rnd() (float)rand() / (float)RAND_MAX
@@ -104,6 +105,8 @@ public:
 	}
 } lander;
 
+vector<Platform> platforms;
+
 class X11_wrapper
 {
 private:
@@ -136,6 +139,7 @@ int main()
 {
 	logOpen();
 	init_opengl();
+	srand(static_cast<unsigned>(time(nullptr)));
 	printf("Press T or Up-arrow for thrust.\n");
 	printf("Press Left or Right arrows for rocket thrust vector.\n");
 	// Main loop
@@ -392,6 +396,17 @@ void render()
 	glEnd();
 	glPopMatrix();
 
+	Platform platform; // Declare an instance of the Platform class
+
+	// Set the position explicitly
+	platform.pos[0] = 400.0f;
+	platform.pos[1] = 400.0f;
+
+	// Draw the platform at the specified location
+	platform.draw_platform_fixed(platform.pos[0], platform.pos[1]);
+	static Platform random;
+
+	random.draw_platform_random();
 	// Draw LZ
 	glPushMatrix();
 	glColor3ub(250, 250, 20);
