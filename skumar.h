@@ -17,6 +17,6 @@ class Player {
 	void init();
 	void physics():
 	void draw_player();
-} 
+};
 
 #endif
