@@ -53,7 +53,7 @@ void display_border(int xres, int yres)
 // }
 
 // Physics for pressing keys and moving the player
-Player::void physics()
+void Player:: physics()
 {
     //Player physics
 	if (g.failed_landing)
@@ -77,7 +77,7 @@ Player::void physics()
 }
 
 // Draws the player
-Player::void draw_player()
+void Player:: draw_player()
 {
     glPushMatrix();
 	glColor3ub(0, 0, 0); 
