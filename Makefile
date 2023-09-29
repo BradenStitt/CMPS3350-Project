@@ -1,6 +1,6 @@
 # I removed skumar.cpp from the list of files to compile because it was causing errors
 # Add it back to fix compiler warnings and errors snehal. :)
-all: lander test bradenTest
+all: lander test bradenTest snehalTest
 
 lander: lander.cpp 
 	g++ lander.cpp log.cpp bstitt.cpp bruiz.cpp -Wall -olander -lX11 -lGL -lGLU -lm
@@ -11,6 +11,9 @@ test: lander.cpp
 bradenTest: bradenTest.cpp global.cpp bstitt.cpp bstitt.h 
 	g++ bradenTest.cpp log.cpp global.cpp bstitt.cpp bruiz.cpp -Wall -o bradenTest -lX11 -lGL -lGLU -lm -D TESTING
 
+snehalTest: snehalTest.cpp
+	g++ snehalTest.cpp log.cpp timers.cpp -Wall -osnehalTest -lX11 -lGL -lGLU -lm
+
 clean:
-	rm -f lander test bradenTest
+	rm -f lander test bradenTest snehalTest
 
