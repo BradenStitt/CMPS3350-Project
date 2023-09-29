@@ -5,12 +5,11 @@
 
 #include <iostream>
 #include <GL/gl.h>
-#include <iostream>
+#include <X11/keysym.h>
 #include <cstring>
 #include <unistd.h>
 #include <ctime>
 #include "defs.h"
-// #include "fonts.h"
 #include "log.h"
 #include "global.h"
 #include "skumar.h"
@@ -18,34 +17,35 @@
 using namespace std;
 
 extern Global g;
-extern Player player;
 
-void display_border(int xres, int yres)
-{
-    // Draw a border around the window
-    int b = 50;
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_BLEND);
-    glColor4f(1.0f, 0.0f, 0.0f, 0.5f);
-    glPushMatrix();
-    glBegin(GL_TRIANGLE_STRIP);
-    glVertex2i(0, 0);
-    glVertex2i(0 + b, 0 + b);
-    glVertex2i(0, 0 + yres);
+const float GRAVITY = 0.00005; 
 
-    glVertex2i(0 + b, 0 + yres - b);
-    glVertex2i(xres, 0 + yres);
-    glVertex2i(xres - b, 0 + yres - b);
+// void display_border(int xres, int yres)
+// {
+//     // Draw a border around the window
+//     int b = 50;
+//     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//     glEnable(GL_BLEND);
+//     glColor4f(1.0f, 0.0f, 0.0f, 0.5f);
+//     glPushMatrix();
+//     glBegin(GL_TRIANGLE_STRIP);
+//     glVertex2i(0, 0);
+//     glVertex2i(0 + b, 0 + b);
+//     glVertex2i(0, 0 + yres);
 
-    glVertex2i(xres, 0);
-    glVertex2i(xres - b, b);
-    glVertex2i(0, 0);
+//     glVertex2i(0 + b, 0 + yres - b);
+//     glVertex2i(xres, 0 + yres);
+//     glVertex2i(xres - b, 0 + yres - b);
 
-    glVertex2i(0 + b, 0 + b);
+//     glVertex2i(xres, 0);
+//     glVertex2i(xres - b, b);
+//     glVertex2i(0, 0);
 
-    glEnd();
-    glPopMatrix();
-}
+//     glVertex2i(0 + b, 0 + b);
+
+//     glEnd();
+//     glPopMatrix();
+// }
 
 // void display_name(int x, int y)
 // {
@@ -67,8 +67,7 @@ void Player:: init()
 	pos[1] = 40.0f; 
 
 	vel[0] = vel[1] = 0.0f;
-	//3 vertices of triangle-shaped player
-	verts[0][0] = -10.0f;
+	//3 vertices of triangle-shaped 	verts[0][0] = -10.0f;
 	verts[0][1] =   0.0f;
 	verts[1][0] =   0.0f;
 	verts[1][1] =  30.0f;
@@ -77,26 +76,26 @@ void Player:: init()
 	angle = 0.0;
 }
 
-// Physics for pressing keys and moving the player
+// Physics for pressing keys and moving the 
 void Player::physics()
 {
     //Player physics
 	if (g.failed_landing)
 	   return;
 
-	player.pos[0] += player.vel[0]; 
-	player.pos[1] += player.vel[1];
-	player.vel[1] -= GRAVITY;
+	pos[0] += vel[0]; 
+	pos[1] += vel[1];
+	vel[1] -= GRAVITY;
 	
 	if (g.keys[XK_Left])
-		player.vel[0] -= 0.0001;
+		vel[0] -= 0.0001;
 	if (g.keys[XK_Right])
-		player.vel[0] += 0.0001;
+		vel[0] += 0.0001;
 	if (g.keys[XK_Up])
-		player.vel[1] += 0.0002; 
+		vel[1] += 0.0002; 
 
 	//check for landing failure...
-	if (player.pos[1] < 0.0) {
+	if (pos[1] < 0.0) {
 		g.failed_landing = 1;
 	}
 }
@@ -110,11 +109,11 @@ void Player::draw_player()
 		glColor3ub(250, 0, 0);
 	if (g.landed)
 		glColor3ub(0, 250, 0);  
-	glTranslatef(player.pos[0], player.pos[1], 0.0f); 
-	glRotated(player.angle, 0.0, 0.0, 1.0);
+	glTranslatef(pos[0], pos[1], 0.0f); 
+	glRotated(angle, 0.0, 0.0, 1.0);
 	glBegin(GL_TRIANGLES); 
 		for (int i=0; i<3; i++) {
-			glVertex2f(player.verts[i][0], player.verts[i][1]); 
+			glVertex2f(verts[i][0], verts[i][1]); 
 		}
 	glEnd();
 }
