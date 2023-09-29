@@ -1,4 +1,9 @@
-// Header file
+#ifndef SKUMAR_H
+#define SKUMAR_H
+
+#include <GL/gl.h> 
+
+extern void display_border(int xres, int yres);
 
 class Player {
 	//the player rocket
