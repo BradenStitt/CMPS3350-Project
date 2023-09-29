@@ -15,6 +15,9 @@
 #ifdef
 using namespace std;
 
+/*
+    Displays characters on specified coordinates
+*/
 void display_name(int x, int y, const char *name)
 {
     Rect r;
@@ -24,6 +27,9 @@ void display_name(int x, int y, const char *name)
     ggprint8b(&r, 16, 0x00ff0000, "%s", name);
 }
 
+/*
+    Displays a red border around the screen
+*/
 void display_border(int xres, int yres)
 {
     // Draw a border around the window
@@ -51,6 +57,9 @@ void display_border(int xres, int yres)
     glPopMatrix();
 }
 
+/*
+    Helper functiont to draw platforms via vertices
+*/
 Platform::void draw_platform()
 {
     // Draw the platform
@@ -66,6 +75,9 @@ Platform::void draw_platform()
     glPopMatrix();
 }
 
+/*
+    Spawns a platform at a random location
+*/
 Platform::void spawnPlatformRandom()
 {
     // Intialize platform vertices at a random location
