@@ -4,17 +4,13 @@
  **/
 
 #include <iostream>
-#include <cmath>
 #include <GL/gl.h>
 #include <iostream>
-#include <cstdlib>
 #include <cstring>
 #include <unistd.h>
 #include <ctime>
-#include <cmath>
-#include <vector>
 #include "defs.h"
-#include "fonts.h"
+// #include "fonts.h"
 #include "log.h"
 #include "skumar.h"
 
@@ -22,35 +18,63 @@ using namespace std;
 
 void display_border(int xres, int yres)
 {
-    //Draw a border around the window
+    // Draw a border around the window
     int b = 50;
-	glColor3f(1.0f, 1.0f, 0.0f);
-	glPushMatrix();
-	glBegin(GL_TRIANGLES_STRIP);
-        glVertex2i(0,            0);
-        glVertex2i(0+b         0+b);
-        glVertex2i(0,       0+yres);
-        glVertex2i(0+b,     0+yres-b);
-        glVertex2i(xres     0+yres);
-        glVertex2i(xres-b,     0+yres-b);
-        glVertex2i(xres,     0);
-        glVertex2i(xres-b,     b);
-        glVertex2i(0,     0);
-        glVertex2i(0+b         0+b);
-	glEnd();
-	glPopMatrix();
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
+    glColor4f(1.0f, 0.0f, 0.0f, 0.5f);
+    glPushMatrix();
+    glBegin(GL_TRIANGLE_STRIP);
+    glVertex2i(0, 0);
+    glVertex2i(0 + b, 0 + b);
+    glVertex2i(0, 0 + yres);
+
+    glVertex2i(0 + b, 0 + yres - b);
+    glVertex2i(xres, 0 + yres);
+    glVertex2i(xres - b, 0 + yres - b);
+
+    glVertex2i(xres, 0);
+    glVertex2i(xres - b, b);
+    glVertex2i(0, 0);
+
+    glVertex2i(0 + b, 0 + b);
+
+    glEnd();
+    glPopMatrix();
 }
 
-void display_name(int x, int y)
+// void display_name(int x, int y)
+// {
+//     Rect r;
+//     r.bot = y;
+//     r.left = x;
+//     r.center = 0;
+//     ggprint8b(&r, 0, 0x00000000, "Snehal");
+// }
+
+Player:: Player()
 {
-    Rect r;
-    r.bot = y;
-    r.left = x;
-    r.center = 0;
-    ggprint8b(&r, 0, 0x00000000, "Snehal");
+	init();
 }
 
-Player::void physics()
+void Player:: init()
+{
+	pos[0] = 100.0f; 
+	pos[1] = 40.0f; 
+
+	vel[0] = vel[1] = 0.0f;
+	//3 vertices of triangle-shaped rocket player
+	verts[0][0] = -10.0f;
+	verts[0][1] =   0.0f;
+	verts[1][0] =   0.0f;
+	verts[1][1] =  30.0f;
+	verts[2][0] =  10.0f;
+	verts[2][1] =   0.0f;
+	angle = 0.0;
+	
+}
+// Physics for pressing keys and moving the player
+void Player::physics()
 {
     //Player physics
 	if (g.failed_landing)
@@ -73,7 +97,8 @@ Player::void physics()
 	}
 }
 
-Player::void draw_player()
+// Draws the player
+void Player::draw_player()
 {
     glPushMatrix();
 	glColor3ub(0, 0, 0); 

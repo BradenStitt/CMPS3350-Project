@@ -24,6 +24,7 @@ using namespace std;
 #include <GL/glx.h>
 #include "log.h"
 #include "bstitt.h"
+#include "skumar.h"
 
 // floating point random numbers
 #define rnd() (float)rand() / (float)RAND_MAX
