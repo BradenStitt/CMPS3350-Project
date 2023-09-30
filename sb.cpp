@@ -471,7 +471,8 @@ void render()
 
 	//Draw Player
 	glPushMatrix();
-	glColor3ub(0, 0, 0); 
+	// glColor3ub(0, 0, 0); 
+	glColor3ub(255, 255, 255);
 	if (g.failed_landing)
 		glColor3ub(250, 0, 0);
 	if (g.landed)
