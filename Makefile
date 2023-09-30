@@ -10,8 +10,8 @@ test: lander.cpp
 bradenTest: bradenTest.cpp global.cpp bstitt.cpp bstitt.h 
 	g++ bradenTest.cpp log.cpp global.cpp bstitt.cpp bruiz.cpp skumar.cpp -Wall -o bradenTest -lX11 -lGL -lGLU -lm -D TESTING
 
-snehalTest: snehalTest.cpp skumar.cpp
-	g++ snehalTest.cpp log.cpp timers.cpp skumar.cpp -Wall -osnehalTest -lX11 -lGL -lGLU -lm
+snehalTest: snehalTest.cpp 
+	g++ snehalTest.cpp log.cpp timers.cpp -Wall -osnehalTest -lX11 -lGL -lGLU -lm
 
 clean:
 	rm -f lander test bradenTest snehalTest
