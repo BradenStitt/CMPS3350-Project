@@ -16,7 +16,7 @@
 
 using namespace std;
 
-Global gl;
+extern Global g;
 
 // void display_name(int x, int y, const char *name)
 // {
@@ -55,8 +55,8 @@ void display_border(int xres, int yres)
 }
 
 Platform::Platform() {
-    pos[0] = rand() % gl.xres; // Random x coordinate
-    pos[1] = gl.yres; // Start at the top of the screen
+    pos[0] = rand() % g.xres; // Random x coordinate
+    pos[1] = g.yres; // Start at the top of the screen
     width = 50.0f;
     height = 8.0f;
 }
