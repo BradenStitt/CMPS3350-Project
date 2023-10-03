@@ -10,8 +10,7 @@ extern void timeCopy(struct timespec *dest, struct timespec *source);
 #define rnd() (float)rand() / (float)RAND_MAX
 const float GRAVITY = 0.00005; 
 const int MAX_BULLETS = 11;
-
-struct timespec bt;
+typedef float Vec[3];
 
 class Bullet {
 	public:

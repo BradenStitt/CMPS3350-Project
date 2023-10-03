@@ -9,12 +9,13 @@
 #include <cstring>
 #include <unistd.h>
 #include <ctime>
-#include "defs.h"
 #include "log.h"
 #include "global.h"
 #include "skumar.h"
 
 using namespace std;
+
+struct timespec bt;
 
 extern Global g;
 Player player;

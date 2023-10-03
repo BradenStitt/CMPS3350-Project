@@ -30,7 +30,7 @@ using namespace std;
 #define rnd() (float)rand() / (float)RAND_MAX
 
 // gravity pulling the rocket straight down
-const float GRAVITY = 0.005;
+// const float GRAVITY = 0.005;
 
 class Global
 {
