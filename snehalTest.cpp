@@ -20,9 +20,8 @@ typedef float Vec[3];
 const float GRAVITY = 0.00005;
 #define PI 3.141592653589793 
 const int MAX_BULLETS = 11;
-// extern struct timespec timeStart, timeCurrent;
-// extern struct timespec timePause;
-extern double timeDiff(struct timespec *start, struct timespec *end);
+
+extern double timeDiff(struct timespec *start, struct timespec *end); 
 extern void timeCopy(struct timespec *dest, struct timespec *source);
 
 class Global {
@@ -60,8 +59,8 @@ class Bullet {
 		Vec vel;
 		float color[3];
 		struct timespec time;
-	public:
-		Bullet() { }
+
+		Bullet() {};
 };
 
 class Player {
@@ -203,7 +202,7 @@ void X11_wrapper::set_title()
 {
 	//Set the window title bar.
 	XMapWindow(dpy, win);
-	XStoreName(dpy, win, "3350 Aerospace Lander Challenge");
+	XStoreName(dpy, win, "Scribble-Hop");
 }
 
 bool X11_wrapper::getXPending()
@@ -381,23 +380,24 @@ void physics()
     if (g.keys[XK_Up])
         player.vel[1] += 0.0002;
     if (g.keys[XK_space]) {
-        // Shoot a bullet...
-        if (player.nbullets < MAX_BULLETS) {
-            Bullet* b = &player.barr[player.nbullets];
-            timeCopy(&b->time, &bt);
-            b->pos[0] = player.pos[0]; // Set bullet x-position to player's x-position
-            b->pos[1] = player.pos[1];
-            // Set bullet velocity to move straight up
-            b->vel[0] = 0.0f;
-            b->vel[1] = 0.01f;
-            b->color[0] = 1.0f;
-            b->color[1] = 1.0f;
-            b->color[2] = 1.0f;
-            ++player.nbullets;
-        }
-        // Clear the space key state to continuously generate bullets
-        g.keys[XK_space] = 0;
-    }
+   		// Shoot a bullet...
+		if (player.nbullets < MAX_BULLETS) {
+			Bullet* b = &player.barr[player.nbullets];
+			timeCopy(&b->time, &bt);
+
+			// Adjust the y-position so it's just above the player with more distance
+			b->pos[1] = player.pos[1] + 30.0f; // Adjust as needed
+			// Set bullet velocity to move farther upwards
+			b->vel[0] = 0.0f;
+			b->vel[1] = 0.03f + rnd() * 0.02f; // Adjust for more spread
+			b->color[0] = 1.0f;
+			b->color[1] = 1.0f;
+			b->color[2] = 1.0f;
+			++player.nbullets;
+		}
+		// Clear the space key state to continuously generate bullets
+		g.keys[XK_space] = 0;
+	}
 
     // Check for landing failure...
     if (player.pos[1] < 0.0) {
@@ -413,14 +413,17 @@ void render()
 	//Draw Grid
 	glPushMatrix();
 	glBegin(GL_QUADS); 
-    //Set the background color of the grid to off-white
-    glColor3ub(240, 240, 240);
+    //Set the background color of the grid to black
+	glColor3ub(0, 0, 0); // Set the vertex color to black
+	//Set the background color of the grid to off-white
+    // glColor3ub(240, 240, 240);
     glVertex2i(0, 0);
     glVertex2i(g.xres, 0);
     glVertex2i(g.xres, g.yres);
     glVertex2i(0, g.yres);
     //Set the color of the grid lines to gray
-    glColor3ub(255, 150, 50); // Set the vertex color to orange
+	glColor3ub(90, 90, 90); // Set the vertex color to gray
+    // glColor3ub(255, 150, 50); // Set the vertex color to orange
     for (int i = 0; i <= g.xres; i += 20) {
         glBegin(GL_LINES);
             glVertex2i(i, 0);
@@ -435,7 +438,6 @@ void render()
     }
 	glEnd();
 	glPopMatrix();
-
 
 	//Draw Platform
 	glPushMatrix(); 
@@ -479,7 +481,7 @@ void render()
 
 	//Draw Player
 	glPushMatrix();
-	glColor3ub(0, 0, 0); 
+	glColor3ub(255, 255, 255);
 	if (g.failed_landing)
 		glColor3ub(250, 0, 0);
 	if (g.landed)
@@ -525,23 +527,26 @@ void render()
 		}
 	}
 
-	//Draw the bullets
-	for (int i=0; i<player.nbullets; i++) {
-		Bullet *b = &player.barr[i];
-		//Log("draw bullet...\n");
-		glColor3f(0.0, 0.0, 0.0);
-		// glColor3f(0, 0, 0);
+	// Draw the bullets
+	for (int i = 0; i < player.nbullets; i++) {
+		Bullet* b = &player.barr[i];
+		// Log("draw bullet...\n");
+
+		glColor3f(1.0, 0.0, 0.0); // red
+		// glColor3f(0.0, 0.0, 0.0); // black
+
+		// Adjust the size of the bullet by changing the vertex positions
 		glBegin(GL_POINTS);
 		glVertex2f(b->pos[0],      b->pos[1]);
-		glVertex2f(b->pos[0]-1.0f, b->pos[1]);
-		glVertex2f(b->pos[0]+1.0f, b->pos[1]);
-		glVertex2f(b->pos[0],      b->pos[1]-1.0f);
-		glVertex2f(b->pos[0],      b->pos[1]+1.0f);
-		glColor3f(0.8, 0.8, 0.8);
-		glVertex2f(b->pos[0]-1.0f, b->pos[1]-1.0f);
-		glVertex2f(b->pos[0]-1.0f, b->pos[1]+1.0f);
-		glVertex2f(b->pos[0]+1.0f, b->pos[1]-1.0f);
-		glVertex2f(b->pos[0]+1.0f, b->pos[1]+1.0f);
+		glVertex2f(b->pos[0] - 2.0f, b->pos[1]); 
+		glVertex2f(b->pos[0] + 2.0f, b->pos[1]); 
+		glVertex2f(b->pos[0],      b->pos[1] - 2.0f); 
+		glVertex2f(b->pos[0],      b->pos[1] + 2.0f); 
+		glColor3f(0.8, 0.8, 0.8); 
+		glVertex2f(b->pos[0] - 2.0f, b->pos[1] - 2.0f); 
+		glVertex2f(b->pos[0] - 2.0f, b->pos[1] + 2.0f); 
+		glVertex2f(b->pos[0] + 2.0f, b->pos[1] - 2.0f); 
+		glVertex2f(b->pos[0] + 2.0f, b->pos[1] + 2.0f); 
 		glEnd();
 	}
 
