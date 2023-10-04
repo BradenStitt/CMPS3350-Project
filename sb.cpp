@@ -530,37 +530,30 @@ void render()
 		}
 	}
 
+	// check for collision with dynamic platforms
 	for (unsigned int i = 0; i < gameManager.platforms.size(); i++) 
-{
-    Platform* platform = &gameManager.platforms[i];
+	{
+		Platform* platform = &gameManager.platforms[i];
 
-    // Check for vertical collision
-    if (player.pos[0] > (platform->pos[0] - platform->width) && player.pos[0] < (platform->pos[0] + platform->width) &&
-        player.pos[1] > (platform->pos[1] - platform->height) && player.pos[1] < (platform->pos[1] + platform->height)) 
-    {
-        // Player is colliding with platform vertically
-        player.pos[1] = platform->pos[1] + platform->height;
-        player.vel[1] = 0.0; // Stop falling
+		if (player.pos[0] > (platform->pos[0] - platform->width) && player.pos[0] < (platform->pos[0] + platform->width)) 
+		{
+			if (player.pos[1] > (platform->pos[1] - platform->height) && player.pos[1] < (platform->pos[1] + platform->height)) 
+			{
+				// Player is colliding with platform
+				player.pos[1] = (platform->pos[1]) + platform->height;
+				player.vel[1] = 0.0;
+				player.vel[0] = 0.0;
 
-        // Set a flag indicating a successful landing
-        // You might want to clear this flag when the player jumps
-        g.successful_landing = true;
-    }
-
-    // Check for horizontal collision
-    if (player.pos[0] > (platform->pos[0] - platform->width) && player.pos[0] < (platform->pos[0] + platform->width) &&
-        player.pos[1] > (platform->pos[1] - platform->height) && player.pos[1] < (platform->pos[1] + platform->height)) 
-    {
-        // Player is colliding with platform horizontally
-        // Adjust player's position or velocity as needed
-    }
-}
-
-// Handle the failed landing separately based on the flag
-if (!g.successful_landing) {
-    // Handle failed landing logic
-    g.failed_landing = true;
-}
+				if (player.angle > 0.0 || player.angle < 0.0) {
+					g.failed_landing = 1;
+				}
+				else {
+					// Player landed successfully
+					// g.landed = 1;
+				}
+			}
+		}
+	}
 
 
 	// Draw the bullets
