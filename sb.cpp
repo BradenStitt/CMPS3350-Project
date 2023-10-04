@@ -11,6 +11,7 @@
 #include "log.h"
 #include "global.h"
 #include "bstitt.h"
+// #include "skumar.h"
 #include <vector>
 #include <chrono>
 #include <thread>
@@ -19,6 +20,7 @@ using namespace std;
 
 // Define Classes
 Global g;
+GameManager gameManager(10); // Adjust the number of platforms as needed
 
 //floating point random numbers
 #define rnd() (float)rand() / (float)RAND_MAX
@@ -27,6 +29,7 @@ typedef float Vec[3];
 
 //gravity pulling the player straight down
 const float GRAVITY = 0.75;
+//const float GRAVITY = 0.00005;
 #define PI 3.141592653589793 
 const int MAX_BULLETS = 11;
 const int MAXPLATFORMS = 10;
@@ -139,7 +142,8 @@ int main()
 	printf("Press Space to Shoot.\n");
 	printf("Press R to reset player.\n");
 
-    GameManager gameManager(10); // Adjust the number of platforms as needed
+	// defined globally 
+    // GameManager gameManager(10); // Adjust the number of platforms as needed
 
 	//Main loop
 	int done = 0;
@@ -153,12 +157,14 @@ int main()
 		}
 		physics();
 		render();
-
+		
+		// moved to physics()
 		// Update physics for platforms
-        gameManager.updatePhysics();
+        //gameManager.updatePhysics();
 
+		// moved to render()
         // Render the platforms
-        gameManager.render();
+        //gameManager.render();
 
         x11.swapBuffers();
         usleep(400);
@@ -405,6 +411,9 @@ void physics()
 		g.keys[XK_space] = 0;
 	}
 
+	// Update physics for platforms
+	gameManager.updatePhysics();
+
     // Check for landing failure...
     if (player.pos[1] < 0.0) {
         g.failed_landing = 1;
@@ -485,6 +494,9 @@ void render()
 		}
 	glEnd();
 
+	// Render the platforms
+	gameManager.render();
+
 
 	if (player.pos[0] > (pf.pos[0] - pf.width) && player.pos[0] < (pf.pos[0] + pf.width)) 
 	{
@@ -517,6 +529,32 @@ void render()
 			}
 		}
 	}
+
+	// check for collision with dynamic platforms
+	for (unsigned int i = 0; i < gameManager.platforms.size(); i++) 
+	{
+		Platform* platform = &gameManager.platforms[i];
+
+		if (player.pos[0] > (platform->pos[0] - platform->width) && player.pos[0] < (platform->pos[0] + platform->width)) 
+		{
+			if (player.pos[1] > (platform->pos[1] - platform->height) && player.pos[1] < (platform->pos[1] + platform->height)) 
+			{
+				// Player is colliding with platform
+				player.pos[1] = (platform->pos[1]) + platform->height;
+				player.vel[1] = 0.0;
+				player.vel[0] = 0.0;
+
+				if (player.angle > 0.0 || player.angle < 0.0) {
+					g.failed_landing = 1;
+				}
+				else {
+					// Player landed successfully
+					// g.landed = 1;
+				}
+			}
+		}
+	}
+
 
 	// Draw the bullets
 	for (int i = 0; i < player.nbullets; i++) {
