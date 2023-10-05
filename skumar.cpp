@@ -12,12 +12,14 @@
 #include "log.h"
 #include "global.h"
 #include "skumar.h"
+#include "bstitt.h"
 
 using namespace std;
 
 struct timespec bt;
 
 extern Global g;
+GameManager gameManager(10);
 Player player;
 
 Bullet:: Bullet()
@@ -142,4 +144,32 @@ void Player::draw_player()
 			glVertex2f(verts[i][0], verts[i][1]); 
 		}
 	glEnd();
+}
+
+void dynamic_collision_detection()
+{
+	// check for collision with dynamic platforms
+	for (unsigned int i = 0; i < gameManager.platforms.size(); i++) 
+	{
+		Platform* platform = &gameManager.platforms[i];
+
+		if (player.pos[0] > (platform->pos[0] - platform->width) && player.pos[0] < (platform->pos[0] + platform->width)) 
+		{
+			if (player.pos[1] > (platform->pos[1] - platform->height) && player.pos[1] < (platform->pos[1] + platform->height)) 
+			{
+				// Player is colliding with platform
+				player.pos[1] = (platform->pos[1]) + platform->height;
+				player.vel[1] = 0.0;
+				player.vel[0] = 0.0;
+
+				if (player.angle > 0.0 || player.angle < 0.0) {
+					g.failed_landing = 1;
+				}
+				else {
+					// Player landed successfully
+					// g.landed = 1;
+				}
+			}
+		}
+	}
 }

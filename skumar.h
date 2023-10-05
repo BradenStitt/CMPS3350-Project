@@ -12,6 +12,8 @@ const float GRAVITY = 0.00005;
 const int MAX_BULLETS = 11;
 typedef float Vec[3];
 
+void dynamic_collision_detection();
+
 class Bullet {
 	public:
 		Vec pos;
