@@ -28,7 +28,7 @@ typedef float Flt;
 typedef float Vec[3];
 
 //gravity pulling the player straight down
-const float GRAVITY = 0.075;
+const float GRAVITY = 0.75;
 //const float GRAVITY = 0.00005;
 #define PI 3.141592653589793 
 const int MAX_BULLETS = 11;
@@ -128,8 +128,6 @@ void init_opengl(void);
 void physics(void);
 void render(void);
 
-
-
 //=====================================
 // MAIN FUNCTION IS HERE
 //=====================================
@@ -158,13 +156,11 @@ int main()
 		physics();
 		render();
 		
-		// moved to physics()
 		// Update physics for platforms
-        //gameManager.updatePhysics();
+        gameManager.updatePhysics();
 
-		// moved to render()
         // Render the platforms
-        //gameManager.render();
+        gameManager.render();
 
         x11.swapBuffers();
         usleep(400);
@@ -390,7 +386,7 @@ void physics()
     if (g.keys[XK_Right])
         player.vel[0] += 0.1;
     if (g.keys[XK_Up])
-        player.vel[1] += 0.1;
+        player.vel[1] += 0.2;
     if (g.keys[XK_space]) {
    		// Shoot a bullet...
 		if (player.nbullets < MAX_BULLETS) {
@@ -410,9 +406,6 @@ void physics()
 		// Clear the space key state to continuously generate bullets
 		g.keys[XK_space] = 0;
 	}
-
-	// Update physics for platforms
-	gameManager.updatePhysics();
 
     // Check for landing failure...
     if (player.pos[1] < 0.0) {
@@ -494,9 +487,6 @@ void render()
 		}
 	glEnd();
 
-	// Render the platforms
-	gameManager.render();
-
 
 	if (player.pos[0] > (pf.pos[0] - pf.width) && player.pos[0] < (pf.pos[0] + pf.width)) 
 	{
@@ -554,7 +544,6 @@ void render()
 			}
 		}
 	}
-
 
 	// Draw the bullets
 	for (int i = 0; i < player.nbullets; i++) {
