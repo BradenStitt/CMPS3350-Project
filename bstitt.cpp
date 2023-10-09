@@ -11,9 +11,12 @@
 #include "defs.h"
 #include "log.h"
 #include "bstitt.h"
+#include "global.h"
 //#include "fonts.h"
 
 using namespace std;
+
+extern Global g;
 
 // void display_name(int x, int y, const char *name)
 // {
@@ -52,8 +55,8 @@ void display_border(int xres, int yres)
 }
 
 Platform::Platform() {
-    pos[0] = rand() % 600 + 100; // Random x coordinate
-    pos[1] = 600; // Random y coordinate
+    pos[0] = rand() % g.xres; // Random x coordinate
+    pos[1] = g.yres; // Start at the top of the screen
     width = 50.0f;
     height = 8.0f;
 }
@@ -103,3 +106,54 @@ void Platform::draw_platform_random()
     glEnd();
     glPopMatrix();
 }
+
+void Platform::physics_platform()
+{
+    // // Move the platform down the screen
+    // pos[1] -= 5.0f;
+
+    // // Limit how far below the screen the platform can go
+    // float lowerLimit = -10.0f;  // Adjust as needed
+    // if (pos[1] < lowerLimit)
+    // {
+    //     pos[1] = lowerLimit;
+    // }
+
+    if (pos[1] > 0.0f - height)
+    {
+        pos[1] -= 5.0f;
+    }
+}
+
+// Game Manager class
+GameManager::GameManager(int numPlatforms) : platformCreationTimer(0) {
+}
+
+void GameManager::createPlatform() {
+    Platform newPlatform;
+    platforms.push_back(newPlatform);
+    platformCreationTimer = 0;  // Reset the timer
+}
+
+void GameManager::updatePhysics() {
+    platformCreationTimer++;
+    if (platformCreationTimer >= PLATFORM_CREATION_INTERVAL) {
+        createPlatform();
+        platformCreationTimer = 0;  // Reset the timer
+    }
+
+    for (auto& platform : platforms) {
+        platform.physics_platform();
+    }
+}
+
+void GameManager::render() {
+    platformCreationTimer++;
+    if (platformCreationTimer >= 120) {  // 120 frames ~ 2 seconds (assuming 60 frames per second)
+        createPlatform();
+    }
+    for (size_t i = 0; i < platforms.size(); i++) {
+        platforms[i].draw_platform_random();
+    }
+}
+

@@ -9,56 +9,83 @@
 #include <cstring>
 #include <unistd.h>
 #include <ctime>
-#include "defs.h"
 #include "log.h"
 #include "global.h"
 #include "skumar.h"
+#include "bstitt.h"
 
 using namespace std;
 
+struct timespec bt;
+
 extern Global g;
+GameManager gameManager(10);
+Player player;
 
-const float GRAVITY = 0.00005; 
+Bullet:: Bullet()
+{
+}
 
-// void display_border(int xres, int yres)
-// {
-//     // Draw a border around the window
-//     int b = 50;
-//     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//     glEnable(GL_BLEND);
-//     glColor4f(1.0f, 0.0f, 0.0f, 0.5f);
-//     glPushMatrix();
-//     glBegin(GL_TRIANGLE_STRIP);
-//     glVertex2i(0, 0);
-//     glVertex2i(0 + b, 0 + b);
-//     glVertex2i(0, 0 + yres);
+void Bullet:: physics()
+{
+	if (g.keys[XK_space]) {
+   		// Shoot a bullet...
+		if (player.nbullets < MAX_BULLETS) {
+			Bullet* b = &player.barr[player.nbullets];
+			timeCopy(&b->time, &bt);
 
-//     glVertex2i(0 + b, 0 + yres - b);
-//     glVertex2i(xres, 0 + yres);
-//     glVertex2i(xres - b, 0 + yres - b);
+			// Adjust the y-position so it's just above the player with more distance
+			b->pos[1] = player.pos[1] + 30.0f; // Adjust as needed
+			// Set bullet velocity to move farther upwards
+			b->vel[0] = 0.0f;
+			b->vel[1] = 0.03f + rnd() * 0.02f; // Adjust for more spread
+			b->color[0] = 1.0f;
+			b->color[1] = 1.0f;
+			b->color[2] = 1.0f;
+			++player.nbullets;
+		}
 
-//     glVertex2i(xres, 0);
-//     glVertex2i(xres - b, b);
-//     glVertex2i(0, 0);
+		// Clear the space key state to continuously generate bullets
+		g.keys[XK_space] = 0;
+	}
+}
 
-//     glVertex2i(0 + b, 0 + b);
+// Draws the bullet
+void Bullet:: draw_bullet()
+{
+	for (int i = 0; i < player.nbullets; i++) {
+		Bullet* b = &player.barr[i];
+		
+		glColor3f(1.0, 0.0, 0.0); // red
 
-//     glEnd();
-//     glPopMatrix();
-// }
+		// Adjust the size of the bullet by changing the vertex positions
+		glBegin(GL_POINTS);
+		glVertex2f(b->pos[0],      b->pos[1]);
+		glVertex2f(b->pos[0] - 2.0f, b->pos[1]); 
+		glVertex2f(b->pos[0] + 2.0f, b->pos[1]); 
+		glVertex2f(b->pos[0],      b->pos[1] - 2.0f); 
+		glVertex2f(b->pos[0],      b->pos[1] + 2.0f); 
+		glColor3f(0.8, 0.8, 0.8); 
+		glVertex2f(b->pos[0] - 2.0f, b->pos[1] - 2.0f); 
+		glVertex2f(b->pos[0] - 2.0f, b->pos[1] + 2.0f); 
+		glVertex2f(b->pos[0] + 2.0f, b->pos[1] - 2.0f); 
+		glVertex2f(b->pos[0] + 2.0f, b->pos[1] + 2.0f); 
+		glEnd();
+	}
+}
 
-// void display_name(int x, int y)
-// {
-//     Rect r;
-//     r.bot = y;
-//     r.left = x;
-//     r.center = 0;
-//     ggprint8b(&r, 0, 0x00000000, "Snehal");
-// }
 
 Player:: Player()
 {
 	init();
+	barr = new Bullet[MAX_BULLETS];
+	nbullets = 0;
+	clock_gettime(CLOCK_REALTIME, &bulletTimer);
+}
+
+Player:: ~Player()
+{
+	delete [] barr;
 }
 
 void Player:: init()
@@ -117,4 +144,32 @@ void Player::draw_player()
 			glVertex2f(verts[i][0], verts[i][1]); 
 		}
 	glEnd();
+}
+
+void dynamic_collision_detection()
+{
+	// check for collision with dynamic platforms
+	for (unsigned int i = 0; i < gameManager.platforms.size(); i++) 
+	{
+		Platform* platform = &gameManager.platforms[i];
+
+		if (player.pos[0] > (platform->pos[0] - platform->width) && player.pos[0] < (platform->pos[0] + platform->width)) 
+		{
+			if (player.pos[1] > (platform->pos[1] - platform->height) && player.pos[1] < (platform->pos[1] + platform->height)) 
+			{
+				// Player is colliding with platform
+				player.pos[1] = (platform->pos[1]) + platform->height;
+				player.vel[1] = 0.0;
+				player.vel[0] = 0.0;
+
+				if (player.angle > 0.0 || player.angle < 0.0) {
+					g.failed_landing = 1;
+				}
+				else {
+					// Player landed successfully
+					// g.landed = 1;
+				}
+			}
+		}
+	}
 }

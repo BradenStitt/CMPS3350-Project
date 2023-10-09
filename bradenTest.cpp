@@ -26,14 +26,17 @@ using namespace std;
 #include "bstitt.h"
 #include <vector>
 #include "global.h"
+#include <chrono>
+#include <thread>
 
 // floating point random numbers
 #define rnd() (float)rand() / (float)RAND_MAX
 
 // gravity pulling the rocket straight down
 const float GRAVITY = 0.005;
-
 Global g;
+const int MAXPLATFORMS = 10;
+int numPlatforms = 0;
 
 class Lz
 {
@@ -87,8 +90,6 @@ public:
 	}
 } lander;
 
-vector<Platform> platforms;
-
 class X11_wrapper
 {
 private:
@@ -119,32 +120,44 @@ void render(void);
 //=====================================
 int main()
 {
-	logOpen();
-	init_opengl();
-	srand(static_cast<unsigned>(time(nullptr)));
-	printf("Press T or Up-arrow for thrust.\n");
-	printf("Press Left or Right arrows for rocket thrust vector.\n");
-	// Main loop
-	int done = 0;
-	while (!done)
-	{
-		// Process external events.
-		while (x11.getXPending())
-		{
-			XEvent e = x11.getXNextEvent();
-			x11.check_resize(&e);
-			x11.check_mouse(&e);
-			done = x11.check_keys(&e);
-		}
+    logOpen();
+    init_opengl();
+    srand(static_cast<unsigned>(time(nullptr)));
+    printf("Press T or Up-arrow for thrust.\n");
+    printf("Press Left or Right arrows for rocket thrust vector.\n");
+
+    GameManager gameManager(10); // Adjust the number of platforms as needed
+
+    // Main loop
+    int done = 0;
+    while (!done)
+    {
+        // Process external events.
+        while (x11.getXPending())
+        {
+            XEvent e = x11.getXNextEvent();
+            x11.check_resize(&e);
+            x11.check_mouse(&e);
+            done = x11.check_keys(&e);
+        }
+
 		physics();
 		render();
-		x11.swapBuffers();
-		usleep(400);
-	}
 
-	logClose();
-	return 0;
+        // Update physics for platforms
+        gameManager.updatePhysics();
+
+        // Render the platforms
+        gameManager.render();
+
+        x11.swapBuffers();
+        usleep(400);
+    }
+
+    logClose();
+    return 0;
 }
+
 
 X11_wrapper::~X11_wrapper()
 {
@@ -389,6 +402,8 @@ void render()
 	static Platform random;
 
 	random.draw_platform_random();
+	random.physics_platform();
+
 	// Draw LZ
 	glPushMatrix();
 	glColor3ub(250, 250, 20);
