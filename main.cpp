@@ -28,8 +28,8 @@ typedef float Flt;
 typedef float Vec[3];
 
 //gravity pulling the player straight down
-const float GRAVITY = 0.75;
-//const float GRAVITY = 0.00005;
+// const float GRAVITY = 0.75;
+const float GRAVITY = 0.05;
 #define PI 3.141592653589793 
 const int MAX_BULLETS = 11;
 const int MAXPLATFORMS = 10;
@@ -382,11 +382,14 @@ void physics()
 
     // Check keys pressed now
     if (g.keys[XK_Left])
-        player.vel[0] -= 0.1;
+        // player.vel[0] -= 0.8;
+		player.vel[0] -= 0.1;
     if (g.keys[XK_Right])
-        player.vel[0] += 0.1;
+        // player.vel[0] += 0.8;
+		player.vel[0] += 0.1;
     if (g.keys[XK_Up])
-        player.vel[1] += 0.2;
+        // player.vel[1] += 1.0;
+		player.vel[1] += 0.2;
     if (g.keys[XK_space]) {
    		// Shoot a bullet...
 		if (player.nbullets < MAX_BULLETS) {

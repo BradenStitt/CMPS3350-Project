@@ -1,5 +1,5 @@
 
-all: lander test bradenTest snehalTest sb
+all: lander test bradenTest snehalTest main
 
 lander: lander.cpp 
 	g++ lander.cpp log.cpp bstitt.cpp bruiz.cpp skumar.cpp timers.cpp -Wall -olander -lX11 -lGL -lGLU -lm
@@ -13,9 +13,9 @@ bradenTest: bradenTest.cpp global.cpp bstitt.cpp bstitt.h
 snehalTest: snehalTest.cpp 
 	g++ snehalTest.cpp log.cpp timers.cpp -Wall -osnehalTest -lX11 -lGL -lGLU -lm
 
-sb: sb.cpp global.cpp bstitt.cpp bstitt.h
-	g++ sb.cpp log.cpp timers.cpp global.cpp bstitt.cpp -Wall -osb -lX11 -lGL -lGLU -lm
+main: main.cpp global.cpp bstitt.cpp bstitt.h
+	g++ main.cpp log.cpp timers.cpp global.cpp bstitt.cpp -Wall -omain -lX11 -lGL -lGLU -lm
 
 clean:
-	rm -f lander test bradenTest snehalTest sb
+	rm -f lander test bradenTest snehalTest main
 
