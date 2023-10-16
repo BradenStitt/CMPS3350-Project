@@ -29,9 +29,9 @@ typedef float Vec[3];
 
 //gravity pulling the player straight down
 // const float GRAVITY = 0.75;
-const float GRAVITY = 0.05;
+const float GRAVITY = 0.4;
 #define PI 3.141592653589793 
-const int MAX_BULLETS = 11;
+const int MAX_BULLETS = 5;
 const int MAXPLATFORMS = 10;
 int numPlatforms = 0;
 
@@ -343,6 +343,17 @@ void physics()
     player.pos[1] += player.vel[1];
     player.vel[1] -= GRAVITY;
 
+	// Check for collision with window edges
+	if (player.pos[0] < 0.0) {
+		player.pos[0] += (float)g.xres;
+	}
+	else if (player.pos[0] > (float)g.xres) {
+		player.pos[0] -= (float)g.xres;
+	}
+	// else if (player.pos[1] > (float)g.yres) {
+	// 	player.pos[1] -= (float)g.yres;
+	// }
+
     // Update bullet positions
     struct timespec bt;
     clock_gettime(CLOCK_REALTIME, &bt);
@@ -382,14 +393,14 @@ void physics()
 
     // Check keys pressed now
     if (g.keys[XK_Left])
-        // player.vel[0] -= 0.8;
-		player.vel[0] -= 0.1;
+        player.vel[0] -= 0.8;
+		//player.vel[0] -= 0.1;
     if (g.keys[XK_Right])
-        // player.vel[0] += 0.8;
-		player.vel[0] += 0.1;
+         player.vel[0] += 0.8;
+		//player.vel[0] += 0.1;
     if (g.keys[XK_Up])
-        // player.vel[1] += 1.0;
-		player.vel[1] += 0.2;
+         player.vel[1] += 1.0;
+		//player.vel[1] += 0.2;
     if (g.keys[XK_space]) {
    		// Shoot a bullet...
 		if (player.nbullets < MAX_BULLETS) {
@@ -397,12 +408,13 @@ void physics()
 			timeCopy(&b->time, &bt);
 
 			// Adjust the y-position so it's just above the player with more distance
-			b->pos[1] = player.pos[1] + 30.0f; // Adjust as needed
+			b->pos[1] = 38.0f;
 			// Set bullet velocity to move farther upwards
 			b->vel[0] = 0.0f;
-			b->vel[1] = 0.03f + rnd() * 0.02f; // Adjust for more spread
-			b->color[0] = 1.0f;
-			b->color[1] = 1.0f;
+			b->vel[1] = 8.0f + rnd() * 0.05f; // Adjust for more spread
+			// b->vel[1] = 10.0f; // Adjust as needed
+			b->color[0] = 1.0f; 
+			b->color[1] = 1.0f; 
 			b->color[2] = 1.0f;
 			++player.nbullets;
 		}
