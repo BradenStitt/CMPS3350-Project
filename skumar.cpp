@@ -35,16 +35,16 @@ void Bullet:: physics()
 			timeCopy(&b->time, &bt);
 
 			// Adjust the y-position so it's just above the player with more distance
-			b->pos[1] = player.pos[1] + 30.0f; // Adjust as needed
+			b->pos[1] = 38.0f;
 			// Set bullet velocity to move farther upwards
 			b->vel[0] = 0.0f;
-			b->vel[1] = 0.03f + rnd() * 0.02f; // Adjust for more spread
-			b->color[0] = 1.0f;
-			b->color[1] = 1.0f;
+			b->vel[1] = 8.0f + rnd() * 0.05f; // Adjust for more spread
+			// b->vel[1] = 10.0f; // Adjust as needed
+			b->color[0] = 1.0f; 
+			b->color[1] = 1.0f; 
 			b->color[2] = 1.0f;
 			++player.nbullets;
 		}
-
 		// Clear the space key state to continuously generate bullets
 		g.keys[XK_space] = 0;
 	}
@@ -114,13 +114,28 @@ void Player::physics()
 	pos[0] += vel[0]; 
 	pos[1] += vel[1];
 	vel[1] -= GRAVITY;
+
+	// Check for collision with window edges
+	if (player.pos[0] < 0.0) {
+		player.pos[0] += (float)g.xres;
+	}
+	else if (player.pos[0] > (float)g.xres) {
+		player.pos[0] -= (float)g.xres;
+	}
+	// else if (player.pos[1] > (float)g.yres) {
+	// 	player.pos[1] -= (float)g.yres;
+	// }
 	
-	if (g.keys[XK_Left])
-		vel[0] -= 0.0001;
-	if (g.keys[XK_Right])
-		vel[0] += 0.0001;
-	if (g.keys[XK_Up])
-		vel[1] += 0.0002; 
+	// Check keys pressed now
+    if (g.keys[XK_Left])
+        player.vel[0] -= 0.8;
+		//player.vel[0] -= 0.1;
+    if (g.keys[XK_Right])
+         player.vel[0] += 0.8;
+		//player.vel[0] += 0.1;
+    if (g.keys[XK_Up])
+         player.vel[1] += 1.0;
+		//player.vel[1] += 0.2;
 
 	//check for landing failure...
 	if (pos[1] < 0.0) {
