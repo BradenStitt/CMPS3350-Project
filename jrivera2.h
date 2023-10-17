@@ -9,6 +9,12 @@
 
 class Background {
     public:
-        Display
-    private:
+        Display *dis;
+        Window win;
+        GLXContext glc;
+
+        Background();
+        GLXContext background_display();
+
+    
 }
