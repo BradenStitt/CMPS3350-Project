@@ -346,9 +346,11 @@ void physics()
 	// Check for collision with window edges
 	if (player.pos[0] < 0.0) {
 		player.pos[0] += (float)g.xres;
+		// player.pos[0] = 0.0f;
 	}
 	else if (player.pos[0] > (float)g.xres) {
 		player.pos[0] -= (float)g.xres;
+		// player.pos[0] = (float)g.xres;
 	}
 	// else if (player.pos[1] > (float)g.yres) {
 	// 	player.pos[1] -= (float)g.yres;
@@ -471,10 +473,10 @@ void render()
 
 	// Draw the platform at the specified location
 	platform.draw_platform_fixed(platform.pos[0], platform.pos[1]);
-	static Platform random;
+	//static Platform random;
 
-	random.draw_platform_random();
-	random.physics_platform();
+	//random.draw_platform_random();
+	//random.physics_platform();
 
 	// Draw the platform 2
 	Platform platform2; // Declare an instance of the Platform class
