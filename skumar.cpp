@@ -179,7 +179,7 @@ void dynamic_collision_detection()
 				player.pos[1] = (platform->pos[1]) + platform->height;
 				player.vel[1] = 0.0;
 				player.vel[0] = 0.0;
-				jumpCount = 0;
+				player.jumpCount = 0;
 
 				if (player.angle > 0.0 || player.angle < 0.0) {
 					g.failed_landing = 1;
