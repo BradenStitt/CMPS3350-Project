@@ -72,6 +72,7 @@ class Player {
 	float pos[2];
 	float vel[2];
 	float verts[3][2];
+	int jumpCount;
 	// float thrust;
 	double angle;
 
@@ -94,6 +95,7 @@ class Player {
 		verts[1][1] =  30.0f;
 		verts[2][0] =  10.0f;
 		verts[2][1] =   0.0f;
+		jumpCount = 0;
 		angle = 0.0;
 		// thrust = 0.0f;
 		g.failed_landing = 0;
@@ -343,6 +345,19 @@ void physics()
     player.pos[1] += player.vel[1];
     player.vel[1] -= GRAVITY;
 
+    // Check keys pressed now
+    if (g.keys[XK_Left])
+        player.vel[0] -= 0.8;
+		//player.vel[0] -= 0.1;
+    if (g.keys[XK_Right])
+         player.vel[0] += 0.8;
+		//player.vel[0] += 0.1;
+    if (g.keys[XK_Up])
+		if (player.jumpCount < 2) {
+			player.vel[1] += 4.8;
+			player.jumpCount++;
+		}
+	
 	// Check for collision with window edges
 	if (player.pos[0] < 0.0) {
 		player.pos[0] += (float)g.xres;
@@ -393,16 +408,6 @@ void physics()
         ++i;
     }
 
-    // Check keys pressed now
-    if (g.keys[XK_Left])
-        player.vel[0] -= 0.8;
-		//player.vel[0] -= 0.1;
-    if (g.keys[XK_Right])
-         player.vel[0] += 0.8;
-		//player.vel[0] += 0.1;
-    if (g.keys[XK_Up])
-         player.vel[1] += 1.0;
-		//player.vel[1] += 0.2;
     if (g.keys[XK_space]) {
    		// Shoot a bullet...
 		if (player.nbullets < MAX_BULLETS) {
@@ -413,7 +418,7 @@ void physics()
 			b->pos[1] = 38.0f;
 			// Set bullet velocity to move farther upwards
 			b->vel[0] = 0.0f;
-			b->vel[1] = 8.0f + rnd() * 0.05f; // Adjust for more spread
+			b->vel[1] = 8.0f + rnd() * 0.05f; // Adjust for more spread.
 			// b->vel[1] = 10.0f; // Adjust as needed
 			b->color[0] = 1.0f; 
 			b->color[1] = 1.0f; 
@@ -473,10 +478,6 @@ void render()
 
 	// Draw the platform at the specified location
 	platform.draw_platform_fixed(platform.pos[0], platform.pos[1]);
-	//static Platform random;
-
-	//random.draw_platform_random();
-	//random.physics_platform();
 
 	// Draw the platform 2
 	Platform platform2; // Declare an instance of the Platform class
@@ -512,6 +513,8 @@ void render()
 			player.pos[1] = (pf.pos[1]) + pf.height; 
 			player.vel[1] = 0.0;
 			player.vel[0] = 0.0;
+			player.jumpCount = 0;
+
 			if (player.angle > 0.0 || player.angle < 0.0) {
 				g.failed_landing = 1;
 			}
@@ -528,6 +531,8 @@ void render()
 			player.pos[1] = pf.pos[1] + 50 + pf.height;
 			player.vel[1] = 0.0;
 			player.vel[0] = 0.0;
+			player.jumpCount = 0;
+
 			if (player.angle > 0.0 || player.angle < 0.0) {
 				g.failed_landing = 1;
 			}
@@ -550,6 +555,7 @@ void render()
 				player.pos[1] = (platform->pos[1]) + platform->height;
 				player.vel[1] = 0.0;
 				player.vel[0] = 0.0;
+				player.jumpCount = 0;
 
 				if (player.angle > 0.0 || player.angle < 0.0) {
 					g.failed_landing = 1;

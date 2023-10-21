@@ -101,6 +101,7 @@ void Player:: init()
 	verts[1][1] =  30.0f;
 	verts[2][0] =  10.0f;
 	verts[2][1] =   0.0f;
+	jumpCount = 0;
 	angle = 0.0;
 }
 
@@ -134,8 +135,10 @@ void Player::physics()
          player.vel[0] += 0.8;
 		//player.vel[0] += 0.1;
     if (g.keys[XK_Up])
-         player.vel[1] += 1.0;
-		//player.vel[1] += 0.2;
+		if (player.jumpCount < 2) {
+			player.vel[1] += 4.8;
+			player.jumpCount++;
+		} 
 
 	//check for landing failure...
 	if (pos[1] < 0.0) {
@@ -176,6 +179,7 @@ void dynamic_collision_detection()
 				player.pos[1] = (platform->pos[1]) + platform->height;
 				player.vel[1] = 0.0;
 				player.vel[0] = 0.0;
+				jumpCount = 0;
 
 				if (player.angle > 0.0 || player.angle < 0.0) {
 					g.failed_landing = 1;
