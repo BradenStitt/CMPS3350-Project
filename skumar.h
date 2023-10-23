@@ -36,6 +36,7 @@ class Player {
 	float pos[2];
 	float vel[2];
 	float verts[3][2];
+	int jumpCount;
 	// float thrust;
 	double angle;
 
