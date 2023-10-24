@@ -7,13 +7,15 @@
 #include <cstdlib> // for rand
 #include <GL/gl.h> 
 
+extern int count_physics_function();
+
 class Background {
     public:
         Display *dis;
         Window win;
         GLXContext glc;
 
-        Background();
+        Background()
         GLXContext background_display();
 
     
