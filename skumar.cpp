@@ -22,6 +22,8 @@ extern Global g;
 GameManager gameManager(10);
 Player player;
 
+int renderCount = 0;
+
 Bullet:: Bullet()
 {
 }
@@ -191,4 +193,10 @@ void dynamic_collision_detection()
 			}
 		}
 	}
+}
+
+int count_render_function()
+{
+	renderCount++;
+	return renderCount;
 }
