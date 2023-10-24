@@ -123,17 +123,33 @@ X11_wrapper::~X11_wrapper()
 
 X11_wrapper::X11_wrapper()
 {
-	int w = g.xres, h = g.yres;
-	dpy = XOpenDisplay(NULL);
-	if (dpy == NULL) {
-		cout << "\n\tcannot connect to X server\n" << endl;
-		exit(EXIT_FAILURE);
-	}
-	Window root = DefaultRootWindow(dpy);
-	set_title();
-	glc = create_display(dpy, root);
-	win = create_window(dpy, root, w, h);
-	glXMakeCurrent(dpy, win, glc);
+	GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 32, GLX_DOUBLEBUFFER, None };
+		//GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, None };
+		setup_screen_res(532, 850);
+		dpy = XOpenDisplay(NULL);
+		if(dpy == NULL) {
+			printf("\n\tcannot connect to X server\n\n");
+			exit(EXIT_FAILURE);
+		}
+		Window root = DefaultRootWindow(dpy);
+		XVisualInfo *vi = glXChooseVisual(dpy, 0, att);
+		if(vi == NULL) {
+			printf("\n\tno appropriate visual found\n\n");
+			exit(EXIT_FAILURE);
+		} 
+		Colormap cmap = XCreateColormap(dpy, root, vi->visual, AllocNone);
+		XSetWindowAttributes swa;
+		swa.colormap = cmap;
+		swa.event_mask =
+			ExposureMask | KeyPressMask | KeyReleaseMask | PointerMotionMask |
+			ButtonPressMask | ButtonReleaseMask |
+			StructureNotifyMask | SubstructureNotifyMask;
+		win = XCreateWindow(dpy, root, 0, 0, g.xres, g.yres, 0,
+								vi->depth, InputOutput, vi->visual,
+								CWColormap | CWEventMask, &swa);
+		set_title();
+		glc = glXCreateContext(dpy, vi, NULL, GL_TRUE);
+		glXMakeCurrent(dpy, win, glc);
 }
 
 void X11_wrapper::set_title()

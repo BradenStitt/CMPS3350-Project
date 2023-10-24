@@ -49,7 +49,9 @@ GLXContext Background::create_display(Display *dis, Window root) //creates a dis
 		PointerMotionMask |
 		StructureNotifyMask | SubstructureNotifyMask;
 
-    return glXCreateContext(dis, vi, NULL, GL_TRUE);
+	glc = glXCreateContext(dis, vi, NULL, GL_TRUE);
+
+	return glc;
 	
 }
 
