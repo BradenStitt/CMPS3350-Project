@@ -20,4 +20,4 @@ class Background {
         void background_display();
         int count_physics_function(int count);
 
-}
+};
