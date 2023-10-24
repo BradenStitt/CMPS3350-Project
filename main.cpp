@@ -323,7 +323,7 @@ void init_opengl(void)
 
 void physics()
 {
-	count_physics_function(physics_count);
+	physics_count = count_physics_function(physics_count);
     // Player physics
     if (g.failed_landing)
         return;

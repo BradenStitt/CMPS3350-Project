@@ -12,6 +12,7 @@ class Background {
         Display *dis;
         Window win;
         GLXContext glc;
+        int count;
 
         Background();
         GLXContext create_display(Display *dis, Window root);
