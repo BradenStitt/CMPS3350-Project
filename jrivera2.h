@@ -15,7 +15,7 @@ class Background {
         Window win;
         GLXContext glc;
 
-        Background()
+        Background();
         GLXContext background_display();
 
     
