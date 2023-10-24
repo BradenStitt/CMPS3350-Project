@@ -35,9 +35,6 @@ typedef float Flt;
 int numPlatforms = 0;
 int physics_count = 0;
 
-// extern double timeDiff(struct timespec *start, struct timespec *end);
-// extern void timeCopy(struct timespec *dest, struct timespec *source);
-
 class Platform2 {
 	//landing zone
 	public:
