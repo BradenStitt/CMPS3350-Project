@@ -3,6 +3,8 @@
  * Created:   09-25-2023
  * 
  **/
+#ifndef JRIVERA_H
+#define JRIVERA_H
 
 #include <cstdlib> // for rand
 #include <GL/gl.h> 
@@ -21,3 +23,4 @@ class Background {
         int count_physics_function(int count);
 
 };
+#endif
