@@ -192,3 +192,9 @@ void dynamic_collision_detection()
 		}
 	}
 }
+
+int count_render_function()
+{
+	renderCount++;
+	return renderCount;
+}
