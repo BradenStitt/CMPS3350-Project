@@ -6,7 +6,9 @@
 
 #include <iostream>
 #include <cmath>
-#include <GL/gl.h>
+#include <GL/glx.h>
+#include <X11/Xlib.h>
+#include <X11/keysym.h>
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
@@ -26,25 +28,27 @@ extern Global g;
 
 int physics_count = 0;
 
-Background::background() {
+Background::Background() {
+
+}
+Background::~Background() {
 
 }
 
 GLXContext background_display(Display *dis, Window root)
 {
     GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
-	int w = g.xres, h = g.yres;
     if (dis == NULL) {
 		cout << "\n\tcannot connect to X server\n" << endl;
 		exit(EXIT_FAILURE);
 	}
-	XVisualInfo *vi = glXChooseVisual(dis, 0, att);
+	vi = glXChooseVisual(dis, 0, att);
 	if (vi == NULL) {
 		cout << "\n\tno appropriate visual found\n" << endl;
 		exit(EXIT_FAILURE);
 	} 
 	Colormap cmap = XCreateColormap(dis, root, vi->visual, AllocNone);
-	XSetWindowAttributes swa;
+	
 	swa.colormap = cmap;
 	swa.event_mask =
 		ExposureMask | KeyPressMask | KeyReleaseMask |

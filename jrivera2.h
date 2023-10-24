@@ -5,7 +5,9 @@
  **/
 
 #include <cstdlib> // for rand
-#include <GL/gl.h> 
+#include <GL/glx.h> 
+#include <X11/Xlib.h>
+#include <X11/keysym.h>
 
 extern int count_physics_function();
 
@@ -14,9 +16,14 @@ class Background {
         Display *dis;
         Window win;
         GLXContext glc;
+        XVisualInfo *vi;
+        XSetWindowAttributes swa;
 
         Background();
-        GLXContext background_display();
+        ~Background();
+        GLXContext background_display(Display *dis, Window root);
+        Window create_window(Display *dis, Window root, int w, int h);
+
 
     
 };
