@@ -12,7 +12,7 @@
 #include "global.h"
 #include "bstitt.h"
 #include "jrivera2.h"
-// #include "skumar.h"
+#include "skumar.h"
 #include <vector>
 #include <chrono>
 #include <thread>
@@ -628,6 +628,7 @@ void render()
 		r.center = 0;
 		ggprint8b(&r, 20, 0x0055ff55, "Nerd Stats...");
 		ggprint8b(&r, 16, 0x00ffff00, "Sec since mouse moved: %i", time_since_mouse_moved(true));
+		ggprint8b(&r, 16, 0x00ffff00, "n render calls: %i", count_render_function());
 
 	}
 	glPopMatrix();

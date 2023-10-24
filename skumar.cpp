@@ -22,6 +22,8 @@ extern Global g;
 GameManager gameManager(10);
 Player player;
 
+int renderCount = 0;
+
 Bullet:: Bullet()
 {
 }
