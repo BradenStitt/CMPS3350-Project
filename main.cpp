@@ -125,7 +125,6 @@ X11_wrapper::X11_wrapper()
 {
 	GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 32, GLX_DOUBLEBUFFER, None };
 		//GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, None };
-		setup_screen_res(532, 850);
 		dpy = XOpenDisplay(NULL);
 		if(dpy == NULL) {
 			printf("\n\tcannot connect to X server\n\n");
@@ -329,38 +328,38 @@ void physics()
 
 void render()
 {
-	// glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT);
 
-	// //Draw Grid
-	// glPushMatrix();
-	// glBegin(GL_QUADS); 
-    // //Set the background color of the grid to black
-	// glColor3ub(0, 0, 0); // Set the vertex color to black
-	// //Set the background color of the grid to off-white
-    // // glColor3ub(240, 240, 240);
-	background_display();
+	//Draw Grid
+	glPushMatrix();
+	glBegin(GL_QUADS); 
+    //Set the background color of the grid to black
+	glColor3ub(0, 0, 0); // Set the vertex color to black
+	//Set the background color of the grid to off-white
+    // glColor3ub(240, 240, 240);
+	//background_display();
 
-    // glVertex2i(0, 0);
-    // glVertex2i(g.xres, 0);
-    // glVertex2i(g.xres, g.yres);
-    // glVertex2i(0, g.yres);
-    // //Set the color of the grid lines to gray
-	// glColor3ub(90, 90, 90); // Set the vertex color to gray
-    // // glColor3ub(255, 150, 50); // Set the vertex color to orange
-    // for (int i = 0; i <= g.xres; i += 20) {
-    //     glBegin(GL_LINES);
-    //         glVertex2i(i, 0);
-    //         glVertex2i(i, g.yres);
-    //     glEnd();
-    // }
-    // for (int i = 0; i <= g.yres; i += 20) {
-    //     glBegin(GL_LINES);
-    //         glVertex2i(0, i);
-    //         glVertex2i(g.xres, i);
-    //     glEnd();
-    // }
-	// glEnd();
-	// glPopMatrix();
+    glVertex2i(0, 0);
+    glVertex2i(g.xres, 0);
+    glVertex2i(g.xres, g.yres);
+    glVertex2i(0, g.yres);
+    //Set the color of the grid lines to gray
+	glColor3ub(90, 90, 90); // Set the vertex color to gray
+    // glColor3ub(255, 150, 50); // Set the vertex color to orange
+    for (int i = 0; i <= g.xres; i += 20) {
+        glBegin(GL_LINES);
+            glVertex2i(i, 0);
+            glVertex2i(i, g.yres);
+        glEnd();
+    }
+    for (int i = 0; i <= g.yres; i += 20) {
+        glBegin(GL_LINES);
+            glVertex2i(0, i);
+            glVertex2i(g.xres, i);
+        glEnd();
+    }
+	glEnd();
+	glPopMatrix();
 
 	// Draw the platform
 	Platform platform; // Declare an instance of the Platform class
