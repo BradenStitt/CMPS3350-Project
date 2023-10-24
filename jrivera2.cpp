@@ -24,7 +24,7 @@ using namespace std;
 
 extern Global g;
 
-Background::background() {
+Background::Background() {
 
 }
 
