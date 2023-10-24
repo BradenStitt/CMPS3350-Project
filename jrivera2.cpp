@@ -14,6 +14,8 @@
 #include <ctime>
 #include <cmath>
 #include <vector>
+#include <X11/Xlib.h>
+#include <X11/keysym.h>
 #include "defs.h"
 #include "log.h"
 #include "bstitt.h"

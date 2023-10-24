@@ -8,6 +8,8 @@
 
 #include <cstdlib> // for rand
 #include <GL/gl.h> 
+#include <X11/Xlib.h>
+#include <X11/keysym.h>
 
 class Background {
     public:
