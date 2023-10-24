@@ -16,6 +16,9 @@ class Background {
         int count;
 
         Background();
+        ~Background();
+        GLXContext create_display(Display *dis, Window root);
+        Window create_window(Display *dis, Window root, int w, int h);
         void background_display();
         int count_physics_function(int count);
 

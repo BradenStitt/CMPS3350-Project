@@ -28,39 +28,43 @@ Background::Background() {
 
 }
 
-// GLXContext Background::create_display(Display *dis, Window root) //creates a display
-// {
-//     GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
-//     if (dis == NULL) {
-// 		cout << "\n\tcannot connect to X server\n" << endl;
-// 		exit(EXIT_FAILURE);
-// 	}
-// 	XVisualInfo *vi = glXChooseVisual(dis, 0, att);
-// 	if (vi == NULL) {
-// 		cout << "\n\tno appropriate visual found\n" << endl;
-// 		exit(EXIT_FAILURE);
-// 	} 
-// 	Colormap cmap = XCreateColormap(dis, root, vi->visual, AllocNone);
-// 	XSetWindowAttributes swa;
-// 	swa.colormap = cmap;
-// 	swa.event_mask =
-// 		ExposureMask | KeyPressMask | KeyReleaseMask |
-// 		ButtonPress | ButtonReleaseMask |
-// 		PointerMotionMask |
-// 		StructureNotifyMask | SubstructureNotifyMask;
+Background::~Background() {
 
-// 	glc = glXCreateContext(dis, vi, NULL, GL_TRUE);
+}
 
-// 	return glc;
+GLXContext Background::create_display(Display *dis, Window root) //creates a display
+{
+    GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
+    if (dis == NULL) {
+		cout << "\n\tcannot connect to X server\n" << endl;
+		exit(EXIT_FAILURE);
+	}
+	XVisualInfo *vi = glXChooseVisual(dis, 0, att);
+	if (vi == NULL) {
+		cout << "\n\tno appropriate visual found\n" << endl;
+		exit(EXIT_FAILURE);
+	} 
+	Colormap cmap = XCreateColormap(dis, root, vi->visual, AllocNone);
+	XSetWindowAttributes swa;
+	swa.colormap = cmap;
+	swa.event_mask =
+		ExposureMask | KeyPressMask | KeyReleaseMask |
+		ButtonPress | ButtonReleaseMask |
+		PointerMotionMask |
+		StructureNotifyMask | SubstructureNotifyMask;
+
+	glc = glXCreateContext(dis, vi, NULL, GL_TRUE);
+
+	return glc;
 	
-// }
+}
 
-// Window Background::create_window(Display *dis, Window root, int w, int h) //creates a Window
-// {
-//     win = XCreateWindow(dis, root, 0, 0, w, h, 0, vi->depth,
-// 		InputOutput, vi->visual, CWColormap | CWEventMask, &swa);
-//         return win;
-// }
+Window Background::create_window(Display *dis, Window root, int w, int h) //creates a Window
+{
+    win = XCreateWindow(dis, root, 0, 0, w, h, 0, vi->depth,
+		InputOutput, vi->visual, CWColormap | CWEventMask, &swa);
+        return win;
+}
 
 void Background::background_display() //sets the background
 {

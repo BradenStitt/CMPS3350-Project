@@ -24,6 +24,7 @@ Global g;
 GameManager gameManager(10); // Adjust the number of platforms as needed
 Player player;
 Bullet bullet;
+Background window;
 
 //floating point random numbers
 typedef float Flt;
@@ -123,31 +124,19 @@ X11_wrapper::~X11_wrapper()
 
 X11_wrapper::X11_wrapper()
 {
-	GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 32, GLX_DOUBLEBUFFER, None };
+	//GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 32, GLX_DOUBLEBUFFER, None };
 		//GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, None };
+		int w = g.xres, h = g.yres
 		dpy = XOpenDisplay(NULL);
 		if(dpy == NULL) {
 			printf("\n\tcannot connect to X server\n\n");
 			exit(EXIT_FAILURE);
 		}
 		Window root = DefaultRootWindow(dpy);
-		XVisualInfo *vi = glXChooseVisual(dpy, 0, att);
-		if(vi == NULL) {
-			printf("\n\tno appropriate visual found\n\n");
-			exit(EXIT_FAILURE);
-		} 
-		Colormap cmap = XCreateColormap(dpy, root, vi->visual, AllocNone);
-		XSetWindowAttributes swa;
-		swa.colormap = cmap;
-		swa.event_mask =
-			ExposureMask | KeyPressMask | KeyReleaseMask | PointerMotionMask |
-			ButtonPressMask | ButtonReleaseMask |
-			StructureNotifyMask | SubstructureNotifyMask;
-		win = XCreateWindow(dpy, root, 0, 0, g.xres, g.yres, 0,
-								vi->depth, InputOutput, vi->visual,
-								CWColormap | CWEventMask, &swa);
+		
 		set_title();
-		glc = glXCreateContext(dpy, vi, NULL, GL_TRUE);
+		glc = window.create_display(dpy, root);
+		win = window.create_window(dpy, root, w, h);
 		glXMakeCurrent(dpy, win, glc);
 }
 
@@ -337,7 +326,7 @@ void render()
 	glColor3ub(0, 0, 0); // Set the vertex color to black
 	//Set the background color of the grid to off-white
     // glColor3ub(240, 240, 240);
-	//background_display();
+	window.background_display();
 
     glVertex2i(0, 0);
     glVertex2i(g.xres, 0);
