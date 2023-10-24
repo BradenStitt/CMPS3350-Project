@@ -11,6 +11,7 @@
 #include "log.h"
 #include "global.h"
 #include "bstitt.h"
+#include "jrivera2.h"
 // #include "skumar.h"
 #include <vector>
 #include <chrono>
