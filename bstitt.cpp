@@ -161,3 +161,29 @@ void GameManager::render() {
     }
 }
 
+int total_running_time(const bool running) {
+    static int first_run = 1;
+    static int start_time;
+    if (first_run) {
+        start_time = time(NULL);
+        start_time = 0;
+    }
+    if (running) {
+        return time(NULL) - start_time;
+    }
+    return 0;
+}
+
+int time_since_mouse_moved(const bool get) {
+    static int first_run = 1;
+    static int last_time;
+    if (first_run) {
+        first_run = 0;
+        last_time = time(NULL);
+    }
+    if (get) {
+        return time(NULL) - last_time;
+    }
+    last_time = time(NULL);
+    return 0;
+}

@@ -8,12 +8,11 @@ extern double timeDiff(struct timespec *start, struct timespec *end);
 extern void timeCopy(struct timespec *dest, struct timespec *source);
 
 #define rnd() (float)rand() / (float)RAND_MAX
-const float GRAVITY = 0.4; 
-const int MAX_BULLETS = 5;
+const float GRAVITY = 0.00005; 
+const int MAX_BULLETS = 11;
 typedef float Vec[3];
 
 void dynamic_collision_detection();
-int count_render_function();
 
 class Bullet {
 	public:

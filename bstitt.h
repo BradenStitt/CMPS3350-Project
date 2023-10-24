@@ -8,6 +8,7 @@
 using namespace std;
 
 extern void display_border(int xres, int yres);
+extern int time_since_mouse_moved(const bool get);
 
 class Platform {
 public:

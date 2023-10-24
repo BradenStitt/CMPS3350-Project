@@ -19,10 +19,8 @@ using namespace std;
 struct timespec bt;
 
 extern Global g;
-extern GameManager gameManager;
-extern Player player;
-
-int renderCount = 0;
+GameManager gameManager(10);
+Player player;
 
 Bullet:: Bullet()
 {
@@ -152,7 +150,7 @@ void Player::physics()
 void Player::draw_player()
 {
     glPushMatrix();
-	glColor3ub(255, 255, 255);
+	glColor3ub(0, 0, 0); 
 	if (g.failed_landing)
 		glColor3ub(250, 0, 0);
 	if (g.landed)
@@ -193,10 +191,4 @@ void dynamic_collision_detection()
 			}
 		}
 	}
-}
-
-int count_render_function()
-{
-	renderCount++;
-	return renderCount;
 }

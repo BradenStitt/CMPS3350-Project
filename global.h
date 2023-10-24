@@ -9,6 +9,8 @@ public:
     unsigned int keys[65536];
     int failed_landing;
     int test_mode;
+    int xmouse, ymouse;
+    int showNerdStats;
     Global();
 };
 
