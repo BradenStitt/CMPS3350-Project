@@ -6,17 +6,15 @@
 
 #include <iostream>
 #include <cmath>
-#include <GL/gl.h>
+#include <GL/glx.h>
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
 #include <unistd.h>
 #include <ctime>
-#include <cmath>
 #include <vector>
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
-#include "defs.h"
 #include "log.h"
 #include "bstitt.h"
 #include "jrivera2.h"
