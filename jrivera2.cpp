@@ -61,7 +61,7 @@ Window Background::create_window(Display *dis, Window root) //creates a Window
         return win;
 }
 
-void Background::background_display()
+void Background::background_display() //sets the background
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 	//Draw Sky
@@ -74,6 +74,12 @@ void Background::background_display()
 		glColor3ub(250, 200,  90); glVertex2i(g.xres, 0);
 	glEnd();
 	glPopMatrix();
+}
+
+int count_physics_function(int count)
+{
+	count++;
+	return count;
 }
 
 

@@ -34,6 +34,7 @@ const float GRAVITY = 0.4;
 const int MAX_BULLETS = 5;
 const int MAXPLATFORMS = 10;
 int numPlatforms = 0;
+int physics_count = 0;
 
 extern double timeDiff(struct timespec *start, struct timespec *end);
 extern void timeCopy(struct timespec *dest, struct timespec *source);
@@ -322,6 +323,7 @@ void init_opengl(void)
 
 void physics()
 {
+	count_physics_function(physics_count);
     // Player physics
     if (g.failed_landing)
         return;
