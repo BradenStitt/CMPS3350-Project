@@ -127,7 +127,7 @@ X11_wrapper::X11_wrapper()
 	//GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 32, GLX_DOUBLEBUFFER, None };
 		//GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, None };
 		int w = g.xres, h = g.yres
-		dpy = XOpenDisplay(NULL);
+		x11.dpy = XOpenDisplay(NULL);
 		if(dpy == NULL) {
 			printf("\n\tcannot connect to X server\n\n");
 			exit(EXIT_FAILURE);
