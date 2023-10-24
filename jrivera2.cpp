@@ -24,6 +24,8 @@ using namespace std;
 
 extern Global g;
 
+int physics_count = 0;
+
 Background::background() {
 
 }
@@ -59,5 +61,11 @@ Window create_window(Display *dis, Window root)
     win = XCreateWindow(dis, root, 0, 0, w, h, 0, vi->depth,
 		InputOutput, vi->visual, CWColormap | CWEventMask, &swa);
         return win;
+}
+
+int count_physics_function()
+{
+	physics_count++;
+	return physics_count;
 }
 

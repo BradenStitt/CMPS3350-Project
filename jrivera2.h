@@ -17,4 +17,4 @@ class Background {
         GLXContext background_display();
 
     
-}
+};
