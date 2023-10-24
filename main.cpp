@@ -13,6 +13,7 @@
 #include "bstitt.h"
 #include "skumar.h"
 #include "jrivera2.h"
+#include "bruiz.h"
 #include <vector>
 #include <chrono>
 #include <thread>
