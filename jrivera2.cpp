@@ -39,13 +39,13 @@ GLXContext Background::create_display(Display *dis, Window root) //creates a dis
 		cout << "\n\tcannot connect to X server\n" << endl;
 		exit(EXIT_FAILURE);
 	}
-	XVisualInfo *vi = glXChooseVisual(dis, 0, att);
+	vi = glXChooseVisual(dis, 0, att);
 	if (vi == NULL) {
 		cout << "\n\tno appropriate visual found\n" << endl;
 		exit(EXIT_FAILURE);
 	} 
 	Colormap cmap = XCreateColormap(dis, root, vi->visual, AllocNone);
-	XSetWindowAttributes swa;
+	//XSetWindowAttributes swa;
 	swa.colormap = cmap;
 	swa.event_mask =
 		ExposureMask | KeyPressMask | KeyReleaseMask |

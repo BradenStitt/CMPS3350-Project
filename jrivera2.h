@@ -16,6 +16,8 @@ class Background {
         GLXContext glc;
         Display *dis;
         Window win;
+        XVisualInfo *vi;
+        XSetWindowAttributes swa;
         int count;
 
         Background();
