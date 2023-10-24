@@ -184,6 +184,7 @@ X11_wrapper::~X11_wrapper()
 
 X11_wrapper::X11_wrapper()
 {
+	int w = g.xres, h = g.yres;
 	dpy = XOpenDisplay(NULL);
 	if (dpy == NULL) {
 		cout << "\n\tcannot connect to X server\n" << endl;
@@ -192,7 +193,7 @@ X11_wrapper::X11_wrapper()
 	Window root = DefaultRootWindow(dpy);
 	set_title();
 	glc = create_display(dpy, root);
-	win = create_window(dpy, root);
+	win = create_window(dpy, root, w, h);
 	glXMakeCurrent(dpy, win, glc);
 }
 

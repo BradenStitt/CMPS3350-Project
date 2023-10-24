@@ -31,7 +31,6 @@ Background::background() {
 GLXContext Background::create_display(Display *dis, Window root) //creates a display
 {
     GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
-	int w = g.xres, h = g.yres;
     if (dis == NULL) {
 		cout << "\n\tcannot connect to X server\n" << endl;
 		exit(EXIT_FAILURE);
@@ -54,7 +53,7 @@ GLXContext Background::create_display(Display *dis, Window root) //creates a dis
 	
 }
 
-Window Background::create_window(Display *dis, Window root) //creates a Window
+Window Background::create_window(Display *dis, Window root, int w, int h) //creates a Window
 {
     win = XCreateWindow(dis, root, 0, 0, w, h, 0, vi->depth,
 		InputOutput, vi->visual, CWColormap | CWEventMask, &swa);
