@@ -30,8 +30,41 @@ Bullet:: Bullet()
 
 void Bullet:: physics()
 {
+	struct timespec bt;
+	clock_gettime(CLOCK_REALTIME, &bt);
+
+	for (int i = player.nbullets - 1; i >= 0; i--) {
+		Bullet *b = &player.barr[i];
+		// How long has the bullet been alive?
+		double ts = timeDiff(&b->time, &bt);
+
+		if (ts > 2.5) {
+			// Time to delete the bullet.
+			if (i < player.nbullets - 1) {
+				// Swap the current bullet with the last one and decrease the bullet count.
+				memcpy(&player.barr[i], &player.barr[player.nbullets - 1], sizeof(Bullet));
+			}
+			player.nbullets--;
+		} else {
+			// Move the bullet
+			b->pos[0] += b->vel[0];
+			b->pos[1] += b->vel[1];
+
+			// Check for collision with window edges
+			if (b->pos[0] < 0.0) {
+				b->pos[0] += (float)g.xres;
+			} else if (b->pos[0] > (float)g.xres) {
+				b->pos[0] -= (float)g.xres;
+			} else if (b->pos[1] < 0.0) {
+				b->pos[1] += (float)g.yres;
+			} else if (b->pos[1] > (float)g.yres) {
+				b->pos[1] -= (float)g.yres;
+			}
+		}
+	}
+
 	if (g.keys[XK_space]) {
-   		// Shoot a bullet...
+		// Shoot a bullet...
 		if (player.nbullets < MAX_BULLETS) {
 			Bullet* b = &player.barr[player.nbullets];
 			timeCopy(&b->time, &bt);
@@ -49,7 +82,8 @@ void Bullet:: physics()
 		}
 		// Clear the space key state to continuously generate bullets
 		g.keys[XK_space] = 0;
-	}
+	}	
+	
 }
 
 // Draws the bullet
@@ -104,6 +138,7 @@ void Player:: init()
 	verts[2][0] =  10.0f;
 	verts[2][1] =   0.0f;
 	jumpCount = 0;
+	g.failed_landing = 0;
 	angle = 0.0;
 }
 
@@ -118,30 +153,29 @@ void Player::physics()
 	pos[1] += vel[1];
 	vel[1] -= GRAVITY;
 
-	// Check for collision with window edges
-	if (player.pos[0] < 0.0) {
-		player.pos[0] += (float)g.xres;
-	}
-	else if (player.pos[0] > (float)g.xres) {
-		player.pos[0] -= (float)g.xres;
-	}
-	// else if (player.pos[1] > (float)g.yres) {
-	// 	player.pos[1] -= (float)g.yres;
-	// }
-	
 	// Check keys pressed now
     if (g.keys[XK_Left])
-        player.vel[0] -= 0.8;
+        vel[0] -= 0.8;
 		//player.vel[0] -= 0.1;
     if (g.keys[XK_Right])
-         player.vel[0] += 0.8;
+         vel[0] += 0.8;
 		//player.vel[0] += 0.1;
     if (g.keys[XK_Up])
-		if (player.jumpCount < 2) {
-			player.vel[1] += 4.8;
-			player.jumpCount++;
+		if (jumpCount < 2) {
+			vel[1] += 4.8;
+			jumpCount++;
 		} 
 
+	// Check for collision with window edges
+	if (pos[0] < 0.0) {
+		pos[0] += (float)g.xres;
+		// player.pos[0] = 0.0f;
+	}
+	else if (pos[0] > (float)g.xres) {
+		pos[0] -= (float)g.xres;
+		// player.pos[0] = (float)g.xres;
+	}
+	
 	//check for landing failure...
 	if (pos[1] < 0.0) {
 		g.failed_landing = 1;
