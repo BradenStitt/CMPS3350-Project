@@ -28,7 +28,7 @@ Background::background() {
 
 }
 
-GLXContext background_display(Display *dis, Window root)
+GLXContext Background::create_display(Display *dis, Window root) //creates a display
 {
     GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
 	int w = g.xres, h = g.yres;
@@ -54,10 +54,27 @@ GLXContext background_display(Display *dis, Window root)
 	
 }
 
-Window create_window(Display *dis, Window root)
+Window Background::create_window(Display *dis, Window root) //creates a Window
 {
     win = XCreateWindow(dis, root, 0, 0, w, h, 0, vi->depth,
 		InputOutput, vi->visual, CWColormap | CWEventMask, &swa);
         return win;
 }
+
+void Background::background_display()
+{
+	glClear(GL_COLOR_BUFFER_BIT);
+	//Draw Sky
+	glPushMatrix();
+	glBegin(GL_QUADS);
+//		//Each vertex has a color.
+		glColor3ub(250, 200,  90); glVertex2i(0, 0);
+		glColor3ub(100,  80, 200); glVertex2i(0, g.yres);
+		glColor3ub(100,  80, 200); glVertex2i(g.xres, g.yres);
+		glColor3ub(250, 200,  90); glVertex2i(g.xres, 0);
+	glEnd();
+	glPopMatrix();
+}
+
+
 
