@@ -11,35 +11,29 @@
 #include "log.h"
 #include "global.h"
 #include "bstitt.h"
-#include "jrivera2.h"
 #include "skumar.h"
+#include "jrivera2.h"
 #include <vector>
 #include <chrono>
 #include <thread>
-#include "fonts.h"
 
 using namespace std;
 
 // Define Classes
 Global g;
-Rect r;
 GameManager gameManager(10); // Adjust the number of platforms as needed
+Player player;
+Bullet bullet;
 
 //floating point random numbers
-#define rnd() (float)rand() / (float)RAND_MAX
 typedef float Flt;
-typedef float Vec[3];
 
 //gravity pulling the player straight down
 // const float GRAVITY = 0.75;
-const float GRAVITY = 0.4;
 #define PI 3.141592653589793 
-const int MAX_BULLETS = 5;
-const int MAXPLATFORMS = 10;
+// const int MAXPLATFORMS = 10;
 int numPlatforms = 0;
-
-extern double timeDiff(struct timespec *start, struct timespec *end);
-extern void timeCopy(struct timespec *dest, struct timespec *source);
+int physics_count = 0;
 
 class Platform2 {
 	//landing zone
@@ -55,60 +49,6 @@ class Platform2 {
 	}
 } pf;
 
-class Bullet {
-	public:
-		Vec pos;
-		Vec vel;
-		float color[3];
-		struct timespec time;
-	public:
-		Bullet() { }
-};
-
-class Player {
-	//the player rocket
-	public:
-	Bullet *barr;
-	int nbullets;
-	struct timespec bulletTimer;
-
-	float pos[2];
-	float vel[2];
-	float verts[3][2];
-	int jumpCount;
-	// float thrust;
-	double angle;
-
-	Player() {
-		init();
-		barr = new Bullet[MAX_BULLETS];
-		nbullets = 0;
-		clock_gettime(CLOCK_REALTIME, &bulletTimer);
-	}
-	void init() {
-
-		pos[0] = 100.0f; 
-		pos[1] = 40.0f; 
-
-		vel[0] = vel[1] = 0.0f;
-		//3 vertices of triangle-shaped rocket player
-		verts[0][0] = -10.0f;
-		verts[0][1] =   0.0f;
-		verts[1][0] =   0.0f;
-		verts[1][1] =  30.0f;
-		verts[2][0] =  10.0f;
-		verts[2][1] =   0.0f;
-		jumpCount = 0;
-		angle = 0.0;
-		// thrust = 0.0f;
-		g.failed_landing = 0;
-	}
-
-	~Player() {
-		delete [] barr;
-	}
-	
-} player;
 
 class X11_wrapper {
 private:
@@ -183,32 +123,32 @@ X11_wrapper::~X11_wrapper()
 
 X11_wrapper::X11_wrapper()
 {
-	GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
-	int w = g.xres, h = g.yres;
-	dpy = XOpenDisplay(NULL);
-	if (dpy == NULL) {
-		cout << "\n\tcannot connect to X server\n" << endl;
-		exit(EXIT_FAILURE);
-	}
-	Window root = DefaultRootWindow(dpy);
-	XVisualInfo *vi = glXChooseVisual(dpy, 0, att);
-	if (vi == NULL) {
-		cout << "\n\tno appropriate visual found\n" << endl;
-		exit(EXIT_FAILURE);
-	} 
-	Colormap cmap = XCreateColormap(dpy, root, vi->visual, AllocNone);
-	XSetWindowAttributes swa;
-	swa.colormap = cmap;
-	swa.event_mask =
-		ExposureMask | KeyPressMask | KeyReleaseMask |
-		ButtonPress | ButtonReleaseMask |
-		PointerMotionMask |
-		StructureNotifyMask | SubstructureNotifyMask;
-	win = XCreateWindow(dpy, root, 0, 0, w, h, 0, vi->depth,
-		InputOutput, vi->visual, CWColormap | CWEventMask, &swa);
-	set_title();
-	glc = glXCreateContext(dpy, vi, NULL, GL_TRUE);
-	glXMakeCurrent(dpy, win, glc);
+	GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 32, GLX_DOUBLEBUFFER, None };
+		//GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, None };
+		dpy = XOpenDisplay(NULL);
+		if(dpy == NULL) {
+			printf("\n\tcannot connect to X server\n\n");
+			exit(EXIT_FAILURE);
+		}
+		Window root = DefaultRootWindow(dpy);
+		XVisualInfo *vi = glXChooseVisual(dpy, 0, att);
+		if(vi == NULL) {
+			printf("\n\tno appropriate visual found\n\n");
+			exit(EXIT_FAILURE);
+		} 
+		Colormap cmap = XCreateColormap(dpy, root, vi->visual, AllocNone);
+		XSetWindowAttributes swa;
+		swa.colormap = cmap;
+		swa.event_mask =
+			ExposureMask | KeyPressMask | KeyReleaseMask | PointerMotionMask |
+			ButtonPressMask | ButtonReleaseMask |
+			StructureNotifyMask | SubstructureNotifyMask;
+		win = XCreateWindow(dpy, root, 0, 0, g.xres, g.yres, 0,
+								vi->depth, InputOutput, vi->visual,
+								CWColormap | CWEventMask, &swa);
+		set_title();
+		glc = glXCreateContext(dpy, vi, NULL, GL_TRUE);
+		glXMakeCurrent(dpy, win, glc);
 }
 
 void X11_wrapper::set_title()
@@ -267,10 +207,6 @@ void X11_wrapper::check_mouse(XEvent *e)
 {
 	static int savex = 0;
 	static int savey = 0;
-	const bool running = true;
-	bool movement = false;
-	int time_start = 0;
-
 
 	//Weed out non-mouse events
 	if (e->type != ButtonRelease &&
@@ -279,19 +215,18 @@ void X11_wrapper::check_mouse(XEvent *e)
 		//This is not a mouse event that we care about.
 		return;
 	}
+	//
 	if (e->type == ButtonRelease) {
 		return;
 	}
 	if (e->type == ButtonPress) {
 		if (e->xbutton.button==1) {
 			//Left button was pressed.
-			time_since_mouse_moved(false);
 			//int y = g.yres - e->xbutton.y;
 			return;
 		}
 		if (e->xbutton.button==3) {
 			//Right button was pressed.
-			time_since_mouse_moved(false);
 			return;
 		}
 	}
@@ -300,8 +235,9 @@ void X11_wrapper::check_mouse(XEvent *e)
 		if (savex != e->xbutton.x || savey != e->xbutton.y) {
 			savex = e->xbutton.x;
 			savey = e->xbutton.y;
-			time_since_mouse_moved(false);
 			//Code placed here will execute whenever the mouse moves.
+
+
 		}
 	}
 }
@@ -322,9 +258,6 @@ int X11_wrapper::check_keys(XEvent *e)
 				player.init();
 				g.landed = 0;
 				break;
-			case XK_s:
-				g.showNerdStats = !g.showNerdStats;
-				break;
 			case XK_Escape:
 				//Escape key was pressed
 				return 1;
@@ -344,46 +277,13 @@ void init_opengl(void)
 	glOrtho(0, g.xres, 0, g.yres, -1, 1);
 	//Set the screen background color
 	glClearColor(0.1, 0.1, 0.1, 1.0); 
-
-	// Do this to allow fonts
-	glEnable(GL_TEXTURE_2D);
-	initialize_fonts();
 }
 
 void physics()
 {
+	// physics_count = count_physics_function(physics_count);
     // Player physics
-    if (g.failed_landing)
-        return;
-    player.pos[0] += player.vel[0];
-    player.pos[1] += player.vel[1];
-    player.vel[1] -= GRAVITY;
-
-    // Check keys pressed now
-    if (g.keys[XK_Left])
-        player.vel[0] -= 0.8;
-		//player.vel[0] -= 0.1;
-    if (g.keys[XK_Right])
-         player.vel[0] += 0.8;
-		//player.vel[0] += 0.1;
-    if (g.keys[XK_Up])
-		if (player.jumpCount < 2) {
-			player.vel[1] += 4.8;
-			player.jumpCount++;
-		}
-	
-	// Check for collision with window edges
-	if (player.pos[0] < 0.0) {
-		player.pos[0] += (float)g.xres;
-		// player.pos[0] = 0.0f;
-	}
-	else if (player.pos[0] > (float)g.xres) {
-		player.pos[0] -= (float)g.xres;
-		// player.pos[0] = (float)g.xres;
-	}
-	// else if (player.pos[1] > (float)g.yres) {
-	// 	player.pos[1] -= (float)g.yres;
-	// }
+	player.physics();
 
     // Update bullet positions
     struct timespec bt;
@@ -422,31 +322,7 @@ void physics()
         ++i;
     }
 
-    if (g.keys[XK_space]) {
-   		// Shoot a bullet...
-		if (player.nbullets < MAX_BULLETS) {
-			Bullet* b = &player.barr[player.nbullets];
-			timeCopy(&b->time, &bt);
-
-			// Adjust the y-position so it's just above the player with more distance
-			b->pos[1] = 38.0f;
-			// Set bullet velocity to move farther upwards
-			b->vel[0] = 0.0f;
-			b->vel[1] = 8.0f + rnd() * 0.05f; // Adjust for more spread.
-			// b->vel[1] = 10.0f; // Adjust as needed
-			b->color[0] = 1.0f; 
-			b->color[1] = 1.0f; 
-			b->color[2] = 1.0f;
-			++player.nbullets;
-		}
-		// Clear the space key state to continuously generate bullets
-		g.keys[XK_space] = 0;
-	}
-
-    // Check for landing failure...
-    if (player.pos[1] < 0.0) {
-        g.failed_landing = 1;
-    }
+	bullet.physics();
 }
 
 
@@ -461,6 +337,8 @@ void render()
 	glColor3ub(0, 0, 0); // Set the vertex color to black
 	//Set the background color of the grid to off-white
     // glColor3ub(240, 240, 240);
+	//background_display();
+
     glVertex2i(0, 0);
     glVertex2i(g.xres, 0);
     glVertex2i(g.xres, g.yres);
@@ -504,21 +382,7 @@ void render()
 	platform2.draw_platform_fixed(platform2.pos[0], platform2.pos[1]);
 
 	//Draw Player
-	glPushMatrix();
-	// glColor3ub(0, 0, 0); 
-	glColor3ub(255, 255, 255);
-	if (g.failed_landing)
-		glColor3ub(250, 0, 0);
-	if (g.landed)
-		glColor3ub(0, 250, 0);  
-	glTranslatef(player.pos[0], player.pos[1], 0.0f); 
-	glRotated(player.angle, 0.0, 0.0, 1.0);
-	glBegin(GL_TRIANGLES); 
-		for (int i=0; i<3; i++) {
-			glVertex2f(player.verts[i][0], player.verts[i][1]); 
-		}
-	glEnd();
-
+	player.draw_player();
 
 	if (player.pos[0] > (pf.pos[0] - pf.width) && player.pos[0] < (pf.pos[0] + pf.width)) 
 	{
@@ -557,79 +421,13 @@ void render()
 	}
 
 	// check for collision with dynamic platforms
-	for (unsigned int i = 0; i < gameManager.platforms.size(); i++) 
-	{
-		Platform* platform = &gameManager.platforms[i];
-
-		if (player.pos[0] > (platform->pos[0] - platform->width) && player.pos[0] < (platform->pos[0] + platform->width)) 
-		{
-			if (player.pos[1] > (platform->pos[1] - platform->height) && player.pos[1] < (platform->pos[1] + platform->height)) 
-			{
-				// Player is colliding with platform
-				player.pos[1] = (platform->pos[1]) + platform->height;
-				player.vel[1] = 0.0;
-				player.vel[0] = 0.0;
-				player.jumpCount = 0;
-
-				if (player.angle > 0.0 || player.angle < 0.0) {
-					g.failed_landing = 1;
-				}
-				else {
-					// Player landed successfully
-					// g.landed = 1;
-				}
-			}
-		}
-	}
+	dynamic_collision_detection();
 
 	// Draw the bullets
-	for (int i = 0; i < player.nbullets; i++) {
-		Bullet* b = &player.barr[i];
-		// Log("draw bullet...\n");
-
-		glColor3f(1.0, 0.0, 0.0); // red
-		// glColor3f(0.0, 0.0, 0.0); // black
-
-		// Adjust the size of the bullet by changing the vertex positions
-		glBegin(GL_POINTS);
-		glVertex2f(b->pos[0],      b->pos[1]);
-		glVertex2f(b->pos[0] - 2.0f, b->pos[1]); 
-		glVertex2f(b->pos[0] + 2.0f, b->pos[1]); 
-		glVertex2f(b->pos[0],      b->pos[1] - 2.0f); 
-		glVertex2f(b->pos[0],      b->pos[1] + 2.0f); 
-		glColor3f(0.8, 0.8, 0.8); 
-		glVertex2f(b->pos[0] - 2.0f, b->pos[1] - 2.0f); 
-		glVertex2f(b->pos[0] - 2.0f, b->pos[1] + 2.0f); 
-		glVertex2f(b->pos[0] + 2.0f, b->pos[1] - 2.0f); 
-		glVertex2f(b->pos[0] + 2.0f, b->pos[1] + 2.0f); 
-		glEnd();
-	}
-
+	bullet.draw_bullet();
+	
 	if (g.failed_landing) {
 		//show crash graphics here...
-	}
-
-	if (g.showNerdStats) {
-		// Draw a box around the nerd stats
-		glColor3ub(90, 90, 90); // Set the vertex color to gray
-		glPushMatrix();
-		glTranslatef(20.0f, 20.0f, 0.0f);
-		int w = 200;
-		int h = 100;
-		glBegin(GL_QUADS);
-			glVertex2f(0, 0);
-			glVertex2f(0, h);
-			glVertex2f(w, h);
-			glVertex2f(w, 0);
-		glEnd();
-		glPopMatrix();
-		r.bot = 100;
-		r.left = 20;
-		r.center = 0;
-		ggprint8b(&r, 20, 0x0055ff55, "Nerd Stats...");
-		ggprint8b(&r, 16, 0x00ffff00, "Sec since mouse moved: %i", time_since_mouse_moved(true));
-		ggprint8b(&r, 16, 0x00ffff00, "n render calls: %i", count_render_function());
-
 	}
 	glPopMatrix();
 }
