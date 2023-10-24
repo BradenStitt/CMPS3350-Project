@@ -13,6 +13,9 @@
 
 class Background {
     public:
+        GLXContext glc;
+        Display *dis;
+        Window win;
         int count;
 
         Background();
