@@ -12,7 +12,6 @@
 #include <GL/glx.h>
 #include "log.h"
 #include "global.h"
-#include "bstitt.h"
 
 
 // Adding enemies to the game
@@ -24,12 +23,12 @@ int time_since_key_press (const bool get)
 {
     static int firstTime = 1; 
     static int startTime;
+    XEvent e;
     if (firstTime){
         startTime = time(NULL);
         firstTime = 0; 
     }
     if (get) {
-        XEvent e;
         if (e.type == KeyPress) {
             startTime = time(NULL);
         }
