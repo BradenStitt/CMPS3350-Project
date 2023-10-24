@@ -20,7 +20,7 @@ struct timespec bt;
 
 extern Global g;
 GameManager gameManager(10);
-Player player;
+extern Player player;
 
 int renderCount = 0;
 
