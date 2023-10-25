@@ -121,11 +121,11 @@ void Platform::physics_platform()
 
     if (pos[1] > 0.0f - height)
     {
-        pos[1] -= 5.0f;
+        // pos[1] -= 5.0f;
 
         // Snehal's Test on Mac
-        // pos[1] -= 2.0f;
-        // usleep(20000);
+        pos[1] -= 2.0f;
+        usleep(20000);
     }
 }
 

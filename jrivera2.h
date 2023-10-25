@@ -13,6 +13,7 @@ extern int count_physics_function();
 
 class Background {
     public:
+        int x, y, w, h;
         Display *dis;
         Window win;
         GLXContext glc;

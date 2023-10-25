@@ -16,7 +16,6 @@
 #include <ctime>
 #include <cmath>
 #include <vector>
-#include "defs.h"
 #include "log.h"
 #include "bstitt.h"
 #include "jrivera2.h"
@@ -27,6 +26,8 @@ using namespace std;
 extern Global g;
 
 int physics_count = 0;
+
+Background background;
 
 Background::Background() {
 
@@ -42,32 +43,32 @@ GLXContext background_display(Display *dis, Window root)
 		cout << "\n\tcannot connect to X server\n" << endl;
 		exit(EXIT_FAILURE);
 	}
-	vi = glXChooseVisual(dis, 0, att);
-	if (vi == NULL) {
+	background.vi = glXChooseVisual(dis, 0, att);
+	if (background.vi == NULL) {
 		cout << "\n\tno appropriate visual found\n" << endl;
 		exit(EXIT_FAILURE);
 	} 
-	Colormap cmap = XCreateColormap(dis, root, vi->visual, AllocNone);
+	Colormap cmap = XCreateColormap(dis, root, background.vi->visual, AllocNone);
 	
-	swa.colormap = cmap;
-	swa.event_mask =
+	background.swa.colormap = cmap;
+	background.swa.event_mask =
 		ExposureMask | KeyPressMask | KeyReleaseMask |
 		ButtonPress | ButtonReleaseMask |
 		PointerMotionMask |
 		StructureNotifyMask | SubstructureNotifyMask;
 
-    return glXCreateContext(dis, vi, NULL, GL_TRUE);
+    return glXCreateContext(dis, background.vi, NULL, GL_TRUE);
 	
 }
 
 Window create_window(Display *dis, Window root)
 {
-    win = XCreateWindow(dis, root, 0, 0, w, h, 0, vi->depth,
-		InputOutput, vi->visual, CWColormap | CWEventMask, &swa);
-        return win;
+		background.win = XCreateWindow(dis, root, 0, 0, background.w, background.h, 0, background.vi->depth,
+		InputOutput, background.vi->visual, CWColormap | CWEventMask, &background.swa);
+        return background.win;
 }
 
-int count_physics_function(int physics_count)
+int count_physics_function()
 {
 	physics_count++;
 	return physics_count;

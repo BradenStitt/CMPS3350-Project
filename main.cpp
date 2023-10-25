@@ -38,7 +38,7 @@ typedef float Flt;
 
 // const int MAXPLATFORMS = 10;
 int numPlatforms = 0;
-int physics_count = 0;
+// int physics_count = 0;
 
 class Platform2
 {
@@ -311,7 +311,7 @@ void init_opengl(void)
 
 void physics()
 {
-	// physics_count = count_physics_function(physics_count);
+	count_physics_function();
 	// Player physics
 	player.physics();
 	bullet.physics();
@@ -448,7 +448,7 @@ void render()
 		r.center = 0;
 		ggprint8b(&r, 20, 0x0055ff55, "Nerd Stats...");
 		ggprint8b(&r, 16, 0x00ffff00, "Total Running Time: %i", time_since_mouse_moved(true));
-		ggprint8b(&r, 12, 0x00ffff00, "Time Since Key Press: %i", time_since_key_press(true));
+		//ggprint8b(&r, 12, 0x00ffff00, "Time Since Key Press: %i", time_since_key_press(true));
 		ggprint8b(&r, 12, 0x00ffff00, "Time Since Mouse Movement: %i", time_since_mouse_moved(true));
 		ggprint8b(&r, 4, 0x00ffff00, "Number of Physics() Calls: %i", count_physics_function());
 		ggprint8b(&r, 8, 0x00ffff00, "Number of Render() Calls: %i", count_render_function());
