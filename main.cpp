@@ -447,7 +447,7 @@ void render()
 		ggprint8b(&r, 16, 0x00ffff00, "Total Running Time: %i", time_since_mouse_moved(true));
 		//ggprint8b(&r, 12, 0x00ffff00, "Time Since Key Press: %i", time_since_key_press(true));
 		ggprint8b(&r, 12, 0x00ffff00, "Time Since Mouse Movement: %i", time_since_mouse_moved(true));
-		//ggprint8b(&r, 4, 0x00ffff00, "Number of Physics() Calls: %i", count_physics_function());
+		ggprint8b(&r, 4, 0x00ffff00, "Number of Physics() Calls: %i", count_physics_function());
 		ggprint8b(&r, 8, 0x00ffff00, "Number of Render() Calls: %i", count_render_function());
 	}
 	glPopMatrix();

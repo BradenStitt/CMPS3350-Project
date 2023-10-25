@@ -23,7 +23,5 @@ class Background {
         ~Background();
         GLXContext background_display(Display *dis, Window root);
         Window create_window(Display *dis, Window root, int w, int h);
-
-
     
 };
