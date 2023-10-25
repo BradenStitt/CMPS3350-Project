@@ -67,7 +67,7 @@ Window create_window(Display *dis, Window root)
         return win;
 }
 
-int count_physics_function()
+int count_physics_function(int physics_count)
 {
 	physics_count++;
 	return physics_count;
