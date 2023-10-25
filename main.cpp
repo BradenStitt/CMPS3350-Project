@@ -279,6 +279,9 @@ int X11_wrapper::check_keys(XEvent *e)
 				g.landed = 0;
 				player.init();
 				break;
+			case XK_s:
+				g.showNerdStats = !g.showNerdStats;
+				break;
 			case XK_Escape:
 				// Escape key was pressed
 				return 1;
