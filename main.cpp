@@ -32,8 +32,10 @@ Bullet bullet;
 typedef float Flt;
 
 // gravity pulling the player straight down
-//  const float GRAVITY = 0.75;
+// const float GRAVITY = 0.75;
+
 #define PI 3.141592653589793
+
 // const int MAXPLATFORMS = 10;
 int numPlatforms = 0;
 int physics_count = 0;
@@ -41,7 +43,7 @@ int physics_count = 0;
 class Platform2
 {
 	// landing zone
-public:
+	public:
 	float pos[2];
 	float width;
 	float height;
@@ -56,22 +58,22 @@ public:
 
 class X11_wrapper
 {
-private:
-	Display *dpy;
-	Window win;
-	GLXContext glc;
+	private:
+		Display *dpy;
+		Window win;
+		GLXContext glc;
 
-public:
-	~X11_wrapper();
-	X11_wrapper();
-	void set_title();
-	bool getXPending();
-	XEvent getXNextEvent();
-	void swapBuffers();
-	void reshape_window(int width, int height);
-	void check_resize(XEvent *e);
-	void check_mouse(XEvent *e);
-	int check_keys(XEvent *e);
+	public:
+		~X11_wrapper();
+		X11_wrapper();
+		void set_title();
+		bool getXPending();
+		XEvent getXNextEvent();
+		void swapBuffers();
+		void reshape_window(int width, int height);
+		void check_resize(XEvent *e);
+		void check_mouse(XEvent *e);
+		int check_keys(XEvent *e);
 } x11;
 
 // Function prototypes
@@ -90,9 +92,6 @@ int main()
 	printf("Press Left or Right arrows to move player.\n");
 	printf("Press Space to Shoot.\n");
 	printf("Press R to reset player.\n");
-
-	// defined globally
-	// GameManager gameManager(10); // Adjust the number of platforms as needed
 
 	// Main loop
 	int done = 0;
@@ -220,9 +219,6 @@ void X11_wrapper::check_mouse(XEvent *e)
 {
 	static int savex = 0;
 	static int savey = 0;
-	const bool running = true;
-	bool movement = false;
-	int time_start = 0;
 
 	// Weed out non-mouse events
 	if (e->type != ButtonRelease &&
@@ -278,14 +274,14 @@ int X11_wrapper::check_keys(XEvent *e)
 	{
 		switch (key)
 		{
-		case XK_r:
-			// Key R was pressed
-			player.init();
-			g.landed = 0;
-			break;
-		case XK_Escape:
-			// Escape key was pressed
-			return 1;
+			case XK_r:
+				// Key R was pressed
+				g.landed = 0;
+				player.init();
+				break;
+			case XK_Escape:
+				// Escape key was pressed
+				return 1;
 		}
 	}
 	return 0;
@@ -315,50 +311,6 @@ void physics()
 	// physics_count = count_physics_function(physics_count);
 	// Player physics
 	player.physics();
-
-	// Update bullet positions
-	struct timespec bt;
-	clock_gettime(CLOCK_REALTIME, &bt);
-	int i = 0;
-	while (i < player.nbullets)
-	{
-		Bullet *b = &player.barr[i];
-		// How long has bullet been alive?
-		double ts = timeDiff(&b->time, &bt);
-		if (ts > 2.5)
-		{
-			// time to delete the bullet.
-			memcpy(&player.barr[i], &player.barr[player.nbullets - 1],
-				   sizeof(Bullet));
-			player.nbullets--;
-			// do not increment i.
-			continue;
-		}
-
-		// move the bullet
-		b->pos[0] += b->vel[0];
-		b->pos[1] += b->vel[1];
-
-		// Check for collision with window edges
-		if (b->pos[0] < 0.0)
-		{
-			b->pos[0] += (float)g.xres;
-		}
-		else if (b->pos[0] > (float)g.xres)
-		{
-			b->pos[0] -= (float)g.xres;
-		}
-		else if (b->pos[1] < 0.0)
-		{
-			b->pos[1] += (float)g.yres;
-		}
-		else if (b->pos[1] > (float)g.yres)
-		{
-			b->pos[1] -= (float)g.yres;
-		}
-		++i;
-	}
-
 	bullet.physics();
 }
 
@@ -372,7 +324,7 @@ void render()
 	// Set the background color of the grid to black
 	glColor3ub(0, 0, 0); // Set the vertex color to black
 						 // Set the background color of the grid to off-white
-	//  glColor3ub(240, 240, 240);
+	// glColor3ub(240, 240, 240);
 	// background_display();
 
 	glVertex2i(0, 0);
@@ -493,10 +445,10 @@ void render()
 		r.center = 0;
 		ggprint8b(&r, 20, 0x0055ff55, "Nerd Stats...");
 		ggprint8b(&r, 16, 0x00ffff00, "Total Running Time: %i", time_since_mouse_moved(true));
-		ggprint8b(&r, 12, 0x00ffff00, "Time Since Key Press: %i", time_since_key_pressed(true));
-		ggprint8b(&r, 8, 0x00ffff00, "Time Since Mouse Movement: %i", time_since_mouse_moved(true));
-		ggprint8b(&r, 4, 0x00ffff00, "Number of Physics() Calls: %i", count_physics_function());
-		ggprint8b(&r, 0, 0x00ffff00, "Number of Render() Calls: %i", count_render_function());
+		//ggprint8b(&r, 12, 0x00ffff00, "Time Since Key Press: %i", time_since_key_press(true));
+		ggprint8b(&r, 12, 0x00ffff00, "Time Since Mouse Movement: %i", time_since_mouse_moved(true));
+		//ggprint8b(&r, 4, 0x00ffff00, "Number of Physics() Calls: %i", count_physics_function());
+		ggprint8b(&r, 8, 0x00ffff00, "Number of Render() Calls: %i", count_render_function());
 	}
 	glPopMatrix();
 }
