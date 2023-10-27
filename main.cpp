@@ -375,7 +375,7 @@ void render()
 
 	// Draw Player
 	player.draw_player();
-
+	
 	if (player.pos[0] > (pf.pos[0] - pf.width) && player.pos[0] < (pf.pos[0] + pf.width))
 	{
 		if (player.pos[1] > (pf.pos[1] - pf.height) && player.pos[1] < (pf.pos[1] + pf.height))

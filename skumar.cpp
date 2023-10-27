@@ -217,6 +217,10 @@ void dynamic_collision_detection()
 				player.vel[0] = 0.0;
 				player.jumpCount = 0;
 
+				if (platform->pType == 2) {
+					platform->isLanded = true;
+				}
+
 				if (player.angle > 0.0 || player.angle < 0.0) {
 					g.failed_landing = 1;
 				}

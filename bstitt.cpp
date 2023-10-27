@@ -59,13 +59,23 @@ Platform::Platform() {
     pos[1] = g.yres; // Start at the top of the screen
     width = 50.0f;
     height = 8.0f;
+    velocity = 5.0f;
+    isLanded = false;
 }
 
 void Platform::draw_platform_fixed(float x, float y)
 {
     // Draw the platform using the specified coordinates
     glPushMatrix();
-    glColor3ub(250, 250, 20);
+    if (pType == 1) {
+        glColor3ub(0, 0, 250);
+    }
+    else if (pType == 2) {
+        glColor3ub(250, 0, 0);
+    }
+    else {
+        glColor3ub(250, 250, 20);
+    }
     glTranslatef(x, y, 0.0f);
     glBegin(GL_QUADS);
     glVertex2f(-width, -height);
@@ -88,7 +98,15 @@ void Platform::draw_platform_random()
 {
     // Draw the platform using the specified coordinates
     glPushMatrix();
-    glColor3ub(250, 250, 20);
+    if (pType == 1) {
+        glColor3ub(0, 0, 250);
+    }
+    else if (pType == 2) {
+        glColor3ub(250, 0, 0);
+    }
+    else {
+        glColor3ub(250, 250, 20);
+    }
     glTranslatef(pos[0], pos[1], 0.0f);
     glBegin(GL_QUADS);
     glVertex2f(-width, -height);
@@ -109,23 +127,38 @@ void Platform::draw_platform_random()
 
 void Platform::physics_platform()
 {
-    // // Move the platform down the screen
-    // pos[1] -= 5.0f;
-
-    // // Limit how far below the screen the platform can go
-    // float lowerLimit = -10.0f;  // Adjust as needed
-    // if (pos[1] < lowerLimit)
-    // {
-    //     pos[1] = lowerLimit;
-    // }
-
+    // Move the platform down the screen
     if (pos[1] > 0.0f - height)
     {
         // pos[1] -= 5.0f;
 
         // Snehal's Test on Mac
         pos[1] -= 2.0f;
-        usleep(20000);
+    }
+
+    // If the platform is a moving platform, move it side to side
+    if (pType == 1) {
+        // Move the platform side to side, bouncing off edges of the screen
+        pos[0] += velocity;
+
+        // Bounce off the right wall
+        if (pos[0] + width > g.xres) {
+            pos[0] = g.xres - width;
+            velocity = -velocity;  // Change direction
+        }
+
+        // Bounce off the left wall
+        if (pos[0] - width < 0) {
+            pos[0] = width;
+            velocity = -velocity;  // Change direction
+        }
+    }
+    else if (pType == 2) {
+        // Breaking platform
+        if (isLanded == true) {
+            // If the player is on the platform, break it
+            pos[1] = -100.0f;
+        }
     }
 }
 
@@ -134,7 +167,21 @@ GameManager::GameManager(int numPlatforms) : platformCreationTimer(0) {
 }
 
 void GameManager::createPlatform() {
+    int platformType = rand() % 25; // Random number between 0 and 24
+
     Platform newPlatform;
+
+    if (platformType == 0) {
+        // 1 in 25 chance of creating a moving platform
+        newPlatform.pType = 1;
+    } else if (platformType == 1) {
+        // 1 in 25 chance of creating a breaking platform
+        newPlatform.pType = 2;
+    } else {
+        // Regular platform
+        newPlatform.pType = 0;
+    }
+
     platforms.push_back(newPlatform);
     platformCreationTimer = 0;  // Reset the timer
 }

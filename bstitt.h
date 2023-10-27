@@ -13,9 +13,12 @@ extern int total_running_time(const bool running);
 
 class Platform {
 public:
+    int pType;  // 0 = fixed, 1 = moving, 2 = breakable
     float pos[2];
     float width;
     float height;
+    float velocity;
+    bool isLanded;
 
     Platform();
     void draw_platform_fixed(float x, float y);
