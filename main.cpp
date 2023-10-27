@@ -270,6 +270,7 @@ int X11_wrapper::check_keys(XEvent *e)
 		g.keys[key] = 0;
 	if (e->type == KeyPress)
 	{
+		time_since_key_press(false);
 		switch (key)
 		{
 		case XK_r:

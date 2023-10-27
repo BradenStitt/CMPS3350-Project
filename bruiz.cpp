@@ -16,26 +16,19 @@
 
 using namespace std;
 
-// Adding enemies to the game
-
-// Since last key press
-XEvent e;
-int time_since_key_press(const bool get)
-{
+// Time since last key was pressed function
+int time_since_key_press(const bool get) {
     static int firstTime = 1;
-    static int startTime;
-    if (firstTime)
-    {
-        startTime = time(NULL);
+    static int lastKeyPressTime;
+    if (firstTime) {
         firstTime = 0;
+        lastKeyPressTime = time(NULL);
     }
-    if (get)
-    {
-        if (e.type == KeyPress)
-        {
-            startTime = time(NULL);
-        }
-        return time(NULL) - startTime;
+    if (get) {
+        return time(NULL) - lastKeyPressTime;
     }
+    lastKeyPressTime = time(NULL);
     return 0;
 }
+
+// Adding enemies to the game
