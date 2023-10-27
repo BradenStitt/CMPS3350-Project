@@ -166,7 +166,7 @@ int total_running_time(const bool running) {
     static int start_time;
     if (first_run) {
         start_time = time(NULL);
-        start_time = 0;
+        first_run = 0;
     }
     if (running) {
         return time(NULL) - start_time;
@@ -184,6 +184,6 @@ int time_since_mouse_moved(const bool get) {
     if (get) {
         return time(NULL) - last_time;
     }
-    last_time = time(NULL);
+    last_time = time(NULL); 
     return 0;
 }
