@@ -15,12 +15,12 @@
 
 using namespace std;
 
-Global::Global() {
+Global::Global()
+{
     xres = 400;
     yres = 600;
     landed = 0;
     failed_landing = 0;
-    test_mode = 1; 
+    test_mode = 1;
     showNerdStats = 1;
 }
-

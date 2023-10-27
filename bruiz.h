@@ -3,8 +3,8 @@
 #ifndef BRUIZ_H
 #define BRUIZ_H
 
-using namespace std; 
+using namespace std;
 
-extern int time_since_key_press (const bool get);
+extern int time_since_key_press(const bool get);
 
 #endif

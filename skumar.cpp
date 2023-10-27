@@ -24,49 +24,63 @@ extern Player player;
 
 int renderCount = 0;
 
-Bullet:: Bullet()
+Bullet::Bullet()
 {
 }
 
-void Bullet:: physics()
+void Bullet::physics()
 {
 	struct timespec bt;
 	clock_gettime(CLOCK_REALTIME, &bt);
 
-	for (int i = player.nbullets - 1; i >= 0; i--) {
+	for (int i = player.nbullets - 1; i >= 0; i--)
+	{
 		Bullet *b = &player.barr[i];
 		// How long has the bullet been alive?
 		double ts = timeDiff(&b->time, &bt);
 
-		if (ts > 2.5) {
+		if (ts > 2.5)
+		{
 			// Time to delete the bullet.
-			if (i < player.nbullets - 1) {
+			if (i < player.nbullets - 1)
+			{
 				// Swap the current bullet with the last one and decrease the bullet count.
 				memcpy(&player.barr[i], &player.barr[player.nbullets - 1], sizeof(Bullet));
 			}
 			player.nbullets--;
-		} else {
+		}
+		else
+		{
 			// Move the bullet
 			b->pos[0] += b->vel[0];
 			b->pos[1] += b->vel[1];
 
 			// Check for collision with window edges
-			if (b->pos[0] < 0.0) {
+			if (b->pos[0] < 0.0)
+			{
 				b->pos[0] += (float)g.xres;
-			} else if (b->pos[0] > (float)g.xres) {
+			}
+			else if (b->pos[0] > (float)g.xres)
+			{
 				b->pos[0] -= (float)g.xres;
-			} else if (b->pos[1] < 0.0) {
+			}
+			else if (b->pos[1] < 0.0)
+			{
 				b->pos[1] += (float)g.yres;
-			} else if (b->pos[1] > (float)g.yres) {
+			}
+			else if (b->pos[1] > (float)g.yres)
+			{
 				b->pos[1] -= (float)g.yres;
 			}
 		}
 	}
 
-	if (g.keys[XK_space]) {
+	if (g.keys[XK_space])
+	{
 		// Shoot a bullet...
-		if (player.nbullets < MAX_BULLETS) {
-			Bullet* b = &player.barr[player.nbullets];
+		if (player.nbullets < MAX_BULLETS)
+		{
+			Bullet *b = &player.barr[player.nbullets];
 			timeCopy(&b->time, &bt);
 
 			// Adjust the y-position so it's just above the player with more distance
@@ -75,43 +89,42 @@ void Bullet:: physics()
 			b->vel[0] = 0.0f;
 			b->vel[1] = 8.0f + rnd() * 0.05f; // Adjust for more spread
 			// b->vel[1] = 10.0f; // Adjust as needed
-			b->color[0] = 1.0f; 
-			b->color[1] = 1.0f; 
+			b->color[0] = 1.0f;
+			b->color[1] = 1.0f;
 			b->color[2] = 1.0f;
 			++player.nbullets;
 		}
 		// Clear the space key state to continuously generate bullets
 		g.keys[XK_space] = 0;
-	}	
-	
+	}
 }
 
 // Draws the bullet
-void Bullet:: draw_bullet()
+void Bullet::draw_bullet()
 {
-	for (int i = 0; i < player.nbullets; i++) {
-		Bullet* b = &player.barr[i];
-		
+	for (int i = 0; i < player.nbullets; i++)
+	{
+		Bullet *b = &player.barr[i];
+
 		glColor3f(1.0, 0.0, 0.0); // red
 
 		// Adjust the size of the bullet by changing the vertex positions
 		glBegin(GL_POINTS);
-		glVertex2f(b->pos[0],      b->pos[1]);
-		glVertex2f(b->pos[0] - 2.0f, b->pos[1]); 
-		glVertex2f(b->pos[0] + 2.0f, b->pos[1]); 
-		glVertex2f(b->pos[0],      b->pos[1] - 2.0f); 
-		glVertex2f(b->pos[0],      b->pos[1] + 2.0f); 
-		glColor3f(0.8, 0.8, 0.8); 
-		glVertex2f(b->pos[0] - 2.0f, b->pos[1] - 2.0f); 
-		glVertex2f(b->pos[0] - 2.0f, b->pos[1] + 2.0f); 
-		glVertex2f(b->pos[0] + 2.0f, b->pos[1] - 2.0f); 
-		glVertex2f(b->pos[0] + 2.0f, b->pos[1] + 2.0f); 
+		glVertex2f(b->pos[0], b->pos[1]);
+		glVertex2f(b->pos[0] - 2.0f, b->pos[1]);
+		glVertex2f(b->pos[0] + 2.0f, b->pos[1]);
+		glVertex2f(b->pos[0], b->pos[1] - 2.0f);
+		glVertex2f(b->pos[0], b->pos[1] + 2.0f);
+		glColor3f(0.8, 0.8, 0.8);
+		glVertex2f(b->pos[0] - 2.0f, b->pos[1] - 2.0f);
+		glVertex2f(b->pos[0] - 2.0f, b->pos[1] + 2.0f);
+		glVertex2f(b->pos[0] + 2.0f, b->pos[1] - 2.0f);
+		glVertex2f(b->pos[0] + 2.0f, b->pos[1] + 2.0f);
 		glEnd();
 	}
 }
 
-
-Player:: Player()
+Player::Player()
 {
 	init();
 	barr = new Bullet[MAX_BULLETS];
@@ -119,24 +132,24 @@ Player:: Player()
 	clock_gettime(CLOCK_REALTIME, &bulletTimer);
 }
 
-Player:: ~Player()
+Player::~Player()
 {
-	delete [] barr;
+	delete[] barr;
 }
 
-void Player:: init()
+void Player::init()
 {
-	pos[0] = 100.0f; 
-	pos[1] = 40.0f; 
+	pos[0] = 100.0f;
+	pos[1] = 40.0f;
 
 	vel[0] = vel[1] = 0.0f;
-	//3 vertices of triangle-shaped player 
+	// 3 vertices of triangle-shaped player
 	verts[0][0] = -10.0f;
-	verts[0][1] =   0.0f;
-	verts[1][0] =   0.0f;
-	verts[1][1] =  30.0f;
-	verts[2][0] =  10.0f;
-	verts[2][1] =   0.0f;
+	verts[0][1] = 0.0f;
+	verts[1][0] = 0.0f;
+	verts[1][1] = 30.0f;
+	verts[2][0] = 10.0f;
+	verts[2][1] = 0.0f;
 	jumpCount = 0;
 	g.failed_landing = 0;
 	angle = 0.0;
@@ -145,39 +158,43 @@ void Player:: init()
 // Physics for moving the player
 void Player::physics()
 {
-    //Player physics
+	// Player physics
 	if (g.failed_landing)
-	   return;
+		return;
 
-	pos[0] += vel[0]; 
+	pos[0] += vel[0];
 	pos[1] += vel[1];
 	vel[1] -= GRAVITY;
 
 	// Check keys pressed now
-    if (g.keys[XK_Left])
-        vel[0] -= 0.8;
-		//player.vel[0] -= 0.1;
-    if (g.keys[XK_Right])
-         vel[0] += 0.8;
-		//player.vel[0] += 0.1;
-    if (g.keys[XK_Up])
-		if (jumpCount < 2) {
+	if (g.keys[XK_Left])
+		vel[0] -= 0.8;
+	// player.vel[0] -= 0.1;
+	if (g.keys[XK_Right])
+		vel[0] += 0.8;
+	// player.vel[0] += 0.1;
+	if (g.keys[XK_Up])
+		if (jumpCount < 2)
+		{
 			vel[1] += 4.8;
 			jumpCount++;
-		} 
+		}
 
 	// Check for collision with window edges
-	if (pos[0] < 0.0) {
+	if (pos[0] < 0.0)
+	{
 		pos[0] += (float)g.xres;
 		// player.pos[0] = 0.0f;
 	}
-	else if (pos[0] > (float)g.xres) {
+	else if (pos[0] > (float)g.xres)
+	{
 		pos[0] -= (float)g.xres;
 		// player.pos[0] = (float)g.xres;
 	}
-	
-	//check for landing failure...
-	if (pos[1] < 0.0) {
+
+	// check for landing failure...
+	if (pos[1] < 0.0)
+	{
 		g.failed_landing = 1;
 	}
 }
@@ -185,31 +202,32 @@ void Player::physics()
 // Draws the player
 void Player::draw_player()
 {
-    glPushMatrix();
-	glColor3ub(255, 255, 255); 
+	glPushMatrix();
+	glColor3ub(255, 255, 255);
 	if (g.failed_landing)
 		glColor3ub(250, 0, 0);
 	if (g.landed)
-		glColor3ub(0, 250, 0);  
-	glTranslatef(pos[0], pos[1], 0.0f); 
+		glColor3ub(0, 250, 0);
+	glTranslatef(pos[0], pos[1], 0.0f);
 	glRotated(angle, 0.0, 0.0, 1.0);
-	glBegin(GL_TRIANGLES); 
-		for (int i=0; i<3; i++) {
-			glVertex2f(verts[i][0], verts[i][1]); 
-		}
+	glBegin(GL_TRIANGLES);
+	for (int i = 0; i < 3; i++)
+	{
+		glVertex2f(verts[i][0], verts[i][1]);
+	}
 	glEnd();
 }
 
 void dynamic_collision_detection()
 {
 	// check for collision with dynamic platforms
-	for (unsigned int i = 0; i < gameManager.platforms.size(); i++) 
+	for (unsigned int i = 0; i < gameManager.platforms.size(); i++)
 	{
-		Platform* platform = &gameManager.platforms[i];
+		Platform *platform = &gameManager.platforms[i];
 
-		if (player.pos[0] > (platform->pos[0] - platform->width) && player.pos[0] < (platform->pos[0] + platform->width)) 
+		if (player.pos[0] > (platform->pos[0] - platform->width) && player.pos[0] < (platform->pos[0] + platform->width))
 		{
-			if (player.pos[1] > (platform->pos[1] - platform->height) && player.pos[1] < (platform->pos[1] + platform->height)) 
+			if (player.pos[1] > (platform->pos[1] - platform->height) && player.pos[1] < (platform->pos[1] + platform->height))
 			{
 				// Player is colliding with platform
 				player.pos[1] = (platform->pos[1]) + platform->height;
@@ -217,14 +235,17 @@ void dynamic_collision_detection()
 				player.vel[0] = 0.0;
 				player.jumpCount = 0;
 
-				if (platform->pType == 2) {
+				if (platform->pType == 2)
+				{
 					platform->isLanded = true;
 				}
 
-				if (player.angle > 0.0 || player.angle < 0.0) {
+				if (player.angle > 0.0 || player.angle < 0.0)
+				{
 					g.failed_landing = 1;
 				}
-				else {
+				else
+				{
 					// Player landed successfully
 					// g.landed = 1;
 				}

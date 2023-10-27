@@ -1,7 +1,7 @@
 /**
  * Author:    Joseph Rivera
  * Created:   09-25-2023
- * 
+ *
  **/
 
 #include <iostream>
@@ -29,27 +29,31 @@ int physics_count = 0;
 
 Background background;
 
-Background::Background() {
-
+Background::Background()
+{
 }
-Background::~Background() {
-
+Background::~Background()
+{
 }
 
 GLXContext background_display(Display *dis, Window root)
 {
-    GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
-    if (dis == NULL) {
-		cout << "\n\tcannot connect to X server\n" << endl;
+	GLint att[] = {GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None};
+	if (dis == NULL)
+	{
+		cout << "\n\tcannot connect to X server\n"
+			 << endl;
 		exit(EXIT_FAILURE);
 	}
 	background.vi = glXChooseVisual(dis, 0, att);
-	if (background.vi == NULL) {
-		cout << "\n\tno appropriate visual found\n" << endl;
+	if (background.vi == NULL)
+	{
+		cout << "\n\tno appropriate visual found\n"
+			 << endl;
 		exit(EXIT_FAILURE);
-	} 
+	}
 	Colormap cmap = XCreateColormap(dis, root, background.vi->visual, AllocNone);
-	
+
 	background.swa.colormap = cmap;
 	background.swa.event_mask =
 		ExposureMask | KeyPressMask | KeyReleaseMask |
@@ -57,15 +61,14 @@ GLXContext background_display(Display *dis, Window root)
 		PointerMotionMask |
 		StructureNotifyMask | SubstructureNotifyMask;
 
-    return glXCreateContext(dis, background.vi, NULL, GL_TRUE);
-	
+	return glXCreateContext(dis, background.vi, NULL, GL_TRUE);
 }
 
 Window create_window(Display *dis, Window root)
 {
-		background.win = XCreateWindow(dis, root, 0, 0, background.w, background.h, 0, background.vi->depth,
-		InputOutput, background.vi->visual, CWColormap | CWEventMask, &background.swa);
-        return background.win;
+	background.win = XCreateWindow(dis, root, 0, 0, background.w, background.h, 0, background.vi->depth,
+								   InputOutput, background.vi->visual, CWColormap | CWEventMask, &background.swa);
+	return background.win;
 }
 
 int count_physics_function()
@@ -73,4 +76,3 @@ int count_physics_function()
 	physics_count++;
 	return physics_count;
 }
-

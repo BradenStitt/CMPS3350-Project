@@ -11,9 +11,10 @@ extern void display_border(int xres, int yres);
 extern int time_since_mouse_moved(const bool get);
 extern int total_running_time(const bool running);
 
-class Platform {
+class Platform
+{
 public:
-    int pType;  // 0 = fixed, 1 = moving, 2 = breakable
+    int pType; // 0 = fixed, 1 = moving, 2 = breakable
     float pos[2];
     float width;
     float height;
@@ -26,17 +27,18 @@ public:
     void physics_platform();
 };
 
-class GameManager {
+class GameManager
+{
 public:
     vector<Platform> platforms;
-    int platformCreationTimer;  // Timer to control platform creation
-    static const int PLATFORM_CREATION_INTERVAL = 60;  // Adjust as needed (frames)
+    int platformCreationTimer;                        // Timer to control platform creation
+    static const int PLATFORM_CREATION_INTERVAL = 60; // Adjust as needed (frames)
 
     GameManager(int numPlatforms);
 
     void updatePhysics();
     void render();
-    void createPlatform();  // Function to create a new platform
+    void createPlatform(); // Function to create a new platform
 };
 
 #endif
