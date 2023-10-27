@@ -42,7 +42,7 @@ int numPlatforms = 0;
 class Platform2
 {
 	// landing zone
-	public:
+public:
 	float pos[2];
 	float width;
 	float height;
@@ -57,22 +57,22 @@ class Platform2
 
 class X11_wrapper
 {
-	private:
-		Display *dpy;
-		Window win;
-		GLXContext glc;
+private:
+	Display *dpy;
+	Window win;
+	GLXContext glc;
 
-	public:
-		~X11_wrapper();
-		X11_wrapper();
-		void set_title();
-		bool getXPending();
-		XEvent getXNextEvent();
-		void swapBuffers();
-		void reshape_window(int width, int height);
-		void check_resize(XEvent *e);
-		void check_mouse(XEvent *e);
-		int check_keys(XEvent *e);
+public:
+	~X11_wrapper();
+	X11_wrapper();
+	void set_title();
+	bool getXPending();
+	XEvent getXNextEvent();
+	void swapBuffers();
+	void reshape_window(int width, int height);
+	void check_resize(XEvent *e);
+	void check_mouse(XEvent *e);
+	int check_keys(XEvent *e);
 } x11;
 
 // Function prototypes
@@ -129,8 +129,7 @@ X11_wrapper::~X11_wrapper()
 
 X11_wrapper::X11_wrapper()
 {
-	GLint att[] = {GLX_RGBA, GLX_DEPTH_SIZE, 32, GLX_DOUBLEBUFFER, None};
-	// GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, None };
+	GLint att[] = {GLX_RGBA, GLX_DEPTH_SIZE, 24, None};
 	dpy = XOpenDisplay(NULL);
 	if (dpy == NULL)
 	{
@@ -273,17 +272,17 @@ int X11_wrapper::check_keys(XEvent *e)
 	{
 		switch (key)
 		{
-			case XK_r:
-				// Key R was pressed
-				g.landed = 0;
-				player.init();
-				break;
-			case XK_s:
-				g.showNerdStats = !g.showNerdStats;
-				break;
-			case XK_Escape:
-				// Escape key was pressed
-				return 1;
+		case XK_r:
+			// Key R was pressed
+			g.landed = 0;
+			player.init();
+			break;
+		case XK_s:
+			g.showNerdStats = !g.showNerdStats;
+			break;
+		case XK_Escape:
+			// Escape key was pressed
+			return 1;
 		}
 	}
 	return 0;
@@ -311,7 +310,7 @@ void init_opengl(void)
 void physics()
 {
 	count_physics_function();
-	
+
 	// Player physics
 	player.physics();
 	bullet.physics();
@@ -427,7 +426,7 @@ void render()
 	{
 		// show crash graphics here...
 	}
-	
+
 	if (g.showNerdStats)
 	{
 		// Draw a box around the nerd stats
