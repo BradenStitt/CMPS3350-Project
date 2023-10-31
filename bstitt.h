@@ -10,11 +10,12 @@ using namespace std;
 extern void display_border(int xres, int yres);
 extern int time_since_mouse_moved(const bool get);
 extern int total_running_time(const bool running);
+extern void enemy_collision_detection();
 
 class Platform
 {
 public:
-    int pType; // 0 = fixed, 1 = moving, 2 = breakable
+    int pType; // 0 = fixed, 1 = moving, 2 = breakable, 3 = enemy
     float pos[2];
     float width;
     float height;
@@ -27,8 +28,7 @@ public:
     void physics_platform();
 };
 
-class GameManager
-{
+class GameManager {
 public:
     vector<Platform> platforms;
     int platformCreationTimer;                        // Timer to control platform creation

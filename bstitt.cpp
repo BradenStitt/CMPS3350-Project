@@ -17,6 +17,8 @@
 using namespace std;
 
 extern Global g;
+extern GameManager gameManager;
+const float GRAVITY = 0.4;
 
 // void display_name(int x, int y, const char *name)
 // {
@@ -70,15 +72,18 @@ void Platform::draw_platform_fixed(float x, float y)
     glPushMatrix();
     if (pType == 1)
     {
-        glColor3ub(0, 0, 250);
+        glColor3ub(0, 0, 250); // blue
     }
     else if (pType == 2)
     {
-        glColor3ub(250, 0, 0);
+        glColor3ub(165, 42, 42); // brown
+    }
+    else if (pType == 3) {
+        glColor3ub(250, 0, 0); // red
     }
     else
     {
-        glColor3ub(250, 250, 20);
+        glColor3ub(250, 250, 20); // yellow
     }
     glTranslatef(x, y, 0.0f);
     glBegin(GL_QUADS);
@@ -104,15 +109,21 @@ void Platform::draw_platform_random()
     glPushMatrix();
     if (pType == 1)
     {
-        glColor3ub(0, 0, 250);
+        glColor3ub(0, 0, 250); // blue
     }
     else if (pType == 2)
     {
-        glColor3ub(250, 0, 0);
+        glColor3ub(165, 42, 42); // brown
+    }
+    else if (pType == 3) {
+        glColor3ub(250, 0, 0); // red
+        // set it to a square
+        width = 15.0f;
+        height = 15.0f;
     }
     else
     {
-        glColor3ub(250, 250, 20);
+        glColor3ub(250, 250, 20); // yellow
     }
     glTranslatef(pos[0], pos[1], 0.0f);
     glBegin(GL_QUADS);
@@ -143,8 +154,8 @@ void Platform::physics_platform()
         pos[1] -= 2.0f;
     }
 
-    // If the platform is a moving platform, move it side to side
-    if (pType == 1)
+    // If the platform is a moving platform or an enemy, move it side to side
+    if (pType == 1 || pType == 3)
     {
         // Move the platform side to side, bouncing off edges of the screen
         pos[0] += velocity;
@@ -192,6 +203,10 @@ void GameManager::createPlatform()
     {
         // 1 in 25 chance of creating a breaking platform
         newPlatform.pType = 2;
+    }
+    else if (platformType == 2) {
+        // 1 in 25 chance of creating an enemy on the platform
+        newPlatform.pType = 3;
     }
     else
     {
