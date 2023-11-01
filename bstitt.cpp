@@ -80,6 +80,9 @@ void Platform::draw_platform_fixed(float x, float y)
     }
     else if (pType == 3) {
         glColor3ub(250, 0, 0); // red
+        // set it to a square
+        width = 15.0f;
+        height = 15.0f;
     }
     else
     {

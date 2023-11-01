@@ -374,6 +374,16 @@ void render()
 	// Draw the platform at the specified location
 	platform2.draw_platform_fixed(platform2.pos[0], platform2.pos[1]);
 
+	// Draw the test platform
+	Platform testPlatform; // Declare an instance of the Platform class
+
+	testPlatform.pos[0] = 100.0f;
+	testPlatform.pos[1] = 200.0f;
+	testPlatform.pType = 3;
+
+	// Draw the platform at the specified location
+	testPlatform.draw_platform_fixed(testPlatform.pos[0], testPlatform.pos[1]);
+
 	// Draw Player
 	player.draw_player();
 
