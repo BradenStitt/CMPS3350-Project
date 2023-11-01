@@ -239,6 +239,10 @@ void dynamic_collision_detection()
 				{
 					platform->isLanded = true;
 				}
+				else if (platform->pType == 4) {
+					// Player touched black hole, fail landing
+					g.failed_landing = 1;
+				}
 
 				if (player.angle > 0.0 || player.angle < 0.0)
 				{

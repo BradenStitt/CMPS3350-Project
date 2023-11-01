@@ -64,6 +64,8 @@ Platform::Platform()
     height = 8.0f;
     velocity = 5.0f;
     isLanded = false;
+    disappearTimer = 0;
+
 }
 
 void Platform::draw_platform_fixed(float x, float y)
@@ -83,6 +85,12 @@ void Platform::draw_platform_fixed(float x, float y)
         // set it to a square
         width = 15.0f;
         height = 15.0f;
+    }
+    else if (pType == 4) {
+        glColor3ub(0, 250, 0);
+        // set it to a square
+        width = 25.0f;
+        height = 25.0f;
     }
     else
     {
@@ -124,8 +132,13 @@ void Platform::draw_platform_random()
         width = 15.0f;
         height = 15.0f;
     }
-    else
-    {
+    else if (pType == 4) {
+        glColor3ub(0, 255, 0);
+        // set it to a square
+        width = 25.0f;
+        height = 25.0f;
+    }
+    else {
         glColor3ub(250, 250, 20); // yellow
     }
     glTranslatef(pos[0], pos[1], 0.0f);
@@ -149,7 +162,7 @@ void Platform::draw_platform_random()
 void Platform::physics_platform()
 {
     // Move the platform down the screen
-    if (pos[1] > 0.0f - height)
+    if (pos[1] > 0.0f - height && pType != 4)
     {
         // pos[1] -= 5.0f;
 
@@ -186,6 +199,16 @@ void Platform::physics_platform()
             pos[1] = -100.0f;
         }
     }
+    else if (pType == 4) {
+        // Show the platform for only 5 seconds
+        disappearTimer++;
+
+        if (disappearTimer >= 200) { // Assuming 60 frames per second, 300 frames is 5 seconds
+            // After 5 seconds, make the platform disappear
+            pos[1] = -100.0f;
+            blackholeExists = false;
+        }
+    }
 }
 
 // Game Manager class
@@ -210,6 +233,12 @@ void GameManager::createPlatform()
     else if (platformType == 2) {
         // 1 in 25 chance of creating an enemy on the platform
         newPlatform.pType = 3;
+    }
+    else if (platformType == 3 && !newPlatform.blackholeExists) {
+        newPlatform.pType = 4;
+        newPlatform.pos[1] = rand() % (g.yres / 2) + (g.yres / 2); // Random y coordinate between half and the bottom of the screen
+        newPlatform.blackholeExists = true;
+        cout << "New black hole created at (" << newPlatform.pos[0] << ", " << newPlatform.pos[1] << ")" << endl;
     }
     else
     {

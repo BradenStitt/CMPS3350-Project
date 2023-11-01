@@ -384,6 +384,14 @@ void render()
 	// Draw the platform at the specified location
 	testPlatform.draw_platform_fixed(testPlatform.pos[0], testPlatform.pos[1]);
 
+	Platform blackholeTest;
+
+	blackholeTest.pos[0] = 100.0f;
+	blackholeTest.pos[1] = 100.0f;
+	blackholeTest.pType = 4;
+
+	blackholeTest.draw_platform_fixed(blackholeTest.pos[0], blackholeTest.pos[1]);
+	
 	// Draw Player
 	player.draw_player();
 

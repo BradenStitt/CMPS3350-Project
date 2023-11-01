@@ -15,12 +15,14 @@ extern void enemy_collision_detection();
 class Platform
 {
 public:
-    int pType; // 0 = fixed, 1 = moving, 2 = breakable, 3 = enemy
+    int pType; // 0 = fixed, 1 = moving, 2 = breakable, 3 = enemy, 4 = blackhole
     float pos[2];
     float width;
     float height;
     float velocity;
     bool isLanded;
+    bool blackholeExists;
+    int disappearTimer;
 
     Platform();
     void draw_platform_fixed(float x, float y);
