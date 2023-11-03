@@ -27,6 +27,7 @@ Rect r;
 GameManager gameManager(10); // Adjust the number of platforms as needed
 Player player;
 Bullet bullet;
+Platform testPlatform;
 
 // floating point random numbers
 typedef float Flt;
@@ -315,6 +316,19 @@ void physics()
 	// Player physics
 	player.physics();
 	bullet.physics();
+
+	// static enemy collision
+	if ((player.pos[0] + player.width > testPlatform.pos[0] - testPlatform.width && player.pos[0] <= testPlatform.pos[0]) || 
+		(player.pos[0] - player.width < testPlatform.pos[0] + testPlatform.width && player.pos[0] >= testPlatform.pos[0]))
+	{
+		if ((player.pos[1] - player.height <= testPlatform.pos[1] + testPlatform.height && player.pos[1] - player.height >= testPlatform.pos[1]) || 
+			(player.pos[1] + player.height >= testPlatform.pos[1] - testPlatform.height && player.pos[1] + player.height <= testPlatform.pos[1]))
+		{
+			player.enemyDetected = 1;
+			player.vel[1] = -8.0;
+		}
+	}
+	
 }
 
 void render()
@@ -325,9 +339,7 @@ void render()
 	glPushMatrix();
 	glBegin(GL_QUADS);
 	// Set the background color of the grid to black
-	glColor3ub(0, 0, 0); // Set the vertex color to black
-						 // Set the background color of the grid to off-white
-	// glColor3ub(240, 240, 240);
+	glColor3ub(0, 0, 0);
 	// background_display();
 
 	glVertex2i(0, 0);
@@ -335,8 +347,7 @@ void render()
 	glVertex2i(g.xres, g.yres);
 	glVertex2i(0, g.yres);
 	// Set the color of the grid lines to gray
-	glColor3ub(90, 90, 90); // Set the vertex color to gray
-	// glColor3ub(255, 150, 50); // Set the vertex color to orange
+	glColor3ub(90, 90, 90);
 	for (int i = 0; i <= g.xres; i += 20)
 	{
 		glBegin(GL_LINES);
@@ -353,6 +364,7 @@ void render()
 	}
 	glEnd();
 	glPopMatrix();
+
 
 	// Draw the platform
 	Platform platform; // Declare an instance of the Platform class
@@ -375,62 +387,65 @@ void render()
 	platform2.draw_platform_fixed(platform2.pos[0], platform2.pos[1]);
 
 	// Draw the test platform
-	Platform testPlatform; // Declare an instance of the Platform class
-
+	// Platform testPlatform; // Declare an instance of the Platform class
 	testPlatform.pos[0] = 100.0f;
-	testPlatform.pos[1] = 200.0f;
+	testPlatform.pos[1] = 150.0f;
 	testPlatform.pType = 3;
-
 	// Draw the platform at the specified location
 	testPlatform.draw_platform_fixed(testPlatform.pos[0], testPlatform.pos[1]);
 
 	Platform blackholeTest;
-
 	blackholeTest.pos[0] = 100.0f;
-	blackholeTest.pos[1] = 100.0f;
+	blackholeTest.pos[1] = 200.0f;
 	blackholeTest.pType = 4;
-
 	blackholeTest.draw_platform_fixed(blackholeTest.pos[0], blackholeTest.pos[1]);
+	
 	
 	// Draw Player
 	player.draw_player();
 
-	if (player.pos[0] > (pf.pos[0] - pf.width) && player.pos[0] < (pf.pos[0] + pf.width))
+	if (!player.enemyDetected)
 	{
-		if (player.pos[1] > (pf.pos[1] - pf.height) && player.pos[1] < (pf.pos[1] + pf.height))
+		if (player.pos[0] > (pf.pos[0] - pf.width) && player.pos[0] < (pf.pos[0] + pf.width))
 		{
-			player.pos[1] = (pf.pos[1]) + pf.height;
-			player.vel[1] = 0.0;
-			player.vel[0] = 0.0;
-			player.jumpCount = 0;
+			if (player.pos[1] > (pf.pos[1] - pf.height) && player.pos[1] < (pf.pos[1] + pf.height))
+			{
+				player.pos[1] = (pf.pos[1]) + pf.height;
+				player.vel[1] = 0.0;
+				player.vel[0] = 0.0;
+				player.jumpCount = 0;
 
-			if (player.angle > 0.0 || player.angle < 0.0)
-			{
-				g.failed_landing = 1;
-			}
-			else
-			{
-				// g.landed = 1;
+				if (player.angle > 0.0 || player.angle < 0.0)
+				{
+					g.failed_landing = 1;
+				}
+				else
+				{
+					// g.landed = 1;
+				}
 			}
 		}
 	}
 
-	if (player.pos[0] > (pf.pos[0] + 100 - pf.width) && player.pos[0] < (pf.pos[0] + 100 + pf.width))
+	if (!player.enemyDetected)
 	{
-		if (player.pos[1] > (pf.pos[1] + 50 - pf.height) && player.pos[1] < (pf.pos[1] + 50 + pf.height))
+		if (player.pos[0] > (pf.pos[0] + 100 - pf.width) && player.pos[0] < (pf.pos[0] + 100 + pf.width))
 		{
-			player.pos[1] = pf.pos[1] + 50 + pf.height;
-			player.vel[1] = 0.0;
-			player.vel[0] = 0.0;
-			player.jumpCount = 0;
+			if (player.pos[1] > (pf.pos[1] + 50 - pf.height) && player.pos[1] < (pf.pos[1] + 50 + pf.height))
+			{
+				player.pos[1] = pf.pos[1] + 50 + pf.height;
+				player.vel[1] = 0.0;
+				player.vel[0] = 0.0;
+				player.jumpCount = 0;
 
-			if (player.angle > 0.0 || player.angle < 0.0)
-			{
-				g.failed_landing = 1;
-			}
-			else
-			{
-				// g.landed = 1;
+				if (player.angle > 0.0 || player.angle < 0.0)
+				{
+					g.failed_landing = 1;
+				}
+				else
+				{
+					// g.landed = 1;
+				}
 			}
 		}
 	}
