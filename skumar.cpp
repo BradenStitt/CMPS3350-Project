@@ -21,11 +21,14 @@ struct timespec bt;
 extern Global g;
 extern GameManager gameManager;
 extern Player player;
+extern Bullet bullet;
+extern Platform testPlatform;
 
 int renderCount = 0;
 
 Bullet::Bullet()
 {
+	prevPosY = 0.0f;
 }
 
 void Bullet::physics()
@@ -55,23 +58,93 @@ void Bullet::physics()
 			b->pos[0] += b->vel[0];
 			b->pos[1] += b->vel[1];
 
+			bullet.bulletHit = false;
+
+			// Calculate previous position of the bullet.
+			bullet.prevPosY = b->pos[1] - b->vel[1];
+
+			// Check for collision with testPlatform
+			if (player.pos[0] > testPlatform.pos[0] - testPlatform.width && player.pos[0] < testPlatform.pos[0] + testPlatform.width)
+			{
+				if (bullet.prevPosY >= testPlatform.pos[1] - testPlatform.height && b->pos[1] <= testPlatform.pos[1] + testPlatform.height) 
+				{
+					b->pos[1] = testPlatform.pos[1] + testPlatform.height;
+                    bullet.bulletHit = true;
+                }
+			}
+		
+			if (bullet.bulletHit)
+			{
+				testPlatform.hitCount++;
+
+				// Remove the bullet
+				if (i < player.nbullets - 1)
+				{
+					// Swap the current bullet with the last one and decrease the bullet count.
+					memcpy(&player.barr[i], &player.barr[player.nbullets - 1], sizeof(Bullet));
+				}
+				player.nbullets--;
+
+				if (testPlatform.hitCount >= 3)
+				{
+					testPlatform.isDestroyed = true;
+				}
+			}
+
+			/* bullet collision with dynamic enemies still needs to be tested */
+
+			// for (unsigned int j = 0; j < gameManager.platforms.size(); j++)
+			// {
+			// 	Platform *platform = &gameManager.platforms[j];
+
+			// 	if (platform->pType == 3)
+			// 	{
+			// 		if (player.pos[0] > platform->pos[0] - platform->width && player.pos[0] < platform->pos[0] + platform->width)
+			// 		{
+			// 			if (bullet.prevPosY >= platform->pos[1] - platform->height && b->pos[1] <= platform->pos[1] + platform->height) 
+			// 			{
+			// 				b->pos[1] = platform->pos[1] + platform->height;
+			// 				bullet.bulletHit = true;
+			// 			}
+			// 		}
+				
+			// 		if (bullet.bulletHit)
+			// 		{
+			// 			platform->hitCount++;
+
+			// 			// Remove the bullet
+			// 			if (i < player.nbullets - 1)
+			// 			{
+			// 				// Swap the current bullet with the last one and decrease the bullet count.
+			// 				memcpy(&player.barr[i], &player.barr[player.nbullets - 1], sizeof(Bullet));
+			// 			}
+			// 			player.nbullets--;
+
+			// 			if (platform->hitCount >= 3)
+			// 			{
+			// 				platform->isDestroyed = true;
+			// 			}
+			// 		}
+			// 	}
+			// }
+
 			// Check for collision with window edges
 			if (b->pos[0] < 0.0)
 			{
-				b->pos[0] += (float)g.xres;
+				b->pos[0] = 0.0f;
 			}
 			else if (b->pos[0] > (float)g.xres)
 			{
-				b->pos[0] -= (float)g.xres;
+				b->pos[0] = (float)g.xres;
 			}
-			else if (b->pos[1] < 0.0)
-			{
-				b->pos[1] += (float)g.yres;
-			}
-			else if (b->pos[1] > (float)g.yres)
-			{
-				b->pos[1] -= (float)g.yres;
-			}
+			// else if (b->pos[1] < 0.0)
+			// {
+			// 	b->pos[1] = (float)g.yres;
+			// }
+			// else if (b->pos[1] > (float)g.yres)
+			// {
+			// 	b->pos[1] -= (float)g.yres;
+			// }
 		}
 	}
 
@@ -134,7 +207,7 @@ Player::Player()
 
 Player::~Player()
 {
-	delete[] barr;
+	delete [] barr;
 }
 
 void Player::init()
@@ -143,14 +216,21 @@ void Player::init()
 	pos[1] = 40.0f;
 
 	vel[0] = vel[1] = 0.0f;
-	// 3 vertices of triangle-shaped player
-	verts[0][0] = -10.0f;
+	// rectangle shaped player
+	width = 15.0f;
+	height = 15.0f;
+
+	verts[0][0] = -15.0f;
 	verts[0][1] = 0.0f;
-	verts[1][0] = 0.0f;
+	verts[1][0] = -15.0f;
 	verts[1][1] = 30.0f;
-	verts[2][0] = 10.0f;
-	verts[2][1] = 0.0f;
+	verts[2][0] = 15.0f;
+	verts[2][1] = 30.0f;
+	verts[3][0] = 15.0f;
+	verts[3][1] = 0.0f;
+
 	jumpCount = 0;
+	enemyDetected = 0;
 	g.failed_landing = 0;
 	angle = 0.0;
 }
@@ -167,11 +247,19 @@ void Player::physics()
 	vel[1] -= GRAVITY;
 
 	// Check keys pressed now
-	if (g.keys[XK_Left])
-		vel[0] -= 0.8;
+	if (g.keys[XK_Left]) {
+		if (!enemyDetected)
+			vel[0] -= 0.8;
+		else 
+			vel[0] = 0.0;
+	}
 	// player.vel[0] -= 0.1;
-	if (g.keys[XK_Right])
-		vel[0] += 0.8;
+	if (g.keys[XK_Right]) {
+		if (!enemyDetected)
+			vel[0] += 0.8;
+		else 
+			vel[0] = 0.0;
+	}
 	// player.vel[0] += 0.1;
 	if (g.keys[XK_Up])
 		if (jumpCount < 2)
@@ -183,19 +271,20 @@ void Player::physics()
 	// Check for collision with window edges
 	if (pos[0] < 0.0)
 	{
-		pos[0] += (float)g.xres;
-		// player.pos[0] = 0.0f;
+		// pos[0] += (float)g.xres;
+		player.pos[0] = 0.0f;
 	}
 	else if (pos[0] > (float)g.xres)
 	{
-		pos[0] -= (float)g.xres;
-		// player.pos[0] = (float)g.xres;
+		// pos[0] -= (float)g.xres;
+		player.pos[0] = (float)g.xres;
 	}
 
 	// check for landing failure...
 	if (pos[1] < 0.0)
 	{
 		g.failed_landing = 1;
+		pos[1] = 0.0;
 	}
 }
 
@@ -204,54 +293,72 @@ void Player::draw_player()
 {
 	glPushMatrix();
 	glColor3ub(255, 255, 255);
+	if (enemyDetected)
+		glColor3ub(0, 0, 250);
 	if (g.failed_landing)
 		glColor3ub(250, 0, 0);
-	if (g.landed)
-		glColor3ub(0, 250, 0);
+	// draws the player
 	glTranslatef(pos[0], pos[1], 0.0f);
-	glRotated(angle, 0.0, 0.0, 1.0);
-	glBegin(GL_TRIANGLES);
-	for (int i = 0; i < 3; i++)
-	{
-		glVertex2f(verts[i][0], verts[i][1]);
-	}
+	glRotatef(angle, 0.0f, 0.0f, 1.0f);
+	glBegin(GL_QUADS);
+	glVertex2f(verts[0][0], verts[0][1]); 
+	glVertex2f(verts[1][0], verts[1][1]);
+	glVertex2f(verts[2][0], verts[2][1]);
+	glVertex2f(verts[3][0], verts[3][1]);
 	glEnd();
 }
 
 void dynamic_collision_detection()
 {
 	// check for collision with dynamic platforms
-	for (unsigned int i = 0; i < gameManager.platforms.size(); i++)
+	if (!player.enemyDetected)
 	{
-		Platform *platform = &gameManager.platforms[i];
-
-		if (player.pos[0] > (platform->pos[0] - platform->width) && player.pos[0] < (platform->pos[0] + platform->width))
+		for (unsigned int i = 0; i < gameManager.platforms.size(); i++)
 		{
-			if (player.pos[1] > (platform->pos[1] - platform->height) && player.pos[1] < (platform->pos[1] + platform->height))
+			Platform *platform = &gameManager.platforms[i];
+
+			if (platform->pType == 3)
 			{
-				// Player is colliding with platform
-				player.pos[1] = (platform->pos[1]) + platform->height;
-				player.vel[1] = 0.0;
-				player.vel[0] = 0.0;
-				player.jumpCount = 0;
+				if ((player.pos[0] + player.width > platform->pos[0] - platform->width && player.pos[0] <= platform->pos[0]) || 
+					(player.pos[0] - player.width < platform->pos[0] + platform->width && player.pos[0] >= platform->pos[0]))
+				{
+					if ((player.pos[1] - player.height <= platform->pos[1] + platform->height && player.pos[1] - player.height >= platform->pos[1]) || 
+						(player.pos[1] + player.height >= platform->pos[1] - platform->height && player.pos[1] + player.height <= platform->pos[1]))
+					{
+						player.enemyDetected = 1;
+						player.vel[1] = -8.0f;
+					}
+				}
+			}
 
-				if (platform->pType == 2)
+			if (player.pos[0] > (platform->pos[0] - platform->width) && player.pos[0] < (platform->pos[0] + platform->width))
+			{
+				if (player.pos[1] > (platform->pos[1] - platform->height) && player.pos[1] < (platform->pos[1] + platform->height))
 				{
-					platform->isLanded = true;
-				}
-				else if (platform->pType == 4) {
-					// Player touched black hole, fail landing
-					g.failed_landing = 1;
-				}
+					// Player is colliding with platform
+					player.pos[1] = (platform->pos[1]) + platform->height;
+					player.vel[1] = 0.0;
+					player.vel[0] = 0.0;
+					player.jumpCount = 0;
 
-				if (player.angle > 0.0 || player.angle < 0.0)
-				{
-					g.failed_landing = 1;
-				}
-				else
-				{
-					// Player landed successfully
-					// g.landed = 1;
+					if (platform->pType == 2)
+					{
+						platform->isLanded = true;
+					}
+					else if (platform->pType == 4) {
+						// Player touched black hole, fail landing
+						g.failed_landing = 1;
+					}
+
+					if (player.angle > 0.0 || player.angle < 0.0)
+					{
+						g.failed_landing = 1;
+					}
+					else
+					{
+						// Player landed successfully
+						// g.landed = 1;
+					}
 				}
 			}
 		}
