@@ -14,6 +14,7 @@ typedef float Vec[3];
 
 void dynamic_collision_detection();
 int count_render_function();
+int print_score();
 
 class Bullet
 {
@@ -44,6 +45,8 @@ public:
 	float width, height;
 	int jumpCount;
 	int enemyDetected;
+	int blackholeDetected;
+	int score;
 	// float thrust;
 	double angle;
 

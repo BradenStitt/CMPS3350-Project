@@ -88,45 +88,47 @@ void Bullet::physics()
 				if (testPlatform.hitCount >= 3)
 				{
 					testPlatform.isDestroyed = true;
+					player.score += 30;
 				}
 			}
 
 			/* bullet collision with dynamic enemies still needs to be tested */
 
-			// for (unsigned int j = 0; j < gameManager.platforms.size(); j++)
-			// {
-			// 	Platform *platform = &gameManager.platforms[j];
+			for (unsigned int j = 0; j < gameManager.platforms.size(); j++)
+			{
+				Platform *platform = &gameManager.platforms[j];
 
-			// 	if (platform->pType == 3)
-			// 	{
-			// 		if (player.pos[0] > platform->pos[0] - platform->width && player.pos[0] < platform->pos[0] + platform->width)
-			// 		{
-			// 			if (bullet.prevPosY >= platform->pos[1] - platform->height && b->pos[1] <= platform->pos[1] + platform->height) 
-			// 			{
-			// 				b->pos[1] = platform->pos[1] + platform->height;
-			// 				bullet.bulletHit = true;
-			// 			}
-			// 		}
+				if (platform->pType == 3)
+				{
+					if (player.pos[0] > platform->pos[0] - platform->width && player.pos[0] < platform->pos[0] + platform->width)
+					{
+						if (bullet.prevPosY >= platform->pos[1] - platform->height && b->pos[1] <= platform->pos[1] + platform->height) 
+						{
+							b->pos[1] = platform->pos[1] + platform->height;
+							bullet.bulletHit = true;
+						}
+					}
 				
-			// 		if (bullet.bulletHit)
-			// 		{
-			// 			platform->hitCount++;
+					if (bullet.bulletHit)
+					{
+						platform->hitCount++;
 
-			// 			// Remove the bullet
-			// 			if (i < player.nbullets - 1)
-			// 			{
-			// 				// Swap the current bullet with the last one and decrease the bullet count.
-			// 				memcpy(&player.barr[i], &player.barr[player.nbullets - 1], sizeof(Bullet));
-			// 			}
-			// 			player.nbullets--;
+						// Remove the bullet
+						if (i < player.nbullets - 1)
+						{
+							// Swap the current bullet with the last one and decrease the bullet count.
+							memcpy(&player.barr[i], &player.barr[player.nbullets - 1], sizeof(Bullet));
+						}
+						player.nbullets--;
 
-			// 			if (platform->hitCount >= 3)
-			// 			{
-			// 				platform->isDestroyed = true;
-			// 			}
-			// 		}
-			// 	}
-			// }
+						if (platform->hitCount >= 3)
+						{
+							platform->isDestroyed = true;
+							player.score += 30;
+						}
+					}
+				}
+			}
 
 			// Check for collision with window edges
 			if (b->pos[0] < 0.0)
@@ -231,7 +233,9 @@ void Player::init()
 
 	jumpCount = 0;
 	enemyDetected = 0;
+	blackholeDetected = 0;
 	g.failed_landing = 0;
+	score = 0;
 	angle = 0.0;
 }
 
@@ -292,11 +296,14 @@ void Player::physics()
 void Player::draw_player()
 {
 	glPushMatrix();
-	glColor3ub(255, 255, 255);
+	glColor3ub(0, 0, 0);
+	// glColor3ub(255, 255, 255);
 	if (enemyDetected)
-		glColor3ub(0, 0, 250);
+		glColor3ub(255, 165, 0); // orange
+	if (blackholeDetected)
+		glColor3ub(250, 0, 250); // purple
 	if (g.failed_landing)
-		glColor3ub(250, 0, 0);
+		glColor3ub(250, 0, 0); // red
 	// draws the player
 	glTranslatef(pos[0], pos[1], 0.0f);
 	glRotatef(angle, 0.0f, 0.0f, 1.0f);
@@ -311,13 +318,13 @@ void Player::draw_player()
 void dynamic_collision_detection()
 {
 	// check for collision with dynamic platforms
-	if (!player.enemyDetected)
+	if (!player.enemyDetected && !player.blackholeDetected)
 	{
 		for (unsigned int i = 0; i < gameManager.platforms.size(); i++)
 		{
 			Platform *platform = &gameManager.platforms[i];
 
-			if (platform->pType == 3)
+			if (platform->pType == 3 || platform->pType == 4)
 			{
 				if ((player.pos[0] + player.width > platform->pos[0] - platform->width && player.pos[0] <= platform->pos[0]) || 
 					(player.pos[0] - player.width < platform->pos[0] + platform->width && player.pos[0] >= platform->pos[0]))
@@ -325,39 +332,48 @@ void dynamic_collision_detection()
 					if ((player.pos[1] - player.height <= platform->pos[1] + platform->height && player.pos[1] - player.height >= platform->pos[1]) || 
 						(player.pos[1] + player.height >= platform->pos[1] - platform->height && player.pos[1] + player.height <= platform->pos[1]))
 					{
-						player.enemyDetected = 1;
-						player.vel[1] = -8.0f;
+						if (platform->pType == 3)
+						{
+							player.enemyDetected = 1;
+							player.vel[1] = -8.0f;
+						}
+
+						if (platform->pType == 4)
+						{
+							player.blackholeDetected = 1;
+							// player.vel[1] = -8.0f;
+						}
 					}
 				}
 			}
-
-			if (player.pos[0] > (platform->pos[0] - platform->width) && player.pos[0] < (platform->pos[0] + platform->width))
+			else 
 			{
-				if (player.pos[1] > (platform->pos[1] - platform->height) && player.pos[1] < (platform->pos[1] + platform->height))
+				if (player.pos[0] > (platform->pos[0] - platform->width) && player.pos[0] < (platform->pos[0] + platform->width))
 				{
-					// Player is colliding with platform
-					player.pos[1] = (platform->pos[1]) + platform->height;
-					player.vel[1] = 0.0;
-					player.vel[0] = 0.0;
-					player.jumpCount = 0;
+					if (player.pos[1] > (platform->pos[1] - platform->height) && player.pos[1] < (platform->pos[1] + platform->height))
+					{
+						// Player is colliding with platform
+						player.pos[1] = (platform->pos[1]) + platform->height;
+						player.vel[1] = 0.0;
+						player.vel[0] = 0.0;
+						player.jumpCount = 0;
+						player.score += 10;
 
-					if (platform->pType == 2)
-					{
-						platform->isLanded = true;
-					}
-					else if (platform->pType == 4) {
-						// Player touched black hole, fail landing
-						g.failed_landing = 1;
-					}
+						if (platform->pType == 2)
+						{
+							platform->isLanded = true;
+							player.score += 10;
+						}
 
-					if (player.angle > 0.0 || player.angle < 0.0)
-					{
-						g.failed_landing = 1;
-					}
-					else
-					{
-						// Player landed successfully
-						// g.landed = 1;
+						if (player.angle > 0.0 || player.angle < 0.0)
+						{
+							g.failed_landing = 1;
+						}
+						else
+						{
+							// Player landed successfully
+							// g.landed = 1;
+						}
 					}
 				}
 			}
@@ -369,4 +385,9 @@ int count_render_function()
 {
 	renderCount++;
 	return renderCount;
+}
+
+int print_score()
+{
+	return player.score;
 }

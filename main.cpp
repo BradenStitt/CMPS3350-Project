@@ -28,6 +28,7 @@ GameManager gameManager(10); // Adjust the number of platforms as needed
 Player player;
 Bullet bullet;
 Platform testPlatform;
+Platform blackholeTest;
 
 // floating point random numbers
 typedef float Flt;
@@ -328,7 +329,19 @@ void physics()
 			player.vel[1] = -8.0;
 		}
 	}
-	
+
+	// static blackhole collision
+	if ((player.pos[0] + player.width > blackholeTest.pos[0] - blackholeTest.width && player.pos[0] <= blackholeTest.pos[0]) || 
+    	(player.pos[0] - player.width < blackholeTest.pos[0] + blackholeTest.width && player.pos[0] >= blackholeTest.pos[0]))
+	{
+		if ((player.pos[1] - player.height <= blackholeTest.pos[1] + blackholeTest.height && player.pos[1] - player.height >= blackholeTest.pos[1]) || 
+			(player.pos[1] + player.height >= blackholeTest.pos[1] - blackholeTest.height && player.pos[1] + player.height <= blackholeTest.pos[1]))
+		{
+			player.blackholeDetected = 1;
+			//player.vel[1] = -8.0;
+		}
+	}
+		
 }
 
 void render()
@@ -394,7 +407,7 @@ void render()
 	// Draw the platform at the specified location
 	testPlatform.draw_platform_fixed(testPlatform.pos[0], testPlatform.pos[1]);
 
-	Platform blackholeTest;
+	//Platform blackholeTest;
 	blackholeTest.pos[0] = 100.0f;
 	blackholeTest.pos[1] = 200.0f;
 	blackholeTest.pType = 4;
@@ -460,6 +473,8 @@ void render()
 	{
 		// show crash graphics here...
 	}
+	
+	cout << "Score: " << print_score() << endl;
 
 	if (g.showNerdStats)
 	{

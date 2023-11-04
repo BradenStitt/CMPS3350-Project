@@ -135,10 +135,19 @@ void Platform::draw_platform_random()
         glColor3ub(165, 42, 42); // brown
     }
     else if (pType == 3) {
-        glColor3ub(250, 0, 0); // red
-        // set it to a square
-        width = 15.0f;
-        height = 15.0f;
+
+        if (!isDestroyed) 
+        {
+            glColor3ub(250, 0, 0); // red
+            // set it to a square
+            width = 15.0f;
+            height = 15.0f;
+        }
+        else 
+        {
+            width = 0.0f;
+            height = 0.0f;
+        }
     }
     else if (pType == 4) {
         glColor3ub(0, 255, 0);
@@ -176,7 +185,7 @@ void Platform::physics_platform()
 
         // Snehal's Test on Mac
         pos[1] -= 2.0f;
-        // usleep(20000);
+        usleep(20000);
     }
 
     // If the platform is a moving platform or an enemy, move it side to side
