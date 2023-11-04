@@ -1,7 +1,7 @@
 /**
  * Author:    Joseph Rivera
  * Created:   09-25-2023
- *
+ * 
  **/
 
 #include <iostream>
@@ -23,53 +23,70 @@
 
 using namespace std;
 
-extern Global g;
-
 int physics_count = 0;
 
-Background background;
+//StartMenu menu;
 
-Background::Background()
-{
-}
-Background::~Background()
-{
-}
+//Background background;
 
-GLXContext background_display(Display *dis, Window root)
-{
-	GLint att[] = {GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None};
-	if (dis == NULL)
-	{
-		cout << "\n\tcannot connect to X server\n"
-			 << endl;
-		exit(EXIT_FAILURE);
+Background::Background(const char *back) {
+if (back[0] == '\0')
+		return;
+	char name[40];
+	strcpy(name, back);
+	int slen = strlen(name);
+	name[slen-4] = '\0';
+	char ppmname[80];
+	sprintf(ppmname,"%s.ppm", name);
+	char ts[100];
+	sprintf(ts, "convert %s %s", back, ppmname);
+	system(ts);
+	FILE *fpi = fopen(ppmname, "r");
+	if (fpi) {
+		char line[200];
+		fgets(line, 200, fpi);
+		fgets(line, 200, fpi);
+		//skip comments and blank lines
+		while (line[0] == '#' || strlen(line) < 2)
+			fgets(line, 200, fpi);
+		sscanf(line, "%i %i", &width, &height);
+		fgets(line, 200, fpi);
+		//get pixel data
+		int n = width * height * 3;			
+		data = new unsigned char[n];			
+		for (int i=0; i<n; i++)
+			data[i] = fgetc(fpi);
+		fclose(fpi);
+	} else {
+		printf("ERROR opening image: %s\n", ppmname);
+		exit(0);
 	}
-	background.vi = glXChooseVisual(dis, 0, att);
-	if (background.vi == NULL)
-	{
-		cout << "\n\tno appropriate visual found\n"
-			 << endl;
-		exit(EXIT_FAILURE);
-	}
-	Colormap cmap = XCreateColormap(dis, root, background.vi->visual, AllocNone);
-
-	background.swa.colormap = cmap;
-	background.swa.event_mask =
-		ExposureMask | KeyPressMask | KeyReleaseMask |
-		ButtonPress | ButtonReleaseMask |
-		PointerMotionMask |
-		StructureNotifyMask | SubstructureNotifyMask;
-
-	return glXCreateContext(dis, background.vi, NULL, GL_TRUE);
+	unlink(ppmname);
+}
+Background::~Background() {
+	delete [] data;
 }
 
-Window create_window(Display *dis, Window root)
-{
-	background.win = XCreateWindow(dis, root, 0, 0, background.w, background.h, 0, background.vi->depth,
-								   InputOutput, background.vi->visual, CWColormap | CWEventMask, &background.swa);
-	return background.win;
-}
+
+// StartMenu::StartMenu(Display* display, Window window) {
+//     dpy = display;
+//     win = window;
+    
+// }
+
+// StartMenu::~StartMenu() {
+    
+// }
+
+// void StartMenu::show() {
+
+// }
+
+// int StartMenu::handleInput(XEvent *e) {
+    
+//     return 0; 
+// }
+
 
 int count_physics_function()
 {

@@ -29,6 +29,7 @@ Player player;
 Bullet bullet;
 Platform testPlatform;
 Platform blackholeTest;
+Extra t;
 
 // floating point random numbers
 typedef float Flt;
@@ -78,6 +79,7 @@ public:
 } x11;
 
 // Function prototypes
+Background img[1] = {"better.jpeg"};
 void init_opengl(void);
 void physics(void);
 void render(void);
@@ -308,6 +310,21 @@ void init_opengl(void)
 	// Do this to allow fonts
 	glEnable(GL_TEXTURE_2D);
 	initialize_fonts();
+	
+	t.tex.backImage = &img[0];
+	//create opengl texture elements
+	glGenTextures(1, &t.tex.backTexture);
+	int w = t.tex.backImage->width;
+	int h = t.tex.backImage->height;
+	glBindTexture(GL_TEXTURE_2D, t.tex.backTexture);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0,
+							GL_RGB, GL_UNSIGNED_BYTE, t.tex.backImage->data);
+	t.tex.xc[0] = 0.0;
+	t.tex.xc[1] = 1.0;
+	t.tex.yc[0] = 0.0;
+	t.tex.yc[1] = 1.0;
 }
 
 void physics()
@@ -315,6 +332,8 @@ void physics()
 	count_physics_function();
 
 	// Player physics
+	t.tex.yc[0] -= 0.0033;
+	t.tex.yc[1] -= 0.0033;
 	player.physics();
 	bullet.physics();
 
@@ -349,34 +368,14 @@ void render()
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	// Draw Grid
-	glPushMatrix();
+	glColor3f(1.0, 1.0, 1.0);
+	glBindTexture(GL_TEXTURE_2D, t.tex.backTexture);
 	glBegin(GL_QUADS);
-	// Set the background color of the grid to black
-	glColor3ub(0, 0, 0);
-	// background_display();
-
-	glVertex2i(0, 0);
-	glVertex2i(g.xres, 0);
-	glVertex2i(g.xres, g.yres);
-	glVertex2i(0, g.yres);
-	// Set the color of the grid lines to gray
-	glColor3ub(90, 90, 90);
-	for (int i = 0; i <= g.xres; i += 20)
-	{
-		glBegin(GL_LINES);
-		glVertex2i(i, 0);
-		glVertex2i(i, g.yres);
-		glEnd();
-	}
-	for (int i = 0; i <= g.yres; i += 20)
-	{
-		glBegin(GL_LINES);
-		glVertex2i(0, i);
-		glVertex2i(g.xres, i);
-		glEnd();
-	}
+		glTexCoord2f(t.tex.xc[0], t.tex.yc[1]); glVertex2i(0,      0);
+		glTexCoord2f(t.tex.xc[0], t.tex.yc[0]); glVertex2i(0,      g.yres);
+		glTexCoord2f(t.tex.xc[1], t.tex.yc[0]); glVertex2i(g.xres, g.yres);
+		glTexCoord2f(t.tex.xc[1], t.tex.yc[1]); glVertex2i(g.xres, 0);
 	glEnd();
-	glPopMatrix();
 
 
 	// Draw the platform
