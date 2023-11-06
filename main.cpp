@@ -331,9 +331,10 @@ void physics()
 {
 	count_physics_function();
 
-	// Player physics
 	t.tex.yc[0] -= 0.0033;
 	t.tex.yc[1] -= 0.0033;
+	
+	// Player physics
 	player.physics();
 	bullet.physics();
 

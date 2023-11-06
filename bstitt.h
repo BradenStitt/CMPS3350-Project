@@ -22,9 +22,10 @@ public:
     float velocity;
     bool isLanded;
     bool blackholeExists;
+    bool isDestroyed;
+    int countLanding;
     int disappearTimer;
     int hitCount;
-    int isDestroyed;
 
     Platform();
     void draw_platform_fixed(float x, float y);

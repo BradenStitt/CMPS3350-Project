@@ -8,7 +8,7 @@ extern double timeDiff(struct timespec *start, struct timespec *end);
 extern void timeCopy(struct timespec *dest, struct timespec *source);
 
 #define rnd() (float)rand() / (float)RAND_MAX
-const float GRAVITY = 0.4;
+const float GRAVITY = 0.5;
 const int MAX_BULLETS = 5;
 typedef float Vec[3];
 
@@ -33,7 +33,6 @@ public:
 
 class Player
 {
-	// the player rocket
 public:
 	Bullet *barr;
 	int nbullets;

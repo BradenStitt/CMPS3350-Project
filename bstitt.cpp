@@ -64,6 +64,8 @@ Platform::Platform()
     height = 8.0f;
     velocity = 5.0f;
     isLanded = false;
+    isDestroyed = false;
+    countLanding = 0;
     disappearTimer = 0;
     hitCount = 0;
 }

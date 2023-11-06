@@ -21,7 +21,6 @@ struct timespec bt;
 extern Global g;
 extern GameManager gameManager;
 extern Player player;
-extern Bullet bullet;
 extern Platform testPlatform;
 
 int renderCount = 0;
@@ -36,9 +35,33 @@ void Bullet::physics()
 	struct timespec bt;
 	clock_gettime(CLOCK_REALTIME, &bt);
 
+	if (g.keys[XK_space])
+	{
+		// Shoot a bullet...
+		if (player.nbullets < MAX_BULLETS)
+		{
+			Bullet *b = &player.barr[player.nbullets];
+			timeCopy(&b->time, &bt);
+
+			// Adjust the y-position so it's just above the player with more distance
+			b->pos[1] = 38.0f;
+			// Set bullet velocity to move farther upwards
+			b->vel[0] = 0.0f;
+			b->vel[1] = 8.0f + rnd() * 0.05f; // Adjust for more spread
+			// b->vel[1] = 10.0f; // Adjust as needed
+			b->color[0] = 1.0f;
+			b->color[1] = 1.0f;
+			b->color[2] = 1.0f;
+			++player.nbullets;
+		}
+		// Clear the space key state to continuously generate bullets
+		g.keys[XK_space] = 0;
+	}
+
 	for (int i = player.nbullets - 1; i >= 0; i--)
 	{
 		Bullet *b = &player.barr[i];
+		b->bulletHit = false;
 		// How long has the bullet been alive?
 		double ts = timeDiff(&b->time, &bt);
 
@@ -58,22 +81,20 @@ void Bullet::physics()
 			b->pos[0] += b->vel[0];
 			b->pos[1] += b->vel[1];
 
-			bullet.bulletHit = false;
-
 			// Calculate previous position of the bullet.
-			bullet.prevPosY = b->pos[1] - b->vel[1];
+			b->prevPosY = b->pos[1] - b->vel[1];
 
 			// Check for collision with testPlatform
 			if (player.pos[0] > testPlatform.pos[0] - testPlatform.width && player.pos[0] < testPlatform.pos[0] + testPlatform.width)
 			{
-				if (bullet.prevPosY >= testPlatform.pos[1] - testPlatform.height && b->pos[1] <= testPlatform.pos[1] + testPlatform.height) 
+				if (b->prevPosY >= testPlatform.pos[1] - testPlatform.height && b->pos[1] <= testPlatform.pos[1] + testPlatform.height) 
 				{
 					b->pos[1] = testPlatform.pos[1] + testPlatform.height;
-                    bullet.bulletHit = true;
+                    b->bulletHit = true;
                 }
 			}
 		
-			if (bullet.bulletHit)
+			if (b->bulletHit)
 			{
 				testPlatform.hitCount++;
 
@@ -102,14 +123,14 @@ void Bullet::physics()
 				{
 					if (player.pos[0] > platform->pos[0] - platform->width && player.pos[0] < platform->pos[0] + platform->width)
 					{
-						if (bullet.prevPosY >= platform->pos[1] - platform->height && b->pos[1] <= platform->pos[1] + platform->height) 
+						if (b->prevPosY >= platform->pos[1] - platform->height && b->pos[1] <= platform->pos[1] + platform->height) 
 						{
 							b->pos[1] = platform->pos[1] + platform->height;
-							bullet.bulletHit = true;
+							b->bulletHit = true;
 						}
 					}
 				
-					if (bullet.bulletHit)
+					if (b->bulletHit)
 					{
 						platform->hitCount++;
 
@@ -149,29 +170,6 @@ void Bullet::physics()
 			// }
 		}
 	}
-
-	if (g.keys[XK_space])
-	{
-		// Shoot a bullet...
-		if (player.nbullets < MAX_BULLETS)
-		{
-			Bullet *b = &player.barr[player.nbullets];
-			timeCopy(&b->time, &bt);
-
-			// Adjust the y-position so it's just above the player with more distance
-			b->pos[1] = 38.0f;
-			// Set bullet velocity to move farther upwards
-			b->vel[0] = 0.0f;
-			b->vel[1] = 8.0f + rnd() * 0.05f; // Adjust for more spread
-			// b->vel[1] = 10.0f; // Adjust as needed
-			b->color[0] = 1.0f;
-			b->color[1] = 1.0f;
-			b->color[2] = 1.0f;
-			++player.nbullets;
-		}
-		// Clear the space key state to continuously generate bullets
-		g.keys[XK_space] = 0;
-	}
 }
 
 // Draws the bullet
@@ -182,6 +180,7 @@ void Bullet::draw_bullet()
 		Bullet *b = &player.barr[i];
 
 		glColor3f(1.0, 0.0, 0.0); // red
+		//glColor3f(0.0, 0.0, 1.0);  // blue
 
 		// Adjust the size of the bullet by changing the vertex positions
 		glBegin(GL_POINTS);
@@ -353,11 +352,18 @@ void dynamic_collision_detection()
 					if (player.pos[1] > (platform->pos[1] - platform->height) && player.pos[1] < (platform->pos[1] + platform->height))
 					{
 						// Player is colliding with platform
+						platform->isLanded = true;
+						platform->countLanding++;
+
 						player.pos[1] = (platform->pos[1]) + platform->height;
 						player.vel[1] = 0.0;
 						player.vel[0] = 0.0;
 						player.jumpCount = 0;
-						player.score += 10;
+
+						if (platform->countLanding == 1)
+						{
+							player.score += 10;
+						}
 
 						if (platform->pType == 2)
 						{
