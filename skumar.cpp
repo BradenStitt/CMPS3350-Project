@@ -368,7 +368,6 @@ void dynamic_collision_detection()
 						if (platform->pType == 2)
 						{
 							platform->isLanded = true;
-							player.score += 10;
 						}
 
 						if (player.angle > 0.0 || player.angle < 0.0)
