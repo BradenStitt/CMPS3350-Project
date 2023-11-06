@@ -29,7 +29,7 @@ Player player;
 Bullet bullet;
 Platform testPlatform;
 Platform blackholeTest;
-Extra t;
+Texture t;
 
 // floating point random numbers
 typedef float Flt;

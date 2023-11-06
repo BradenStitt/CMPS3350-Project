@@ -25,7 +25,7 @@ class Background {
     
 };
 
-class Texture {
+class Picture {
 public:
 	Background *backImage;
 	GLuint backTexture;
@@ -33,9 +33,9 @@ public:
 	float yc[2];
 };
 
-class Extra {
+class Texture {
 public:
-    Texture tex;
+    Picture tex;
 };
 
 // class StartMenu {
