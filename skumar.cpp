@@ -360,7 +360,7 @@ void dynamic_collision_detection()
 						player.vel[0] = 0.0;
 						player.jumpCount = 0;
 
-						if (platform->countLanding == 1)
+						if (platform->countLanding == 1 && platform->pType != 2)
 						{
 							player.score += 10;
 						}
