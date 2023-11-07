@@ -183,10 +183,10 @@ void Platform::physics_platform()
     // Move the platform down the screen
     if (pos[1] > 0.0f - height && pType != 4)
     {
-        // pos[1] -= 5.0f;
+        pos[1] -= 4.0f;
 
         // Snehal's Test on Mac
-        pos[1] -= 2.0f;
+        // pos[1] -= 2.0f;
         usleep(20000);
     }
 
