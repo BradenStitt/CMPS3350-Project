@@ -386,6 +386,17 @@ void dynamic_collision_detection()
 	}
 }
 
+void blackhole_screen()
+{
+	glColor3f(0.0f, 0.0f, 0.0f);
+	glBegin(GL_QUADS);
+	glVertex2i(0, 0);
+	glVertex2i(0, g.yres);
+	glVertex2i(g.xres, g.yres);
+	glVertex2i(g.xres, 0);
+	glEnd();
+}
+
 int count_render_function()
 {
 	renderCount++;

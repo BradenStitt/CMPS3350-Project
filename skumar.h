@@ -13,6 +13,7 @@ const int MAX_BULLETS = 5;
 typedef float Vec[3];
 
 void dynamic_collision_detection();
+void blackhole_screen();
 int count_render_function();
 int print_score();
 
