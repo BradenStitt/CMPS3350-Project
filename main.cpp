@@ -31,7 +31,7 @@ Platform testPlatform;
 Platform blackholeTest;
 Texture t;
 StartMenu startMenu;
-
+Enemy enemy;
 // floating point random numbers
 typedef float Flt;
 
@@ -431,6 +431,9 @@ void render()
 			
 			// Draw Player
 			player.draw_player();
+
+			/* Draw the enemy */
+			enemy.drawEnemy();
 
 			if (!player.enemyDetected)
 			{

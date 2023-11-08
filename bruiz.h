@@ -7,4 +7,20 @@ using namespace std;
 
 extern int time_since_key_press(const bool get);
 
+class Enemy
+{
+public:
+
+    float pos[2];
+    float vel[2];
+    float verts[4][2];
+    float width, height;
+
+    Enemy();
+    ~Enemy();
+    void enemyPhysics();
+    void drawEnemy();
+
+};
+
 #endif

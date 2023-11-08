@@ -107,7 +107,7 @@ void StartMenu::showStartScreen() {
 	r.bot -= 2;
 	ggprint8b(&r, 16, 0x00000000, "                                  Click 'P' to Start");
 	r.bot -= 370;
-	ggprint8b(&r, 16, 0x00000000, "        Created by: Snehal Kumar, Bradon Stitt & Joseph Rivera ");
+	ggprint8b(&r, 16, 0x00000000, "        Created by: Snehal Kumar, Brandon Stitt & Joseph Rivera ");
 
 	
 	glPopMatrix();
