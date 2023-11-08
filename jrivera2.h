@@ -38,17 +38,13 @@ public:
     Picture tex;
 };
 
-// class StartMenu {
-// public:
-//     StartMenu(Display* display, Window window);
-//     ~StartMenu();
+class StartMenu {
+public:
+     StartMenu();
+     ~StartMenu();
     
-//     void show();
-//     int handleInput(XEvent *e);
+    void showStartScreen();
     
-// private:
-//     Display* dpy;
-//     Window win;
     
-// };
+};
 #endif

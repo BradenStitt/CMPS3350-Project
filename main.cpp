@@ -30,6 +30,7 @@ Bullet bullet;
 Platform testPlatform;
 Platform blackholeTest;
 Texture t;
+StartMenu startMenu;
 
 // floating point random numbers
 typedef float Flt;
@@ -79,6 +80,7 @@ public:
 } x11;
 
 // Function prototypes
+int inStartMenu = 1;
 Background img[1] = {"better.jpeg"};
 void init_opengl(void);
 void physics(void);
@@ -108,15 +110,17 @@ int main()
 			x11.check_mouse(&e);
 			done = x11.check_keys(&e);
 		}
-		physics();
+		//physics();
 		render();
-
-		if (!player.blackholeDetected) 
-		{
-			// Update physics for platforms
-			gameManager.updatePhysics();
-			// Render the platforms
-			gameManager.render();
+		if (!inStartMenu){
+			physics();
+			if (!player.blackholeDetected) 
+			{
+				// Update physics for platforms
+				gameManager.updatePhysics();
+				// Render the platforms
+				gameManager.render();
+			}
 		}
 
 		x11.swapBuffers();
@@ -369,148 +373,152 @@ void physics()
 void render()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
+	if (inStartMenu) {
+            // Display the start menu.
+            startMenu.showStartScreen();
+        
+	} else {
 
-	if (player.blackholeDetected)
-	{
-		blackhole_screen();
-	} 
-	else 
-	{
-		// Draw Grid
-		glColor3f(1.0, 1.0, 1.0);
-		glBindTexture(GL_TEXTURE_2D, t.tex.backTexture);
-		glBegin(GL_QUADS);
-			glTexCoord2f(t.tex.xc[0], t.tex.yc[1]); glVertex2i(0,      0);
-			glTexCoord2f(t.tex.xc[0], t.tex.yc[0]); glVertex2i(0,      g.yres);
-			glTexCoord2f(t.tex.xc[1], t.tex.yc[0]); glVertex2i(g.xres, g.yres);
-			glTexCoord2f(t.tex.xc[1], t.tex.yc[1]); glVertex2i(g.xres, 0);
-		glEnd();
-
-
-		// Draw the platform
-		Platform platform; // Declare an instance of the Platform class
-
-		// Set the position explicitly
-		platform.pos[0] = 100.0f;
-		platform.pos[1] = 20.0f;
-
-		// Draw the platform at the specified location
-		platform.draw_platform_fixed(platform.pos[0], platform.pos[1]);
-
-		// Draw the platform 2
-		Platform platform2; // Declare an instance of the Platform class
-
-		// Set the position explicitly
-		platform2.pos[0] = 200.0f;
-		platform2.pos[1] = 70.0f;
-
-		// Draw the platform at the specified location
-		platform2.draw_platform_fixed(platform2.pos[0], platform2.pos[1]);
-
-		// Draw the test platform
-		// Platform testPlatform; // Declare an instance of the Platform class
-		testPlatform.pos[0] = 100.0f;
-		testPlatform.pos[1] = 150.0f;
-		testPlatform.pType = 3;
-		// Draw the platform at the specified location
-		testPlatform.draw_platform_fixed(testPlatform.pos[0], testPlatform.pos[1]);
-
-		//Platform blackholeTest;
-		blackholeTest.pos[0] = 100.0f;
-		blackholeTest.pos[1] = 200.0f;
-		blackholeTest.pType = 4;
-		blackholeTest.draw_platform_fixed(blackholeTest.pos[0], blackholeTest.pos[1]);
-		
-		
-		// Draw Player
-		player.draw_player();
-
-		if (!player.enemyDetected)
+		if (player.blackholeDetected)
 		{
-			if (player.pos[0] > (pf.pos[0] - pf.width) && player.pos[0] < (pf.pos[0] + pf.width))
-			{
-				if (player.pos[1] > (pf.pos[1] - pf.height) && player.pos[1] < (pf.pos[1] + pf.height))
-				{
-					player.pos[1] = (pf.pos[1]) + pf.height;
-					player.vel[1] = 0.0;
-					player.vel[0] = 0.0;
-					player.jumpCount = 0;
-
-					if (player.angle > 0.0 || player.angle < 0.0)
-					{
-						g.failed_landing = 1;
-					}
-					else
-					{
-						// g.landed = 1;
-					}
-				}
-			}
-		}
-
-		if (!player.enemyDetected)
-		{
-			if (player.pos[0] > (pf.pos[0] + 100 - pf.width) && player.pos[0] < (pf.pos[0] + 100 + pf.width))
-			{
-				if (player.pos[1] > (pf.pos[1] + 50 - pf.height) && player.pos[1] < (pf.pos[1] + 50 + pf.height))
-				{
-					player.pos[1] = pf.pos[1] + 50 + pf.height;
-					player.vel[1] = 0.0;
-					player.vel[0] = 0.0;
-					player.jumpCount = 0;
-
-					if (player.angle > 0.0 || player.angle < 0.0)
-					{
-						g.failed_landing = 1;
-					}
-					else
-					{
-						// g.landed = 1;
-					}
-				}
-			}
-		}
-
-		// check for collision with dynamic platforms
-		dynamic_collision_detection();
-
-		// Draw the bullets
-		bullet.draw_bullet();
-
-		if (g.failed_landing)
-		{
-			// show crash graphics here...
-		}
-		
-		cout << "Score: " << print_score() << endl;
-
-		if (g.showNerdStats)
-		{
-			// Draw a box around the nerd stats
-			glColor3ub(90, 90, 90); // Set the vertex color to gray
-			glPushMatrix();
-			glTranslatef(20.0f, 20.0f, 0.0f);
-			int w = 200;
-			int h = 100;
+			blackhole_screen();
+		} else {
+			// Draw Grid
+			glColor3f(1.0, 1.0, 1.0);
+			glBindTexture(GL_TEXTURE_2D, t.tex.backTexture);
 			glBegin(GL_QUADS);
-			glVertex2f(0, 0);
-			glVertex2f(0, h);
-			glVertex2f(w, h);
-			glVertex2f(w, 0);
+				glTexCoord2f(t.tex.xc[0], t.tex.yc[1]); glVertex2i(0,      0);
+				glTexCoord2f(t.tex.xc[0], t.tex.yc[0]); glVertex2i(0,      g.yres);
+				glTexCoord2f(t.tex.xc[1], t.tex.yc[0]); glVertex2i(g.xres, g.yres);
+				glTexCoord2f(t.tex.xc[1], t.tex.yc[1]); glVertex2i(g.xres, 0);
 			glEnd();
-			glPopMatrix();
-			r.bot = 130;
-			r.left = 20;
-			r.center = 0;
-			ggprint8b(&r, 24, 0x0055ff55, " ");
-			ggprint8b(&r, 12, 0x0055ff55, " Nerd Stats...");
-			ggprint8b(&r, 12, 0x00ffff00, " Total Running Time: %i", total_running_time(true));
-			ggprint8b(&r, 12, 0x00ffff00, " Time Since Key Press: %i", time_since_key_press(true));
-			ggprint8b(&r, 12, 0x00ffff00, " Time Since Mouse Movement: %i", time_since_mouse_moved(true));
-			ggprint8b(&r, 12, 0x00ffff00, " Number of Physics() Calls: %i", count_physics_function());
-			ggprint8b(&r, 12, 0x00ffff00, " Number of Render() Calls: %i", count_render_function());
-		}
-		glPopMatrix();
 
+
+			// Draw the platform
+			Platform platform; // Declare an instance of the Platform class
+
+			// Set the position explicitly
+			platform.pos[0] = 100.0f;
+			platform.pos[1] = 20.0f;
+
+			// Draw the platform at the specified location
+			platform.draw_platform_fixed(platform.pos[0], platform.pos[1]);
+
+			// Draw the platform 2
+			Platform platform2; // Declare an instance of the Platform class
+
+			// Set the position explicitly
+			platform2.pos[0] = 200.0f;
+			platform2.pos[1] = 70.0f;
+
+			// Draw the platform at the specified location
+			platform2.draw_platform_fixed(platform2.pos[0], platform2.pos[1]);
+
+			// Draw the test platform
+			// Platform testPlatform; // Declare an instance of the Platform class
+			testPlatform.pos[0] = 100.0f;
+			testPlatform.pos[1] = 150.0f;
+			testPlatform.pType = 3;
+			// Draw the platform at the specified location
+			testPlatform.draw_platform_fixed(testPlatform.pos[0], testPlatform.pos[1]);
+
+			//Platform blackholeTest;
+			blackholeTest.pos[0] = 100.0f;
+			blackholeTest.pos[1] = 200.0f;
+			blackholeTest.pType = 4;
+			blackholeTest.draw_platform_fixed(blackholeTest.pos[0], blackholeTest.pos[1]);
+			
+			
+			// Draw Player
+			player.draw_player();
+
+			if (!player.enemyDetected)
+			{
+				if (player.pos[0] > (pf.pos[0] - pf.width) && player.pos[0] < (pf.pos[0] + pf.width))
+				{
+					if (player.pos[1] > (pf.pos[1] - pf.height) && player.pos[1] < (pf.pos[1] + pf.height))
+					{
+						player.pos[1] = (pf.pos[1]) + pf.height;
+						player.vel[1] = 0.0;
+						player.vel[0] = 0.0;
+						player.jumpCount = 0;
+
+						if (player.angle > 0.0 || player.angle < 0.0)
+						{
+							g.failed_landing = 1;
+						}
+						else
+						{
+							// g.landed = 1;
+						}
+					}
+				}
+			}
+
+			if (!player.enemyDetected)
+			{
+				if (player.pos[0] > (pf.pos[0] + 100 - pf.width) && player.pos[0] < (pf.pos[0] + 100 + pf.width))
+				{
+					if (player.pos[1] > (pf.pos[1] + 50 - pf.height) && player.pos[1] < (pf.pos[1] + 50 + pf.height))
+					{
+						player.pos[1] = pf.pos[1] + 50 + pf.height;
+						player.vel[1] = 0.0;
+						player.vel[0] = 0.0;
+						player.jumpCount = 0;
+
+						if (player.angle > 0.0 || player.angle < 0.0)
+						{
+							g.failed_landing = 1;
+						}
+						else
+						{
+							// g.landed = 1;
+						}
+					}
+				}
+			}
+
+			// check for collision with dynamic platforms
+			dynamic_collision_detection();
+
+			// Draw the bullets
+			bullet.draw_bullet();
+
+			if (g.failed_landing)
+			{
+				// show crash graphics here...
+			}
+			
+			cout << "Score: " << print_score() << endl;
+
+			if (g.showNerdStats)
+			{
+				// Draw a box around the nerd stats
+				glColor3ub(90, 90, 90); // Set the vertex color to gray
+				glPushMatrix();
+				glTranslatef(20.0f, 20.0f, 0.0f);
+				int w = 200;
+				int h = 100;
+				glBegin(GL_QUADS);
+				glVertex2f(0, 0);
+				glVertex2f(0, h);
+				glVertex2f(w, h);
+				glVertex2f(w, 0);
+				glEnd();
+				glPopMatrix();
+				r.bot = 130;
+				r.left = 20;
+				r.center = 0;
+				ggprint8b(&r, 24, 0x0055ff55, " ");
+				ggprint8b(&r, 12, 0x0055ff55, " Nerd Stats...");
+				ggprint8b(&r, 12, 0x00ffff00, " Total Running Time: %i", total_running_time(true));
+				ggprint8b(&r, 12, 0x00ffff00, " Time Since Key Press: %i", time_since_key_press(true));
+				ggprint8b(&r, 12, 0x00ffff00, " Time Since Mouse Movement: %i", time_since_mouse_moved(true));
+				ggprint8b(&r, 12, 0x00ffff00, " Number of Physics() Calls: %i", count_physics_function());
+				ggprint8b(&r, 12, 0x00ffff00, " Number of Render() Calls: %i", count_render_function());
+			}
+			glPopMatrix();
+
+		}
 	}
 }

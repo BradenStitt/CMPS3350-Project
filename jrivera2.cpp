@@ -20,8 +20,14 @@
 #include "bstitt.h"
 #include "jrivera2.h"
 #include "global.h"
+#include "fonts.h"
 
 using namespace std;
+
+extern Global g;
+extern Rect r;
+extern Texture t;
+extern Texture d;
 
 int physics_count = 0;
 
@@ -30,7 +36,7 @@ int physics_count = 0;
 //Background background;
 
 Background::Background(const char *back) {
-if (back[0] == '\0')
+	if (back[0] == '\0')
 		return;
 	char name[40];
 	strcpy(name, back);
@@ -42,6 +48,7 @@ if (back[0] == '\0')
 	sprintf(ts, "convert %s %s", back, ppmname);
 	system(ts);
 	FILE *fpi = fopen(ppmname, "r");
+
 	if (fpi) {
 		char line[200];
 		fgets(line, 200, fpi);
@@ -53,7 +60,7 @@ if (back[0] == '\0')
 		fgets(line, 200, fpi);
 		//get pixel data
 		int n = width * height * 3;			
-		data = new unsigned char[n];			
+		data = new unsigned char[n];
 		for (int i=0; i<n; i++)
 			data[i] = fgetc(fpi);
 		fclose(fpi);
@@ -61,31 +68,51 @@ if (back[0] == '\0')
 		printf("ERROR opening image: %s\n", ppmname);
 		exit(0);
 	}
+
 	unlink(ppmname);
 }
 Background::~Background() {
 	delete [] data;
 }
 
-
-// StartMenu::StartMenu(Display* display, Window window) {
-//     dpy = display;
-//     win = window;
+StartMenu::StartMenu() {
     
-// }
+}
 
-// StartMenu::~StartMenu() {
+StartMenu::~StartMenu() {
     
-// }
+}
 
-// void StartMenu::show() {
+void StartMenu::showStartScreen() {
+    // This function displays the start screen on the game window
+	
+	r.center = 0;
+	r.bot = g.yres - 20;
+	r.left = 10;
 
-// }
+	glColor3f(1.0, 1.0, 1.0);
+	glBindTexture(GL_TEXTURE_2D, t.tex.backTexture);
+	glBegin(GL_QUADS);
+		glTexCoord2f(t.tex.xc[0], t.tex.yc[1]); glVertex2i(0,      0);
+		glTexCoord2f(t.tex.xc[0], t.tex.yc[0]); glVertex2i(0,      g.yres);
+		glTexCoord2f(t.tex.xc[1], t.tex.yc[0]); glVertex2i(g.xres, g.yres);
+		glTexCoord2f(t.tex.xc[1], t.tex.yc[1]); glVertex2i(g.xres, 0);
 
-// int StartMenu::handleInput(XEvent *e) {
+	//glColor3f(1.0, 1.0, 1.0);
+	
+	r.bot -=50;
+    ggprint8b(&r, 64, 0x00000000, "");
+	r.bot -= 20;
+    ggprint16(&r, 24, 0x00000000, "      WELCOME TO SCRIBBLE-JUMP!");
+	r.bot -= 2;
+	ggprint8b(&r, 16, 0x00000000, "                                  Click 'P' to Start");
+	r.bot -= 370;
+	ggprint8b(&r, 16, 0x00000000, "        Created by: Snehal Kumar, Bradon Stitt & Joseph Rivera ");
+
+	
+	glPopMatrix();
     
-//     return 0; 
-// }
+}
 
 
 int count_physics_function()
