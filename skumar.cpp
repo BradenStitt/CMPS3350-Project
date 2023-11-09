@@ -288,6 +288,7 @@ void Player::physics()
 	{
 		g.failed_landing = 1;
 		pos[1] = 0.0;
+		blackholeDetected = 1;
 	}
 }
 

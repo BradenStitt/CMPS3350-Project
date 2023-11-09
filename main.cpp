@@ -81,7 +81,7 @@ public:
 
 // Function prototypes
 int inStartMenu = 1;
-Background img[1] = {"better.jpeg"};
+Background img[1] = {"underwater.png"};
 void init_opengl(void);
 void physics(void);
 void render(void);
