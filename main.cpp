@@ -388,7 +388,7 @@ void render()
 		if (player.blackholeDetected)
 		{
 			blackhole_screen();
-			youDiedLOL();
+			youDied();
 		} else {
 			// Draw Grid
 			glColor3f(1.0, 1.0, 1.0);

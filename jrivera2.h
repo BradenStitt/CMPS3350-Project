@@ -14,7 +14,7 @@
 using namespace std;
 
 extern int count_physics_function();
-void youDiedLOL();
+void youDied();
 
 class Background {
     public:
