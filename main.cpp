@@ -291,6 +291,9 @@ int X11_wrapper::check_keys(XEvent *e)
 		case XK_s:
 			g.showNerdStats = !g.showNerdStats;
 			break;
+		case XK_p:
+			inStartMenu = 0;
+			break;
 		case XK_m:
 			inStartMenu = 1;
 			break;
