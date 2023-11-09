@@ -291,6 +291,9 @@ int X11_wrapper::check_keys(XEvent *e)
 		case XK_s:
 			g.showNerdStats = !g.showNerdStats;
 			break;
+		case XK_m:
+			inStartMenu = 1;
+			break;
 		case XK_Escape:
 			// Escape key was pressed
 			return 1;
@@ -382,6 +385,7 @@ void render()
 		if (player.blackholeDetected)
 		{
 			blackhole_screen();
+			youDiedLOL();
 		} else {
 			// Draw Grid
 			glColor3f(1.0, 1.0, 1.0);
@@ -391,6 +395,11 @@ void render()
 				glTexCoord2f(t.tex.xc[0], t.tex.yc[0]); glVertex2i(0,      g.yres);
 				glTexCoord2f(t.tex.xc[1], t.tex.yc[0]); glVertex2i(g.xres, g.yres);
 				glTexCoord2f(t.tex.xc[1], t.tex.yc[1]); glVertex2i(g.xres, 0);
+				r.center = 0;
+				r.bot = g.yres - 20;
+				r.left = 10;
+				ggprint8b(&r, 16, 0x00000000, "");
+				ggprint8b(&r, 16, 0x00000000, "      Press 'M' for MENU");
 			glEnd();
 
 

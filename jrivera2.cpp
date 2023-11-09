@@ -106,14 +106,32 @@ void StartMenu::showStartScreen() {
     ggprint16(&r, 24, 0x00000000, "      WELCOME TO SCRIBBLE-JUMP!");
 	r.bot -= 2;
 	ggprint8b(&r, 16, 0x00000000, "                                  Click 'P' to Start");
-	r.bot -= 370;
-	ggprint8b(&r, 16, 0x00000000, "        Created by: Snehal Kumar, Brandon Stitt & Joseph Rivera ");
+	r.bot -=250;
+	ggprint8b(&r, 16, 0x00000000, "                                  GAME CONTROLS");
+	ggprint8b(&r, 16, 0x00000000, "                             Press Up arrow to Jump");
+	ggprint8b(&r, 16, 0x00000000, "                Press Left or Right arrows to move player");
+	ggprint8b(&r, 16, 0x00000000, "                              Press 'Space' to Shoot");
+	ggprint8b(&r, 16, 0x00000000, "                            Press 'R' to restart player");
+	r.bot -= 60;
+	ggprint8b(&r, 16, 0x00000000, "        Created by: Snehal Kumar, Bradon Stitt & Joseph Rivera ");
 
 	
 	glPopMatrix();
     
 }
 
+void youDied()
+{
+	r.center = 0;
+	r.bot = g.yres - 20;
+	r.left = 10;
+
+	r.bot -= 275;
+	ggprint16(&r, 24, 0xFF0000, "                 GAME OVER");
+	r.bot -= 10;
+	ggprint8b(&r, 16, 0xFF0000, "                              Press 'R' to Restart");
+
+}
 
 int count_physics_function()
 {
