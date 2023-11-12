@@ -445,7 +445,7 @@ void render()
 			player.draw_player();
 
 			/* Draw the enemy */
-			enemy.drawEnemy();
+			// enemy.drawEnemy();
 
 			if (!player.enemyDetected)
 			{
