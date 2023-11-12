@@ -39,6 +39,17 @@ Enemy::Enemy() {
     pos[1] = 0.0f;
     vel[0] = 0.0f;
     vel[1] = 0.0f;
+
+    width = height = 15.0f;
+
+    verts[0][0] = -15.0f;
+	verts[0][1] = 0.0f;
+	verts[1][0] = -15.0f;
+	verts[1][1] = 30.0f;
+	verts[2][0] = 15.0f;
+	verts[2][1] = 30.0f;
+	verts[3][0] = 15.0f;
+	verts[3][1] = 0.0f;
 }
 
 Enemy::~Enemy() {
@@ -58,11 +69,11 @@ void Enemy::drawEnemy() {
     // glRotatef(angle, 0.0f, 0.0f, 1.0f);
 
     glBegin(GL_QUADS);
-    glVertex2f(-0.5f, -0.5f); // Bottom-left vertex
-    glVertex2f(0.5f, -0.5f);  // Bottom-right vertex
-    glVertex2f(0.5f, 0.5f);   // Top-right vertex
-    glVertex2f(-0.5f, 0.5f);  // Top-left vertex
-    glEnd();
+	glVertex2f(verts[0][0], verts[0][1]); // Bottom left vertex
+	glVertex2f(verts[1][0], verts[1][1]); // Top left vertex
+	glVertex2f(verts[2][0], verts[2][1]); // Top right vertex
+	glVertex2f(verts[3][0], verts[3][1]); // Bottom right vertex
+	glEnd();
 
     glPopMatrix();
 }
