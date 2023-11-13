@@ -82,21 +82,23 @@ void Platform::draw_platform_fixed(float x, float y)
     {
         glColor3ub(165, 42, 42); // brown
     }
-    else if (pType == 3) {
-        if (!isDestroyed) 
+    else if (pType == 3)
+    {
+        if (!isDestroyed)
         {
             glColor3ub(250, 0, 0); // red
             // set it to a square
             width = 15.0f;
             height = 15.0f;
         }
-        else 
+        else
         {
             width = 0.0f;
             height = 0.0f;
         }
     }
-    else if (pType == 4) {
+    else if (pType == 4)
+    {
         glColor3ub(0, 250, 0);
         // set it to a square
         width = 15.0f;
@@ -136,28 +138,31 @@ void Platform::draw_platform_random()
     {
         glColor3ub(165, 42, 42); // brown
     }
-    else if (pType == 3) {
+    else if (pType == 3)
+    {
 
-        if (!isDestroyed) 
+        if (!isDestroyed)
         {
             glColor3ub(250, 0, 0); // red
             // set it to a square
             width = 15.0f;
             height = 15.0f;
         }
-        else 
+        else
         {
             width = 0.0f;
             height = 0.0f;
         }
     }
-    else if (pType == 4) {
+    else if (pType == 4)
+    {
         glColor3ub(0, 255, 0);
         // set it to a square
         width = 25.0f;
         height = 25.0f;
     }
-    else {
+    else
+    {
         glColor3ub(250, 250, 20); // yellow
     }
     glTranslatef(pos[0], pos[1], 0.0f);
@@ -219,11 +224,13 @@ void Platform::physics_platform()
             pos[1] = -100.0f;
         }
     }
-    else if (pType == 4) {
+    else if (pType == 4)
+    {
         // Show the platform for only 5 seconds
         disappearTimer++;
 
-        if (disappearTimer >= 200) { // Assuming 60 frames per second, 300 frames is 5 seconds
+        if (disappearTimer >= 200)
+        { // Assuming 60 frames per second, 300 frames is 5 seconds
             // After 5 seconds, make the platform disappear
             pos[1] = -100.0f;
             blackholeExists = false;
@@ -236,7 +243,7 @@ GameManager::GameManager(int numPlatforms) : platformCreationTimer(0) {}
 
 void GameManager::createPlatform()
 {
-    int platformType = rand() % 25; // Random number between 0 and 24
+    int platformType = rand() % 10; // Random number between 0 and 24
 
     Platform newPlatform;
 
@@ -250,11 +257,13 @@ void GameManager::createPlatform()
         // 1 in 25 chance of creating a breaking platform
         newPlatform.pType = 2;
     }
-    else if (platformType == 2) {
+    else if (platformType == 2)
+    {
         // 1 in 25 chance of creating an enemy on the platform
         newPlatform.pType = 3;
     }
-    else if (platformType == 3 && !newPlatform.blackholeExists) {
+    else if (platformType == 3 && !newPlatform.blackholeExists)
+    {
         newPlatform.pType = 4;
         newPlatform.pos[1] = rand() % (g.yres / 2) + (g.yres / 2); // Random y coordinate between half and the bottom of the screen
         newPlatform.blackholeExists = true;
