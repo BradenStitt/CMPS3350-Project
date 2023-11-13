@@ -307,6 +307,12 @@ void GameManager::render()
     }
 }
 
+void GameManager::resetGame()
+{
+    platforms.clear();
+    platformCreationTimer = 0;
+}
+
 int total_running_time(const bool running)
 {
     static int first_run = 1;

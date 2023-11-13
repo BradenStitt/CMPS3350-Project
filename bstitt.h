@@ -33,7 +33,8 @@ public:
     void physics_platform();
 };
 
-class GameManager {
+class GameManager
+{
 public:
     vector<Platform> platforms;
     int platformCreationTimer;                        // Timer to control platform creation
@@ -44,6 +45,7 @@ public:
     void updatePhysics();
     void render();
     void createPlatform(); // Function to create a new platform
+    void resetGame();
 };
 
 #endif

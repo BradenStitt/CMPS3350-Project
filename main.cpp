@@ -110,11 +110,12 @@ int main()
 			x11.check_mouse(&e);
 			done = x11.check_keys(&e);
 		}
-		//physics();
+		// physics();
 		render();
-		if (!inStartMenu){
+		if (!inStartMenu)
+		{
 			physics();
-			if (!player.blackholeDetected) 
+			if (!player.blackholeDetected)
 			{
 				// Update physics for platforms
 				gameManager.updatePhysics();
@@ -286,6 +287,7 @@ int X11_wrapper::check_keys(XEvent *e)
 		case XK_r:
 			// Key R was pressed
 			g.landed = 0;
+			gameManager.resetGame();
 			player.init();
 			break;
 		case XK_s:
@@ -322,17 +324,17 @@ void init_opengl(void)
 	// Do this to allow fonts
 	glEnable(GL_TEXTURE_2D);
 	initialize_fonts();
-	
+
 	t.tex.backImage = &img[0];
-	//create opengl texture elements
+	// create opengl texture elements
 	glGenTextures(1, &t.tex.backTexture);
 	int w = t.tex.backImage->width;
 	int h = t.tex.backImage->height;
 	glBindTexture(GL_TEXTURE_2D, t.tex.backTexture);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0,
-							GL_RGB, GL_UNSIGNED_BYTE, t.tex.backImage->data);
+				 GL_RGB, GL_UNSIGNED_BYTE, t.tex.backImage->data);
 	t.tex.xc[0] = 0.0;
 	t.tex.xc[1] = 1.0;
 	t.tex.yc[0] = 0.0;
@@ -345,16 +347,16 @@ void physics()
 
 	t.tex.yc[0] -= 0.0033;
 	t.tex.yc[1] -= 0.0033;
-	
+
 	// Player physics
 	player.physics();
 	bullet.physics();
 
 	// static enemy collision
-	if ((player.pos[0] + player.width > testPlatform.pos[0] - testPlatform.width && player.pos[0] <= testPlatform.pos[0]) || 
+	if ((player.pos[0] + player.width > testPlatform.pos[0] - testPlatform.width && player.pos[0] <= testPlatform.pos[0]) ||
 		(player.pos[0] - player.width < testPlatform.pos[0] + testPlatform.width && player.pos[0] >= testPlatform.pos[0]))
 	{
-		if ((player.pos[1] - player.height <= testPlatform.pos[1] + testPlatform.height && player.pos[1] - player.height >= testPlatform.pos[1]) || 
+		if ((player.pos[1] - player.height <= testPlatform.pos[1] + testPlatform.height && player.pos[1] - player.height >= testPlatform.pos[1]) ||
 			(player.pos[1] + player.height >= testPlatform.pos[1] - testPlatform.height && player.pos[1] + player.height <= testPlatform.pos[1]))
 		{
 			player.enemyDetected = 1;
@@ -363,48 +365,54 @@ void physics()
 	}
 
 	// static blackhole collision
-	if ((player.pos[0] + player.width > blackholeTest.pos[0] - blackholeTest.width && player.pos[0] <= blackholeTest.pos[0]) || 
-    	(player.pos[0] - player.width < blackholeTest.pos[0] + blackholeTest.width && player.pos[0] >= blackholeTest.pos[0]))
+	if ((player.pos[0] + player.width > blackholeTest.pos[0] - blackholeTest.width && player.pos[0] <= blackholeTest.pos[0]) ||
+		(player.pos[0] - player.width < blackholeTest.pos[0] + blackholeTest.width && player.pos[0] >= blackholeTest.pos[0]))
 	{
-		if ((player.pos[1] - player.height <= blackholeTest.pos[1] + blackholeTest.height && player.pos[1] - player.height >= blackholeTest.pos[1]) || 
+		if ((player.pos[1] - player.height <= blackholeTest.pos[1] + blackholeTest.height && player.pos[1] - player.height >= blackholeTest.pos[1]) ||
 			(player.pos[1] + player.height >= blackholeTest.pos[1] - blackholeTest.height && player.pos[1] + player.height <= blackholeTest.pos[1]))
 		{
 			player.blackholeDetected = 1;
-			//player.vel[1] = -8.0;
+			// player.vel[1] = -8.0;
 		}
 	}
-		
 }
 
 void render()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
-	if (inStartMenu) {
-            // Display the start menu.
-            startMenu.showStartScreen();
-        
-	} else {
+	if (inStartMenu)
+	{
+		// Display the start menu.
+		startMenu.showStartScreen();
+	}
+	else
+	{
 
 		if (player.blackholeDetected)
 		{
 			blackhole_screen();
 			youDied();
-		} else {
+		}
+		else
+		{
 			// Draw Grid
 			glColor3f(1.0, 1.0, 1.0);
 			glBindTexture(GL_TEXTURE_2D, t.tex.backTexture);
 			glBegin(GL_QUADS);
-				glTexCoord2f(t.tex.xc[0], t.tex.yc[1]); glVertex2i(0,      0);
-				glTexCoord2f(t.tex.xc[0], t.tex.yc[0]); glVertex2i(0,      g.yres);
-				glTexCoord2f(t.tex.xc[1], t.tex.yc[0]); glVertex2i(g.xres, g.yres);
-				glTexCoord2f(t.tex.xc[1], t.tex.yc[1]); glVertex2i(g.xres, 0);
-				r.center = 0;
-				r.bot = g.yres - 20;
-				r.left = 10;
-				ggprint8b(&r, 16, 0x00000000, "");
-				ggprint8b(&r, 16, 0x00000000, "      Press 'M' for MENU");
+			glTexCoord2f(t.tex.xc[0], t.tex.yc[1]);
+			glVertex2i(0, 0);
+			glTexCoord2f(t.tex.xc[0], t.tex.yc[0]);
+			glVertex2i(0, g.yres);
+			glTexCoord2f(t.tex.xc[1], t.tex.yc[0]);
+			glVertex2i(g.xres, g.yres);
+			glTexCoord2f(t.tex.xc[1], t.tex.yc[1]);
+			glVertex2i(g.xres, 0);
+			r.center = 0;
+			r.bot = g.yres - 20;
+			r.left = 10;
+			ggprint8b(&r, 16, 0x00000000, "");
+			ggprint8b(&r, 16, 0x00000000, "      Press 'M' for MENU");
 			glEnd();
-
 
 			// Draw the platform
 			Platform platform; // Declare an instance of the Platform class
@@ -434,13 +442,12 @@ void render()
 			// Draw the platform at the specified location
 			testPlatform.draw_platform_fixed(testPlatform.pos[0], testPlatform.pos[1]);
 
-			//Platform blackholeTest;
+			// Platform blackholeTest;
 			blackholeTest.pos[0] = 100.0f;
 			blackholeTest.pos[1] = 200.0f;
 			blackholeTest.pType = 4;
 			blackholeTest.draw_platform_fixed(blackholeTest.pos[0], blackholeTest.pos[1]);
-			
-			
+
 			// Draw Player
 			player.draw_player();
 
@@ -503,7 +510,7 @@ void render()
 			{
 				// show crash graphics here...
 			}
-			
+
 			cout << "Score: " << print_score() << endl;
 
 			if (g.showNerdStats)
@@ -533,7 +540,6 @@ void render()
 				ggprint8b(&r, 12, 0x00ffff00, " Number of Render() Calls: %i", count_render_function());
 			}
 			glPopMatrix();
-
 		}
 	}
 }
