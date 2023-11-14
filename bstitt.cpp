@@ -19,7 +19,6 @@ using namespace std;
 
 extern Global g;
 extern GameManager gameManager;
-extern Enemy enemy;
 const float GRAVITY = 0.4;
 
 // void display_name(int x, int y, const char *name)
@@ -287,9 +286,8 @@ void GameManager::createPlatform()
     {
         cout << "New enemy platform created at (" << newPlatform.pos[0] << ", " << newPlatform.pos[1] << ")" << endl;
         newPlatform.pType = 5;
-        Enemy newEnemy;
-        newEnemy.pos[0] = newPlatform.pos[0];
-        newEnemy.pos[1] = newPlatform.pos[1] + 20;
+        newPlatform.enemy.pos[0] = newPlatform.pos[0];
+        newPlatform.enemy.pos[1] = newPlatform.pos[1] + 20;
     }
     else
     {
