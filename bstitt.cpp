@@ -195,7 +195,7 @@ void Platform::draw_platform_random()
 void Platform::physics_platform()
 {
     // Move the platform down the screen
-    if (pos[1] > -20.0f - height && pType != 4)
+    if (pos[1] > 0.0f - height - enemy && pType != 4)
     {
         pos[1] -= 4.0f;
 
@@ -248,7 +248,7 @@ void Platform::physics_platform()
     else if (pType == 5)
     {
         enemy.pos[0] = pos[0];
-        enemy.pos[1] = pos[1] + 20; // Adjust the position as needed
+        enemy.pos[1] = pos[1]; // Adjust the position as needed
         enemy.enemyPhysics();
     }
 }
