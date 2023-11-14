@@ -247,6 +247,8 @@ void Platform::physics_platform()
     }
     else if (pType == 5)
     {
+        enemy.pos[0] = pos[0];
+        enemy.pos[1] = pos[1] + 20; // Adjust the position as needed
         enemy.enemyPhysics();
     }
 }
