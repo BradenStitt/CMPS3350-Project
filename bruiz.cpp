@@ -19,14 +19,17 @@ using namespace std;
 extern Enemy enemy;
 
 // Time since last key was pressed function
-int time_since_key_press(const bool get) {
+int time_since_key_press(const bool get)
+{
     static int firstTime = 1;
     static int lastKeyPressTime;
-    if (firstTime) {
+    if (firstTime)
+    {
         firstTime = 0;
         lastKeyPressTime = time(NULL);
     }
-    if (get) {
+    if (get)
+    {
         return time(NULL) - lastKeyPressTime;
     }
     lastKeyPressTime = time(NULL);
@@ -34,7 +37,8 @@ int time_since_key_press(const bool get) {
 }
 
 // Adding enemies to the game
-Enemy::Enemy() {
+Enemy::Enemy()
+{
     pos[0] = 0.0f;
     pos[1] = 0.0f;
     vel[0] = 0.0f;
@@ -43,25 +47,27 @@ Enemy::Enemy() {
     width = height = 15.0f;
 
     verts[0][0] = -15.0f;
-	verts[0][1] = 0.0f;
-	verts[1][0] = -15.0f;
-	verts[1][1] = 30.0f;
-	verts[2][0] = 15.0f;
-	verts[2][1] = 30.0f;
-	verts[3][0] = 15.0f;
-	verts[3][1] = 0.0f;
+    verts[0][1] = 0.0f;
+    verts[1][0] = -15.0f;
+    verts[1][1] = 30.0f;
+    verts[2][0] = 15.0f;
+    verts[2][1] = 30.0f;
+    verts[3][0] = 15.0f;
+    verts[3][1] = 0.0f;
 }
 
-Enemy::~Enemy() {
-
+Enemy::~Enemy()
+{
 }
 
 // Update the enemy's position and velocity.
-void Enemy::enemyPhysics() {
-
+void Enemy::enemyPhysics()
+{
+    enemy.pos[1] -= 5.0f;
 }
 
-void Enemy::drawEnemy() {
+void Enemy::drawEnemy()
+{
     glPushMatrix();
     glColor3ub(255, 0, 0);
 
@@ -69,11 +75,11 @@ void Enemy::drawEnemy() {
     // glRotatef(angle, 0.0f, 0.0f, 1.0f);
 
     glBegin(GL_QUADS);
-	glVertex2f(verts[0][0], verts[0][1]); // Bottom left vertex
-	glVertex2f(verts[1][0], verts[1][1]); // Top left vertex
-	glVertex2f(verts[2][0], verts[2][1]); // Top right vertex
-	glVertex2f(verts[3][0], verts[3][1]); // Bottom right vertex
-	glEnd();
+    glVertex2f(verts[0][0], verts[0][1]); // Bottom left vertex
+    glVertex2f(verts[1][0], verts[1][1]); // Top left vertex
+    glVertex2f(verts[2][0], verts[2][1]); // Top right vertex
+    glVertex2f(verts[3][0], verts[3][1]); // Bottom right vertex
+    glEnd();
 
     glPopMatrix();
 }
