@@ -247,7 +247,7 @@ void Platform::physics_platform()
     }
     else if (pType == 5)
     {
-        newEnemy.drawEnemy();
+        enemy.drawEnemy();
     }
 }
 
@@ -326,7 +326,7 @@ void GameManager::render()
         platforms[i].draw_platform_random();
         if (platforms[i].pType == 5)
         {
-            enemy.drawEnemy();
+            platforms[i].enemy.drawEnemy();
         }
     }
 }
