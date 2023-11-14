@@ -43,6 +43,8 @@ typedef float Flt;
 // const int MAXPLATFORMS = 10;
 int numPlatforms = 0;
 
+int previousScore = -1;
+
 class Platform2
 {
 	// landing zone
@@ -447,12 +449,10 @@ void render()
 			blackholeTest.pos[1] = 200.0f;
 			blackholeTest.pType = 4;
 			blackholeTest.draw_platform_fixed(blackholeTest.pos[0], blackholeTest.pos[1]);
-
+			/* Draw the enemy */
+			enemy.drawEnemy();
 			// Draw Player
 			player.draw_player();
-
-			/* Draw the enemy */
-			// enemy.drawEnemy();
 
 			if (!player.enemyDetected)
 			{
@@ -511,7 +511,16 @@ void render()
 				// show crash graphics here...
 			}
 
-			cout << "Score: " << print_score() << endl;
+			int currentScore = print_score();
+
+			// Check if the score has changed
+			if (currentScore != previousScore)
+			{
+				cout << "Score: " << currentScore << endl;
+
+				// Update the previousScore variable
+				previousScore = currentScore;
+			}
 
 			if (g.showNerdStats)
 			{
