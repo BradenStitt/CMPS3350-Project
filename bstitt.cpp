@@ -307,21 +307,6 @@ void GameManager::updatePhysics()
         platformCreationTimer = 0; // Reset the timer
     }
 
-    for (auto &platform : platforms)
-    {
-        platform.physics_platform();
-    }
-}
-
-void GameManager::updatePhysics()
-{
-    platformCreationTimer++;
-    if (platformCreationTimer >= PLATFORM_CREATION_INTERVAL)
-    {
-        createPlatform();
-        platformCreationTimer = 0; // Reset the timer
-    }
-
     // Remove platforms that are out of screen bounds
     platforms.erase(
         remove_if(platforms.begin(), platforms.end(), [](const Platform &p)
