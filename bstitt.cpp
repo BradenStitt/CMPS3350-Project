@@ -248,7 +248,7 @@ void Platform::physics_platform()
     else if (pType == 5)
     {
         enemy.pos[0] = pos[0];
-        enemy.pos[1] = pos[1] + 5.0f; // Adjust the position as needed
+        enemy.pos[1] = pos[1] + 10.0f; // Adjust the position as needed
         enemy.enemyPhysics();
     }
 }
@@ -259,7 +259,6 @@ GameManager::GameManager(int numPlatforms) : platformCreationTimer(0) {}
 void GameManager::createPlatform()
 {
     int platformType = rand() % 10; // Random number between 0 and 24
-
     Platform newPlatform;
 
     if (platformType == 0)
