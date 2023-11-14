@@ -280,6 +280,7 @@ void GameManager::createPlatform()
     }
     else if (platformType == 5)
     {
+        cout << "New enemy platform created at (" << newPlatform.pos[0] << ", " << newPlatform.pos[1] << ")" << endl;
         newPlatform.pType = 5;
         Enemy newEnemy;
         newEnemy.pos[0] = newPlatform.pos[0];
