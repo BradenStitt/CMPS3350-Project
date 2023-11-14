@@ -312,6 +312,7 @@ void GameManager::updatePhysics()
     platforms.erase(
         remove_if(platforms.begin(), platforms.end(), [](const Platform &p)
                   {
+                      cout << "Removing platform at (" << p.pos[0] << ", " << p.pos[1] << ")" << endl;
                       return p.pos[1] < -50.0f; // Adjust the value based on your requirements
                   }),
         platforms.end());
