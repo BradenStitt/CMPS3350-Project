@@ -63,7 +63,7 @@ Enemy::~Enemy()
 // Update the enemy's position and velocity.
 void Enemy::enemyPhysics()
 {
-    enemy.pos[1] -= 5.0f;
+    enemy.pos[1] -= 6.0f;
 }
 
 void Enemy::drawEnemy()
