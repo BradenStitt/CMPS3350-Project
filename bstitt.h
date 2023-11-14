@@ -15,7 +15,7 @@ extern void enemy_collision_detection();
 class Platform
 {
 public:
-    int pType; // 0 = fixed, 1 = moving, 2 = breakable, 3 = enemy, 4 = blackhole
+    int pType; // 0 = fixed, 1 = moving, 2 = breakable, 3 = enemy, 4 = blackhole, 5 = platEnemy
     float pos[2];
     float width;
     float height;
