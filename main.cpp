@@ -449,8 +449,8 @@ void render()
 			blackholeTest.pos[1] = 200.0f;
 			blackholeTest.pType = 4;
 			blackholeTest.draw_platform_fixed(blackholeTest.pos[0], blackholeTest.pos[1]);
-			/* Draw the enemy */
-			enemy.drawEnemy();
+			// /* Draw the enemy */
+			// enemy.drawEnemy();
 			// Draw Player
 			player.draw_player();
 
