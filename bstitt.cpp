@@ -167,6 +167,10 @@ void Platform::draw_platform_random()
         width = 25.0f;
         height = 25.0f;
     }
+    else if (pType == 5)
+    {
+        glColor3ub(255, 0, 255);
+    }
     else
     {
         glColor3ub(250, 250, 20); // yellow
@@ -305,6 +309,10 @@ void GameManager::updatePhysics()
     for (auto &platform : platforms)
     {
         platform.physics_platform();
+        if (platform.pType == 5)
+        {
+            enemy.enemyPhysics();
+        }
     }
 }
 
@@ -320,7 +328,6 @@ void GameManager::render()
         platforms[i].draw_platform_random();
         if (platforms[i].pType == 5)
         {
-            enemy.enemyPhysics();
             enemy.drawEnemy();
         }
     }
