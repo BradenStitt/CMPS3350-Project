@@ -509,8 +509,7 @@ void render()
 				// show crash graphics here...
 			}
 
-
-		updateAndPrintScore();
+			updateAndPrintScore();
 
 			if (g.showNerdStats)
 			{
