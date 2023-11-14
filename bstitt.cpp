@@ -312,7 +312,7 @@ void GameManager::updatePhysics()
     platforms.erase(
         remove_if(platforms.begin(), platforms.end(), [](const Platform &p)
                   {
-                      return p.pos[1] < 100.0f; // Adjust the value based on your requirements
+                      return p.pos[1] < -50.0f; // Adjust the value based on your requirements
                   }),
         platforms.end());
 
