@@ -4,6 +4,7 @@
 #include <cstdlib> // for rand
 #include <GL/gl.h> // Assuming OpenGL header
 #include <vector>
+#include "bruiz.h"
 
 using namespace std;
 
@@ -26,6 +27,7 @@ public:
     int countLanding;
     int disappearTimer;
     int hitCount;
+    Enemy enemy;
 
     Platform();
     void draw_platform_fixed(float x, float y);
