@@ -39,8 +39,8 @@ int time_since_key_press(const bool get)
 // Adding enemies to the game
 Enemy::Enemy()
 {
-    pos[0] = 0.0f;
-    pos[1] = 0.0f;
+    pos[0] = 250.0f;
+    pos[1] = 250.0f;
     vel[0] = 0.0f;
     vel[1] = 0.0f;
 
