@@ -13,6 +13,7 @@
 #include "bstitt.h"
 #include "global.h"
 #include "bruiz.h"
+#include <algorithm>
 // #include "fonts.h"
 
 using namespace std;
