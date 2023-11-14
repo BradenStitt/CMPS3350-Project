@@ -18,7 +18,7 @@ public:
     Enemy();
     ~Enemy();
     void enemyPhysics();
-    void drawEnemyFixed();
+    void drawEnemyFixed(float x, float y);
     void drawEnemy();
 };
 
