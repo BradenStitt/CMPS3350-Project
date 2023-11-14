@@ -10,7 +10,6 @@ extern int time_since_key_press(const bool get);
 class Enemy
 {
 public:
-
     float pos[2];
     float vel[2];
     float verts[4][2];
@@ -19,8 +18,8 @@ public:
     Enemy();
     ~Enemy();
     void enemyPhysics();
+    void drawEnemyFixed();
     void drawEnemy();
-
 };
 
 #endif

@@ -66,6 +66,24 @@ void Enemy::enemyPhysics()
     enemy.pos[1] -= 6.0f;
 }
 
+void Enemy::drawEnemyFixed(float x, float y)
+{
+    glPushMatrix();
+    glColor3ub(255, 0, 0);
+
+    glTranslatef(x, y, 0.0f);
+    // glRotatef(angle, 0.0f, 0.0f, 1.0f);
+
+    glBegin(GL_QUADS);
+    glVertex2f(verts[0][0], verts[0][1]); // Bottom left vertex
+    glVertex2f(verts[1][0], verts[1][1]); // Top left vertex
+    glVertex2f(verts[2][0], verts[2][1]); // Top right vertex
+    glVertex2f(verts[3][0], verts[3][1]); // Bottom right vertex
+    glEnd();
+
+    glPopMatrix();
+}
+
 void Enemy::drawEnemy()
 {
     glPushMatrix();
