@@ -323,6 +323,23 @@ void GameManager::updatePhysics()
     }
 }
 
+void GameManager::render()
+{
+    platformCreationTimer++;
+    if (platformCreationTimer >= 120)
+    { // 120 frames ~ 2 seconds (assuming 60 frames per second)
+        createPlatform();
+    }
+    for (size_t i = 0; i < platforms.size(); i++)
+    {
+        platforms[i].draw_platform_random();
+        if (platforms[i].pType == 5)
+        {
+            platforms[i].enemy.drawEnemy();
+        }
+    }
+}
+
 void GameManager::resetGame()
 {
     platforms.clear();
