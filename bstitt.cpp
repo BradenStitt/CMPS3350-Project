@@ -12,12 +12,14 @@
 #include "log.h"
 #include "bstitt.h"
 #include "global.h"
+#include "bruiz.h"
 // #include "fonts.h"
 
 using namespace std;
 
 extern Global g;
 extern GameManager gameManager;
+extern Enemy enemy;
 const float GRAVITY = 0.4;
 
 // void display_name(int x, int y, const char *name)
@@ -275,6 +277,13 @@ void GameManager::createPlatform()
         newPlatform.pos[1] = rand() % (g.yres / 2) + (g.yres / 2); // Random y coordinate between half and the bottom of the screen
         newPlatform.blackholeExists = true;
         cout << "New black hole created at (" << newPlatform.pos[0] << ", " << newPlatform.pos[1] << ")" << endl;
+    }
+    else if (platformType == 5)
+    {
+        newPlatform.pType = 5;
+        Enemy newEnemy;
+        newEnemy.pos[0] = newPlatform.pos[0];
+        newEnemy.pos[1] = newPlatform.pos[1] + 20;
     }
     else
     {
