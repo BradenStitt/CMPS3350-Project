@@ -43,8 +43,6 @@ typedef float Flt;
 // const int MAXPLATFORMS = 10;
 int numPlatforms = 0;
 
-int previousScore = -1;
-
 class Platform2
 {
 	// landing zone
@@ -511,16 +509,8 @@ void render()
 				// show crash graphics here...
 			}
 
-			int currentScore = print_score();
 
-			// Check if the score has changed
-			if (currentScore != previousScore)
-			{
-				cout << "Score: " << currentScore << endl;
-
-				// Update the previousScore variable
-				previousScore = currentScore;
-			}
+		updateAndPrintScore();
 
 			if (g.showNerdStats)
 			{

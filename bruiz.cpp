@@ -13,6 +13,7 @@
 #include "bruiz.h"
 #include "log.h"
 #include "global.h"
+#include "skumar.h"
 
 using namespace std;
 
@@ -101,4 +102,22 @@ void Enemy::drawEnemy()
 
     glPopMatrix();
 }
+
+static int previousScore = -1;
+// Print Score without Spam
+void updateAndPrintScore()
+{
+    int currentScore = print_score();
+
+    // Check if the score has changed
+    if (currentScore != previousScore)
+    {
+        // Update the previousScore variable
+        previousScore = currentScore;
+
+        // Print the updated score
+        cout << "Score: " << currentScore << endl;
+    }
+}
+
 // Adding Sprites
