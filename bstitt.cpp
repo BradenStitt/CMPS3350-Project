@@ -163,13 +163,6 @@ void Platform::draw_platform_random()
         width = 25.0f;
         height = 25.0f;
     }
-    else if (pType == 5)
-    {
-        glColor3ub(255, 0, 255);
-        // set it to a square
-        width = 20.0f;
-        height = 20.0f;
-    }
     else
     {
         glColor3ub(250, 250, 20); // yellow
