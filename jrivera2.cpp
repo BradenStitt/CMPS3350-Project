@@ -100,7 +100,7 @@ void StartMenu::showStartScreen() {
 
 	//glColor3f(1.0, 1.0, 1.0);
 	
-	r.bot -=50;
+	r.bot -=40;
     ggprint8b(&r, 64, 0x00000000, "");
 	r.bot -= 20;
     ggprint16(&r, 24, 0x00000000, "      WELCOME TO SCRIBBLE-JUMP!");
@@ -113,7 +113,8 @@ void StartMenu::showStartScreen() {
 	ggprint8b(&r, 16, 0x00000000, "                              Press 'Space' to Shoot");
 	ggprint8b(&r, 16, 0x00000000, "                            Press 'R' to restart player");
 	r.bot -= 60;
-	ggprint8b(&r, 16, 0x00000000, "          Created by: Snehal Kumar, Braden Stitt, & Joseph Rivera");
+	ggprint8b(&r, 16, 0x00000000, "          Created by: Snehal Kumar, Braden Stitt, Joseph Rivera ");
+	ggprint8b(&r, 16, 0x00000000, "                                        & Brian Ruiz ");
 
 	
 	glPopMatrix();
