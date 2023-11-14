@@ -195,7 +195,7 @@ void Platform::draw_platform_random()
 void Platform::physics_platform()
 {
     // Move the platform down the screen
-    if (pos[1] > 0.0f - height && pType != 4)
+    if (pos[1] > -20.0f - height && pType != 4)
     {
         pos[1] -= 4.0f;
 
