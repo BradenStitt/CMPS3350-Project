@@ -313,20 +313,27 @@ void GameManager::updatePhysics()
     }
 }
 
-void GameManager::render()
+void GameManager::updatePhysics()
 {
     platformCreationTimer++;
-    if (platformCreationTimer >= 120)
-    { // 120 frames ~ 2 seconds (assuming 60 frames per second)
-        createPlatform();
-    }
-    for (size_t i = 0; i < platforms.size(); i++)
+    if (platformCreationTimer >= PLATFORM_CREATION_INTERVAL)
     {
-        platforms[i].draw_platform_random();
-        if (platforms[i].pType == 5)
-        {
-            platforms[i].enemy.drawEnemy();
-        }
+        createPlatform();
+        platformCreationTimer = 0; // Reset the timer
+    }
+
+    // Remove platforms that are out of screen bounds
+    platforms.erase(
+        remove_if(platforms.begin(), platforms.end(), [](const Platform &p)
+                  {
+                      return p.pos[1] < -50.0f; // Adjust the value based on your requirements
+                  }),
+        platforms.end());
+
+    // Update the physics for remaining platforms
+    for (auto &platform : platforms)
+    {
+        platform.physics_platform();
     }
 }
 
