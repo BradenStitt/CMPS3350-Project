@@ -246,6 +246,10 @@ void Platform::physics_platform()
             blackholeExists = false;
         }
     }
+    else if (pType == 5)
+    {
+        newEnemy.drawEnemy();
+    }
 }
 
 // Game Manager class
@@ -309,10 +313,6 @@ void GameManager::updatePhysics()
     for (auto &platform : platforms)
     {
         platform.physics_platform();
-        if (platform.pType == 5)
-        {
-            enemy.enemyPhysics();
-        }
     }
 }
 
