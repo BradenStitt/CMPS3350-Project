@@ -247,7 +247,7 @@ void Platform::physics_platform()
     }
     else if (pType == 5)
     {
-        enemy.drawEnemy();
+        enemy.enemyPhysics();
     }
 }
 
