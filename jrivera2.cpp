@@ -28,6 +28,7 @@ extern Global g;
 extern Rect r;
 extern Texture t;
 extern Texture d;
+extern int print_score();
 
 int physics_count = 0;
 
@@ -100,21 +101,28 @@ void StartMenu::showStartScreen() {
 
 	//glColor3f(1.0, 1.0, 1.0);
 	
-	r.bot -=40;
+
+	r.bot -=50;
     ggprint8b(&r, 64, 0x00000000, "");
 	r.bot -= 20;
     ggprint16(&r, 24, 0x00000000, "      WELCOME TO SCRIBBLE-JUMP!");
 	r.bot -= 2;
-	ggprint8b(&r, 16, 0x00000000, "                                   Click 'P' to Play");
+	ggprint8b(&r, 16, 0x00000000, 
+		"                                   Click 'P' to Play");
 	r.bot -=250;
-	ggprint8b(&r, 16, 0x00000000, "                                  GAME CONTROLS");
-	ggprint8b(&r, 16, 0x00000000, "                             Press Up arrow to Jump");
-	ggprint8b(&r, 16, 0x00000000, "                Press Left or Right arrows to move player");
-	ggprint8b(&r, 16, 0x00000000, "                              Press 'Space' to Shoot");
-	ggprint8b(&r, 16, 0x00000000, "                            Press 'R' to restart player");
+	ggprint8b(&r, 16, 0x00000000,                                 
+	 	"                                 GAME CONTROLS");
+	ggprint8b(&r, 16, 0x00000000, 
+	 	"                            Press Up arrow to Jump");
+	ggprint8b(&r, 16, 0x00000000, 
+		"                Press Left or Right arrows to move player");
+	ggprint8b(&r, 16, 0x00000000, 
+	 	"                             Press 'Space' to Shoot");
+	ggprint8b(&r, 16, 0x00000000, 
+		"                            Press 'R' to restart player");
 	r.bot -= 60;
-	ggprint8b(&r, 16, 0x00000000, "          Created by: Snehal Kumar, Braden Stitt, Joseph Rivera ");
-	ggprint8b(&r, 16, 0x00000000, "                                        & Brian Ruiz ");
+	ggprint8b(&r, 16, 0x00000000, 
+	 	"         Created by: Snehal Kumar, Braden Stitt, & Joseph Rivera");
 
 	
 	glPopMatrix();
@@ -130,7 +138,30 @@ void youDied()
 	r.bot -= 275;
 	ggprint16(&r, 24, 0xFF0000, "                 GAME OVER");
 	r.bot -= 10;
-	ggprint8b(&r, 16, 0xFF0000, "                              Press 'R' to Restart");
+	ggprint8b(&r, 16, 0xFF0000, 
+	"                              Press 'R' to Restart");
+
+}
+
+void scoreboard()
+{
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
+    glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
+
+    glBegin(GL_QUADS);
+    glVertex2f(0.0, g.yres);  
+    glVertex2f(0.0, g.yres - 40.0);  
+    glVertex2f(g.xres, g.yres - 40.0);  
+    glVertex2f(g.xres, g.yres);
+	glEnd();
+    glPopMatrix();
+
+
+	r.center = 0;
+	r.bot = g.yres - 30;
+	r.left = 10;
+	ggprint16(&r, 24, 0x00ffff00, " score: %i", print_score() );
 
 }
 

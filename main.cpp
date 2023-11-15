@@ -298,6 +298,7 @@ int X11_wrapper::check_keys(XEvent *e)
 			break;
 		case XK_m:
 			inStartMenu = 1;
+			gameManager.resetGame();
 			break;
 		case XK_Escape:
 			// Escape key was pressed
@@ -408,11 +409,13 @@ void render()
 			glTexCoord2f(t.tex.xc[1], t.tex.yc[1]);
 			glVertex2i(g.xres, 0);
 			r.center = 0;
-			r.bot = g.yres - 20;
+			r.bot = g.yres - 40;
 			r.left = 10;
 			ggprint8b(&r, 16, 0x00000000, "");
-			ggprint8b(&r, 16, 0x00000000, "      Press 'M' for MENU");
+			ggprint8b(&r, 16, 0x00000000, " Press 'M' for MENU");
 			glEnd();
+
+			scoreboard();
 
 			// Draw the platform
 			Platform platform; // Declare an instance of the Platform class
