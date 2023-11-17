@@ -301,13 +301,13 @@ void Player::physics()
 	// Check for collision with window edges
 	if (pos[0] < 0.0)
 	{
-		// pos[0] += (float)g.xres;
-		player.pos[0] = 0.0f;
+		pos[0] += (float)g.xres;
+		// player.pos[0] = 0.0f;
 	}
 	else if (pos[0] > (float)g.xres)
 	{
-		// pos[0] -= (float)g.xres;
-		player.pos[0] = (float)g.xres;
+		pos[0] -= (float)g.xres;
+		// player.pos[0] = (float)g.xres;
 	}
 
 	// check for landing failure...
