@@ -13,6 +13,7 @@
 #include "global.h"
 #include "skumar.h"
 #include "bstitt.h"
+#include "bruiz.h"
 
 using namespace std;
 
@@ -21,6 +22,7 @@ struct timespec bt;
 extern Global g;
 extern GameManager gameManager;
 extern Player player;
+extern Enemy enemy;
 extern Platform testPlatform;
 
 int renderCount = 0;
@@ -119,20 +121,39 @@ void Bullet::physics()
 			{
 				Platform *platform = &gameManager.platforms[j];
 
-				if (platform->pType == 3)
+				if (platform->pType == 3 || platform->pType == 5)
 				{
-					if (player.pos[0] > platform->pos[0] - platform->width && player.pos[0] < platform->pos[0] + platform->width)
+					if (platform->pType == 3)
 					{
-						if (b->prevPosY >= platform->pos[1] - platform->height && b->pos[1] <= platform->pos[1] + platform->height) 
+						if (player.pos[0] > platform->pos[0] - platform->width && player.pos[0] < platform->pos[0] + platform->width)
 						{
-							b->pos[1] = platform->pos[1] + platform->height;
-							b->bulletHit = true;
+							if (b->prevPosY >= platform->pos[1] - platform->height && b->pos[1] <= platform->pos[1] + platform->height) 
+							{
+								b->pos[1] = platform->pos[1] + platform->height;
+								b->bulletHit = true;
+							}
+						}
+					}
+					else 
+					{
+						if (player.pos[0] > platform->enemy.pos[0] - platform->enemy.width && player.pos[0] < platform->enemy.pos[0] + platform->enemy.width)
+						{
+							if (b->prevPosY >= platform->enemy.pos[1] - platform->enemy.height && b->pos[1] <= platform->enemy.pos[1] + platform->enemy.height) 
+							{
+								b->pos[1] = platform->enemy.pos[1] + platform->enemy.height;
+								b->bulletHit = true;
+							}
 						}
 					}
 				
 					if (b->bulletHit)
 					{
-						platform->hitCount++;
+						if (platform->pType == 3) {
+							platform->hitCount++;
+						}
+						else {
+							platform->enemy.hitCount++;
+						}
 
 						// Remove the bullet
 						if (i < player.nbullets - 1)
@@ -142,10 +163,16 @@ void Bullet::physics()
 						}
 						player.nbullets--;
 
-						if (platform->hitCount >= 3)
+						if (platform->hitCount >= 3 || platform->enemy.hitCount >= 3)
 						{
-							platform->isDestroyed = true;
-							player.score += 30;
+							if (platform->pType == 3) {
+								platform->isDestroyed = true;
+								player.score += 30;
+							}
+							else {
+								platform->enemy.isDestroyed = true;
+								player.score += 30;
+							}
 						}
 					}
 				}
@@ -336,49 +363,59 @@ void dynamic_collision_detection()
 						{
 							player.enemyDetected = 1;
 							player.vel[1] = -8.0f;
-						}
+						}		
 
 						if (platform->pType == 4)
 						{
 							player.blackholeDetected = 1;
-							// player.vel[1] = -8.0f;
 						}
 					}
 				}
 			}
-			else 
+			else
 			{
 				if (player.pos[0] > (platform->pos[0] - platform->width) && player.pos[0] < (platform->pos[0] + platform->width))
 				{
-					if (player.pos[1] > (platform->pos[1] - platform->height) && player.pos[1] < (platform->pos[1] + platform->height))
+					if ((platform->pType == 5 && platform->enemy.isDestroyed) || platform->pType != 5)
 					{
-						// Player is colliding with platform
-						platform->isLanded = true;
-						platform->countLanding++;
-
-						player.pos[1] = (platform->pos[1]) + platform->height;
-						player.vel[1] = 0.0;
-						player.vel[0] = 0.0;
-						player.jumpCount = 0;
-
-						if (platform->countLanding == 1 && platform->pType != 2)
+						if (player.pos[1] > (platform->pos[1] - platform->height) && player.pos[1] < (platform->pos[1] + platform->height))
 						{
-							player.score += 10;
-						}
-
-						if (platform->pType == 2)
-						{
+							// Player is colliding with platform
 							platform->isLanded = true;
-						}
+							platform->countLanding++;
 
-						if (player.angle > 0.0 || player.angle < 0.0)
-						{
-							g.failed_landing = 1;
+							player.pos[1] = platform->pos[1] + platform->height;
+							player.vel[1] = 0.0;
+							player.vel[0] = 0.0;
+							player.jumpCount = 0;
+
+							if (platform->countLanding == 1 && platform->pType != 2)
+							{
+								player.score += 10;
+							}
+
+							if (player.angle > 0.0 || player.angle < 0.0)
+							{
+								g.failed_landing = 1;
+							}
+							else
+							{
+								// Player landed successfully
+								// g.landed = 1;
+							}
 						}
-						else
+					}
+					else 
+					{
+						if ((player.pos[0] + player.width > platform->enemy.pos[0] - platform->enemy.width && player.pos[0] <= platform->enemy.pos[0]) || 
+							(player.pos[0] - player.width < platform->enemy.pos[0] + platform->enemy.width && player.pos[0] >= platform->enemy.pos[0]))
 						{
-							// Player landed successfully
-							// g.landed = 1;
+							if ((player.pos[1] - player.height <= platform->enemy.pos[1] + platform->enemy.height && player.pos[1] - player.height >= platform->enemy.pos[1]) || 
+								(player.pos[1] + player.height >= platform->enemy.pos[1] - platform->enemy.height && player.pos[1] + player.height <= platform->enemy.pos[1]))
+							{
+								player.enemyDetected = 1;
+								player.vel[1] = -8.0f;
+							}
 						}
 					}
 				}

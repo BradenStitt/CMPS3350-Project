@@ -13,8 +13,11 @@ class Enemy
 public:
     float pos[2];
     float vel[2];
+    float velocity;
     float verts[4][2];
     float width, height;
+    int hitCount;
+    bool isDestroyed;
 
     Enemy();
     ~Enemy();

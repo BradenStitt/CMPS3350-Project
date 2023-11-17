@@ -453,6 +453,7 @@ void render()
 			// /* Draw the enemy */
 			// enemy.drawEnemy();
 			// Draw Player
+			
 			player.draw_player();
 
 			if (!player.enemyDetected)
@@ -501,12 +502,12 @@ void render()
 				}
 			}
 
-			// check for collision with dynamic platforms
-			dynamic_collision_detection();
-
 			// Draw the bullets
 			bullet.draw_bullet();
 
+			// check for collision with dynamic platforms
+			dynamic_collision_detection();
+			
 			if (g.failed_landing)
 			{
 				// show crash graphics here...

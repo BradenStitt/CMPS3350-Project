@@ -14,10 +14,12 @@
 #include "log.h"
 #include "global.h"
 #include "skumar.h"
+#include "bstitt.h"
 
 using namespace std;
 
 extern Enemy enemy;
+extern Platform platform;
 
 // Time since last key was pressed function
 int time_since_key_press(const bool get)
@@ -46,6 +48,9 @@ Enemy::Enemy()
     vel[1] = 0.0f;
 
     width = height = 15.0f;
+    hitCount = 0;
+    velocity = 5.0f;
+    isDestroyed = false;
 
     verts[0][0] = -15.0f;
     verts[0][1] = 0.0f;
@@ -64,7 +69,8 @@ Enemy::~Enemy()
 // Update the enemy's position and velocity.
 void Enemy::enemyPhysics()
 {
-    enemy.pos[1] -= 6.0f;
+    // enemy.pos[1] -= 6.0f;
+    // platform.enemy.pos[0] -= velocity;
 }
 
 void Enemy::drawEnemyFixed(float x, float y)
@@ -87,20 +93,27 @@ void Enemy::drawEnemyFixed(float x, float y)
 
 void Enemy::drawEnemy()
 {
-    glPushMatrix();
-    glColor3ub(255, 0, 0);
+    if (!isDestroyed)
+    {
+        glPushMatrix();
+        glColor3ub(255, 0, 0);
 
-    glTranslatef(pos[0], pos[1], 0.0f);
-    // glRotatef(angle, 0.0f, 0.0f, 1.0f);
+        glTranslatef(pos[0], pos[1], 0.0f);
+        // glRotatef(angle, 0.0f, 0.0f, 1.0f);
 
-    glBegin(GL_QUADS);
-    glVertex2f(verts[0][0], verts[0][1]); // Bottom left vertex
-    glVertex2f(verts[1][0], verts[1][1]); // Top left vertex
-    glVertex2f(verts[2][0], verts[2][1]); // Top right vertex
-    glVertex2f(verts[3][0], verts[3][1]); // Bottom right vertex
-    glEnd();
+        glBegin(GL_QUADS);
+        glVertex2f(verts[0][0], verts[0][1]); // Bottom left vertex
+        glVertex2f(verts[1][0], verts[1][1]); // Top left vertex
+        glVertex2f(verts[2][0], verts[2][1]); // Top right vertex
+        glVertex2f(verts[3][0], verts[3][1]); // Bottom right vertex
+        glEnd();
 
-    glPopMatrix();
+        glPopMatrix();
+    }
+    else 
+    {
+        pos[1] = -100.0f;
+    }
 }
 
 static int previousScore = -1;
