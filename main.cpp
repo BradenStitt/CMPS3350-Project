@@ -329,7 +329,7 @@ void init_opengl(void)
 	initialize_fonts();
 
 	t.tex.backImage = &img[0];
-	s.tex.backimage = &sprite[0];
+	s.tex.backImage = &sprite[0];
 	// create opengl texture elements
 	glGenTextures(1, &t.tex.backTexture);
 	int w = t.tex.backImage->width;
