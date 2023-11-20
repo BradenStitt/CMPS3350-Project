@@ -16,6 +16,8 @@ using namespace std;
 extern int count_physics_function();
 void youDied();
 void scoreboard();
+void makeSprite();
+
 
 class Background {
     public:

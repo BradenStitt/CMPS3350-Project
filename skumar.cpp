@@ -14,6 +14,7 @@
 #include "skumar.h"
 #include "bstitt.h"
 #include "bruiz.h"
+#include "jrivera2.h"
 
 using namespace std;
 
@@ -24,6 +25,7 @@ extern GameManager gameManager;
 extern Player player;
 extern Enemy enemy;
 extern Platform testPlatform;
+extern Texture s;
 
 int renderCount = 0;
 
@@ -108,7 +110,7 @@ void Bullet::physics()
 				}
 				player.nbullets--;
 
-				if (testPlatform.hitCount >= 3)
+				if (testPlatform.hitCount >= 2)
 				{
 					testPlatform.isDestroyed = true;
 					player.score += 30;
@@ -301,13 +303,13 @@ void Player::physics()
 	// Check for collision with window edges
 	if (pos[0] < 0.0)
 	{
-		pos[0] += (float)g.xres;
-		// player.pos[0] = 0.0f;
+		// pos[0] += (float)g.xres;
+		player.pos[0] = 0.0f;
 	}
 	else if (pos[0] > (float)g.xres)
 	{
-		pos[0] -= (float)g.xres;
-		// player.pos[0] = (float)g.xres;
+		// pos[0] -= (float)g.xres;
+		player.pos[0] = (float)g.xres;
 	}
 
 	// check for landing failure...
@@ -323,7 +325,7 @@ void Player::physics()
 void Player::draw_player()
 {
 	glPushMatrix();
-	glColor3ub(0, 0, 0);
+	glColor3ub(255, 165, 0);
 	// glColor3ub(255, 255, 255);
 	if (enemyDetected)
 		glColor3ub(255, 165, 0); // orange
@@ -334,12 +336,7 @@ void Player::draw_player()
 	// draws the player
 	glTranslatef(pos[0], pos[1], 0.0f);
 	glRotatef(angle, 0.0f, 0.0f, 1.0f);
-	glBegin(GL_QUADS);
-	glVertex2f(verts[0][0], verts[0][1]); 
-	glVertex2f(verts[1][0], verts[1][1]);
-	glVertex2f(verts[2][0], verts[2][1]);
-	glVertex2f(verts[3][0], verts[3][1]);
-	glEnd();
+	makeSprite();
 }
 
 void dynamic_collision_detection()

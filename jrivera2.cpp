@@ -27,10 +27,11 @@ using namespace std;
 extern Global g;
 extern Rect r;
 extern Texture t;
-extern Texture d;
+extern Texture s;
 extern int print_score();
 
 int physics_count = 0;
+float coord[4][2];
 
 //StartMenu menu;
 
@@ -91,6 +92,7 @@ void StartMenu::showStartScreen() {
 	r.bot = g.yres - 20;
 	r.left = 10;
 
+	glPushMatrix();
 	glColor3f(1.0, 1.0, 1.0);
 	glBindTexture(GL_TEXTURE_2D, t.tex.backTexture);
 	glBegin(GL_QUADS);
@@ -129,12 +131,33 @@ void StartMenu::showStartScreen() {
     
 }
 
+void makeSprite()
+{
+	coord[0][0] = -15.0f;
+	coord[0][1] = 0.0f;
+	coord[1][0] = -15.0f;
+	coord[1][1] = 30.0f;
+	coord[2][0] = 15.0f;
+	coord[2][1] = 30.0f;
+	coord[3][0] = 15.0f;
+	coord[3][1] = 0.0f;
+
+	glBindTexture(GL_TEXTURE_2D, s.tex.backTexture);
+	glBegin(GL_QUADS);
+		glTexCoord2f(s.tex.xc[0], s.tex.yc[1]); glVertex2f(coord[0][0], coord[0][1]);
+		glTexCoord2f(s.tex.xc[0], s.tex.yc[0]); glVertex2f(coord[1][0], coord[1][1]);
+		glTexCoord2f(s.tex.xc[1], s.tex.yc[0]); glVertex2f(coord[2][0], coord[2][1]);
+		glTexCoord2f(s.tex.xc[1], s.tex.yc[1]); glVertex2f(coord[3][0], coord[3][1]);
+	glEnd();
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 void youDied()
 {
 	r.center = 0;
 	r.bot = g.yres - 20;
 	r.left = 10;
-
+	glPushMatrix();
 	r.bot -= 275;
 	ggprint16(&r, 24, 0xFF0000, "                 GAME OVER");
 	r.bot -= 10;
@@ -145,6 +168,7 @@ void youDied()
 
 void scoreboard()
 {
+	glPushMatrix();
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
     glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
@@ -162,8 +186,38 @@ void scoreboard()
 	r.bot = g.yres - 30;
 	r.left = 10;
 	ggprint16(&r, 24, 0x00ffff00, " score: %i", print_score() );
+	glPopMatrix();
 
 }
+
+unsigned char *buildAlphaData(Background *img)
+{
+    int i;
+    unsigned char *newdata, *ptr;
+    unsigned char *data = (unsigned char *)img->data;
+    newdata = (unsigned char*)malloc(img->width *img->height * 4);
+    ptr = newdata;
+    unsigned char a,b,c;
+    unsigned char t0 = *(data+0);
+    unsigned char t1 = *(data+1);
+    unsigned char t2 = *(data+2);
+    for (i=0; i<img->width * img->height * 3; i+=3) {
+        a = *(data+0);
+        b = *(data+1);
+        c = *(data+2);
+        *(ptr+0) = a;
+        *(ptr+1) = b;
+        *(ptr+2) = c;
+        *(ptr+3) = 1;
+        if (a==t0 && b==t1 && c==t2) {
+            *(ptr+3) = 0;
+        }
+        ptr += 4;
+        data += 3;
+    }
+    return newdata;
+}
+
 
 int count_physics_function()
 {

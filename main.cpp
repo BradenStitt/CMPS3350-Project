@@ -30,6 +30,7 @@ Bullet bullet;
 Platform testPlatform;
 Platform blackholeTest;
 Texture t;
+Texture s;
 StartMenu startMenu;
 Enemy enemy;
 // floating point random numbers
@@ -82,6 +83,7 @@ public:
 // Function prototypes
 int inStartMenu = 1;
 Background img[1] = {"underwater.png"};
+Background sprite[1] = {"finalspritepls.png"};
 void init_opengl(void);
 void physics(void);
 void render(void);
@@ -327,6 +329,7 @@ void init_opengl(void)
 	initialize_fonts();
 
 	t.tex.backImage = &img[0];
+	s.tex.backimage = &sprite[0];
 	// create opengl texture elements
 	glGenTextures(1, &t.tex.backTexture);
 	int w = t.tex.backImage->width;
@@ -340,6 +343,19 @@ void init_opengl(void)
 	t.tex.xc[1] = 1.0;
 	t.tex.yc[0] = 0.0;
 	t.tex.yc[1] = 1.0;
+
+	glGenTextures(1, &s.tex.backTexture);
+	int ws = s.tex.backImage->width;
+	int hs = s.tex.backImage->height;
+	glBindTexture(GL_TEXTURE_2D, s.tex.backTexture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, ws, hs, 0,
+				 GL_RGB, GL_UNSIGNED_BYTE, s.tex.backImage->data);
+	s.tex.xc[0] = 0.0;
+	s.tex.xc[1] = 1.0;
+	s.tex.yc[0] = 0.0;
+	s.tex.yc[1] = 1.0;
 }
 
 void physics()
