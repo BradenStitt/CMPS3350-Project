@@ -297,6 +297,7 @@ int X11_wrapper::check_keys(XEvent *e)
 			break;
 		case XK_p:
 			inStartMenu = 0;
+			player.init();
 			break;
 		case XK_m:
 			inStartMenu = 1;
