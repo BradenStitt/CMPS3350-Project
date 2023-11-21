@@ -49,7 +49,7 @@ Enemy::Enemy()
 
     width = height = 15.0f;
     hitCount = 0;
-    velocity = 5.0f;
+    velocity = 2.0f;
     isDestroyed = false;
 
     verts[0][0] = -15.0f;

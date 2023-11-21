@@ -101,7 +101,7 @@ void Platform::draw_platform_fixed(float x, float y)
     }
     else if (pType == 4)
     {
-        glColor3ub(0, 250, 0);
+        glColor3ub(0, 0, 0);
         // set it to a square
         width = 15.0f;
         height = 15.0f;
@@ -162,7 +162,7 @@ void Platform::draw_platform_random()
     }
     else if (pType == 4)
     {
-        glColor3ub(0, 255, 0);
+        glColor3ub(0, 0, 0);
         // set it to a square
         width = 25.0f;
         height = 25.0f;
@@ -199,14 +199,14 @@ void Platform::physics_platform()
     if (pos[1] > -50.0f && pType != 4)
     {
         if (pType == 1 || pType == 3) {
-            pos[1] -= 4.0f;
+            pos[1] -= 1.0f;
         } else {
             pos[1] -= 2.0f;
         }
 
         // Snehal's Test on Mac
         // pos[1] -= 2.0f;
-        usleep(20000);
+        //usleep(20000);
     }
 
     // If the platform is a moving platform or an enemy, move it side to side
@@ -252,9 +252,25 @@ void Platform::physics_platform()
     }
     else if (pType == 5)
     {
-        enemy.pos[0] = pos[0];
         enemy.pos[1] = pos[1] + height; // Adjust the position as needed
-        enemy.enemyPhysics();
+
+        // Move the enemy side to side along with the platform
+        enemy.pos[0] += enemy.velocity;
+
+        // Check if the enemy reaches the right edge of the platform
+        if (enemy.pos[0] + enemy.width > pos[0] + width)
+        {
+            // Reverse the direction when reaching the right edge
+            enemy.pos[0] = pos[0] + width - enemy.width;
+            enemy.velocity = -enemy.velocity;
+        }
+        // Check if the enemy reaches the left edge of the platform
+        else if (enemy.pos[0] - enemy.width < pos[0] - width)
+        {
+            // Reverse the direction when reaching the left edge
+            enemy.pos[0] = pos[0] - width + enemy.width;
+            enemy.velocity = -enemy.velocity;
+        }
     }
 }
 
@@ -263,38 +279,39 @@ GameManager::GameManager(int numPlatforms) : platformCreationTimer(0) {}
 
 void GameManager::createPlatform()
 {
-    int platformType = rand() % 10; // Random number between 0 and 9
+    int platformType = rand() % 20; // Random number between 0 and 19
 
     Platform newPlatform;
 
-    if (platformType == 0 || platformType == 1 || platformType == 2 || platformType == 3 || platformType == 4)
+    if (platformType == 0 || platformType == 1 || platformType == 2 || platformType == 3 || platformType == 4
+        || platformType == 5 || platformType == 6 || platformType == 7 || platformType == 8 || platformType == 9)
     {
         // 50% chance of creating a normal platform
         newPlatform.pType = 0;
     }
-    else if (platformType == 5)
+    else if (platformType == 10 || platformType == 11 || platformType == 12 || platformType == 13)
     {
         // 10% chance of creating a moving platform
         newPlatform.pType = 1;
     }
-    else if (platformType == 6)
+    else if (platformType == 14 || platformType == 15)
     {
         // 10% chance of creating a breaking platform
         newPlatform.pType = 2;
     }
-    else if (platformType == 7)
+    else if (platformType == 16)
     {
         // 10% chance of creating an enemy on the platform
         newPlatform.pType = 3;
     }
-    else if (platformType == 8 && !newPlatform.blackholeExists)
+    else if (platformType == 17 && !newPlatform.blackholeExists)
     {
         // 10% chance of creating a special platform (e.g., black hole)
         newPlatform.pType = 4;
         newPlatform.pos[1] = rand() % (g.yres / 2) + (g.yres / 2); // Random y coordinate between half and the bottom of the screen
         newPlatform.blackholeExists = true;
     }
-    else if (platformType == 9)
+    else if (platformType == 18 || platformType == 19)
     {
         // 10% chance of creating another special platform (e.g., platform type 5)
         newPlatform.pType = 5;
