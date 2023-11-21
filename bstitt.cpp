@@ -198,7 +198,11 @@ void Platform::physics_platform()
     // Move the platform down the screen
     if (pos[1] > -50.0f && pType != 4)
     {
-        pos[1] -= 4.0f;
+        if (pType == 1 || pType == 3) {
+            pos[1] -= 4.0f;
+        } else {
+            pos[1] -= 2.0f;
+        }
 
         // Snehal's Test on Mac
         // pos[1] -= 2.0f;
@@ -259,45 +263,47 @@ GameManager::GameManager(int numPlatforms) : platformCreationTimer(0) {}
 
 void GameManager::createPlatform()
 {
-    int platformType = rand() % 10; // Random number between 0 and 24
+    int platformType = rand() % 10; // Random number between 0 and 9
+
     Platform newPlatform;
 
-    if (platformType == 0)
+    if (platformType == 0 || platformType == 1 || platformType == 2 || platformType == 3 || platformType == 4)
     {
-        // 1 in 25 chance of creating a moving platform
-        newPlatform.pType = 1;
-    }
-    else if (platformType == 1)
-    {
-        // 1 in 25 chance of creating a breaking platform
-        newPlatform.pType = 2;
-    }
-    else if (platformType == 2)
-    {
-        // 1 in 25 chance of creating an enemy on the platform
-        newPlatform.pType = 3;
-    }
-    else if (platformType == 3 && !newPlatform.blackholeExists)
-    {
-        newPlatform.pType = 4;
-        newPlatform.pos[1] = rand() % (g.yres / 2) + (g.yres / 2); // Random y coordinate between half and the bottom of the screen
-        newPlatform.blackholeExists = true;
-        cout << "New black hole created at (" << newPlatform.pos[0] << ", " << newPlatform.pos[1] << ")" << endl;
+        // 50% chance of creating a normal platform
+        newPlatform.pType = 0;
     }
     else if (platformType == 5)
     {
-        cout << "New enemy platform created at (" << newPlatform.pos[0] << ", " << newPlatform.pos[1] << ")" << endl;
-        newPlatform.pType = 5;
+        // 10% chance of creating a moving platform
+        newPlatform.pType = 1;
     }
-    else
+    else if (platformType == 6)
     {
-        // Regular platform
-        newPlatform.pType = 0;
+        // 10% chance of creating a breaking platform
+        newPlatform.pType = 2;
+    }
+    else if (platformType == 7)
+    {
+        // 10% chance of creating an enemy on the platform
+        newPlatform.pType = 3;
+    }
+    else if (platformType == 8 && !newPlatform.blackholeExists)
+    {
+        // 10% chance of creating a special platform (e.g., black hole)
+        newPlatform.pType = 4;
+        newPlatform.pos[1] = rand() % (g.yres / 2) + (g.yres / 2); // Random y coordinate between half and the bottom of the screen
+        newPlatform.blackholeExists = true;
+    }
+    else if (platformType == 9)
+    {
+        // 10% chance of creating another special platform (e.g., platform type 5)
+        newPlatform.pType = 5;
     }
 
     platforms.push_back(newPlatform);
     platformCreationTimer = 0; // Reset the timer
 }
+
 
 void GameManager::updatePhysics()
 {
