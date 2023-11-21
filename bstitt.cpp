@@ -206,7 +206,7 @@ void Platform::physics_platform()
 
         // Snehal's Test on Mac
         // pos[1] -= 2.0f;
-        //usleep(20000);
+        usleep(12000);
     }
 
     // If the platform is a moving platform or an enemy, move it side to side
