@@ -204,27 +204,22 @@ void Bullet::physics()
 // Draws the bullet
 void Bullet::draw_bullet()
 {
-	for (int i = 0; i < player.nbullets; i++)
-	{
-		Bullet *b = &player.barr[i];
+    for (int i = 0; i < player.nbullets; i++)
+    {
+        Bullet *b = &player.barr[i];
 
-		glColor3f(1.0, 0.0, 0.0); // red
-		//glColor3f(0.0, 0.0, 1.0);  // blue
+        glColor3f(1.0, 0.0, 0.0); // red
 
-		// Adjust the size of the bullet by changing the vertex positions
-		glBegin(GL_POINTS);
-		glVertex2f(b->pos[0], b->pos[1]);
-		glVertex2f(b->pos[0] - 2.0f, b->pos[1]);
-		glVertex2f(b->pos[0] + 2.0f, b->pos[1]);
-		glVertex2f(b->pos[0], b->pos[1] - 2.0f);
-		glVertex2f(b->pos[0], b->pos[1] + 2.0f);
-		glColor3f(0.8, 0.8, 0.8);
-		glVertex2f(b->pos[0] - 2.0f, b->pos[1] - 2.0f);
-		glVertex2f(b->pos[0] - 2.0f, b->pos[1] + 2.0f);
-		glVertex2f(b->pos[0] + 2.0f, b->pos[1] - 2.0f);
-		glVertex2f(b->pos[0] + 2.0f, b->pos[1] + 2.0f);
-		glEnd();
-	}
+        // Adjust size of the bullet
+        glPointSize(4.0f);
+
+        glBegin(GL_POINTS);
+        glVertex2f(b->pos[0], b->pos[1]);
+        glEnd();
+
+        // Reset point size to default value
+        glPointSize(1.0f);
+    }
 }
 
 Player::Player()
@@ -303,13 +298,13 @@ void Player::physics()
 	// Check for collision with window edges
 	if (pos[0] < 0.0)
 	{
-		// pos[0] += (float)g.xres;
-		player.pos[0] = 0.0f;
+		pos[0] += (float)g.xres;
+		// player.pos[0] = 0.0f;
 	}
 	else if (pos[0] > (float)g.xres)
 	{
-		// pos[0] -= (float)g.xres;
-		player.pos[0] = (float)g.xres;
+		pos[0] -= (float)g.xres;
+		// player.pos[0] = (float)g.xres;
 	}
 
 	// check for landing failure...
