@@ -39,15 +39,14 @@ void Bullet::physics()
 	struct timespec bt;
 	clock_gettime(CLOCK_REALTIME, &bt);
 
-	if (g.keys[XK_space])
-	{
+	if (g.keys[XK_space]) {
 		// Shoot a bullet...
-		if (player.nbullets < MAX_BULLETS)
-		{
+		if (player.nbullets < MAX_BULLETS) {
 			Bullet *b = &player.barr[player.nbullets];
 			timeCopy(&b->time, &bt);
 
-			// Adjust the y-position so it's just above the player with more distance
+			// Adjust the y-position so it's just above the player with
+            // more distance
 			b->pos[1] = 38.0f;
 			// Set bullet velocity to move farther upwards
 			b->vel[0] = 0.0f;
@@ -62,25 +61,22 @@ void Bullet::physics()
 		g.keys[XK_space] = 0;
 	}
 
-	for (int i = player.nbullets - 1; i >= 0; i--)
-	{
+	for (int i = player.nbullets - 1; i >= 0; i--) {
 		Bullet *b = &player.barr[i];
 		b->bulletHit = false;
 		// How long has the bullet been alive?
 		double ts = timeDiff(&b->time, &bt);
 
-		if (ts > 2.5)
-		{
+		if (ts > 2.5) {
 			// Time to delete the bullet.
-			if (i < player.nbullets - 1)
-			{
-				// Swap the current bullet with the last one and decrease the bullet count.
-				memcpy(&player.barr[i], &player.barr[player.nbullets - 1], sizeof(Bullet));
+			if (i < player.nbullets - 1) {
+				// Swap the current bullet with the last one and
+                // decrease the bullet count.
+				memcpy(&player.barr[i], &player.barr[player.nbullets - 1],
+                                                         sizeof(Bullet));
 			}
 			player.nbullets--;
-		}
-		else
-		{
+		} else {
 			// Move the bullet
 			b->pos[0] += b->vel[0];
 			b->pos[1] += b->vel[1];
@@ -89,89 +85,91 @@ void Bullet::physics()
 			b->prevPosY = b->pos[1] - b->vel[1];
 
 			// Check for collision with testPlatform
-			if (player.pos[0] > testPlatform.pos[0] - testPlatform.width && player.pos[0] < testPlatform.pos[0] + testPlatform.width)
-			{
-				if (b->prevPosY >= testPlatform.pos[1] - testPlatform.height && b->pos[1] <= testPlatform.pos[1] + testPlatform.height) 
-				{
+			if (player.pos[0] > testPlatform.pos[0] - testPlatform.width 
+	    	&& player.pos[0] < testPlatform.pos[0] + testPlatform.width) {
+				if (b->prevPosY >= testPlatform.pos[1] - testPlatform.height 
+				&& b->pos[1] <= testPlatform.pos[1]+testPlatform.height) {
 					b->pos[1] = testPlatform.pos[1] + testPlatform.height;
                     b->bulletHit = true;
                 }
 			}
 		
-			if (b->bulletHit)
-			{
+			if (b->bulletHit) {
 				testPlatform.hitCount++;
 
 				// Remove the bullet
-				if (i < player.nbullets - 1)
-				{
-					// Swap the current bullet with the last one and decrease the bullet count.
-					memcpy(&player.barr[i], &player.barr[player.nbullets - 1], sizeof(Bullet));
+				if (i < player.nbullets - 1) {
+					// Swap the current bullet with the last one and 
+                    // decrease the bullet count.
+					memcpy(&player.barr[i], &player.barr[player.nbullets-1], 
+															sizeof(Bullet));
 				}
 				player.nbullets--;
 
-				if (testPlatform.hitCount >= 2)
-				{
+				if (testPlatform.hitCount >= 2) {
 					testPlatform.isDestroyed = true;
 					player.score += 30;
 				}
 			}
 
-			/* bullet collision with dynamic enemies still needs to be tested */
+			/* bullet collision with dynamic enemies still needs to be 
+             * tested */
 
-			for (unsigned int j = 0; j < gameManager.platforms.size(); j++)
-			{
+			for (unsigned int j = 0; j<gameManager.platforms.size(); j++) {
 				Platform *platform = &gameManager.platforms[j];
 
-				if (platform->pType == 3 || platform->pType == 5)
-				{
-					if (platform->pType == 3)
-					{
-						if (player.pos[0] > platform->pos[0] - platform->width && player.pos[0] < platform->pos[0] + platform->width)
-						{
-							if (b->prevPosY >= platform->pos[1] - platform->height && b->pos[1] <= platform->pos[1] + platform->height) 
-							{
-								b->pos[1] = platform->pos[1] + platform->height;
+				if (platform->pType == 3 || platform->pType == 5) {
+					if (platform->pType == 3) {
+						if (player.pos[0]>platform->pos[0] - platform->width 
+				            && player.pos[0] < platform->pos[0] 
+														+ platform->width) {
+							if (b->prevPosY>=platform->pos[1]
+														-platform->height
+								 && b->pos[1] <= platform->pos[1]
+								 					+ platform->height) {
+								b->pos[1] = platform->pos[1]
+                                                         + platform->height;
 								b->bulletHit = true;
 							}
 						}
-					}
-					else 
-					{
-						if (player.pos[0] > platform->enemy.pos[0] - platform->enemy.width && player.pos[0] < platform->enemy.pos[0] + platform->enemy.width)
-						{
-							if (b->prevPosY >= platform->enemy.pos[1] - platform->enemy.height && b->pos[1] <= platform->enemy.pos[1] + platform->enemy.height) 
-							{
-								b->pos[1] = platform->enemy.pos[1] + platform->enemy.height;
+					} else {
+						if (player.pos[0] > platform->enemy.pos[0] 
+							- platform->enemy.width && player.pos[0] < 
+							platform->enemy.pos[0] +platform->enemy.width) {
+							if (b->prevPosY >= platform->enemy.pos[1] 
+								- platform->enemy.height && b->pos[1] 
+													<=platform->enemy.pos[1] 
+												+platform->enemy.height) {
+								b->pos[1] = platform->enemy.pos[1] 
+													+platform->enemy.height;
 								b->bulletHit = true;
 							}
 						}
 					}
 				
-					if (b->bulletHit)
-					{
+					if (b->bulletHit) {
 						if (platform->pType == 3) {
 							platform->hitCount++;
-						}
-						else {
+						} else {
 							platform->enemy.hitCount++;
 						}
 
 						// Remove the bullet
-						if (i < player.nbullets - 1)
-						{
-							// Swap the current bullet with the last one and decrease the bullet count.
-							memcpy(&player.barr[i], &player.barr[player.nbullets - 1], sizeof(Bullet));
+						if (i < player.nbullets - 1) {
+							// Swap the current bullet with the last one and
+							// decrease the bullet count.
+							memcpy(&player.barr[i], 
+									&player.barr[player.nbullets-1], 
+															sizeof(Bullet));
 						}
 						player.nbullets--;
 
-						if (platform->hitCount >= 3 || platform->enemy.hitCount >= 3)
-						{
+						if (platform->hitCount >= 3 
+							|| platform->enemy.hitCount >= 3) {
 							if (platform->pType == 3) {
 								platform->isDestroyed = true;
 								player.score += 30;
-							}
-							else {
+							} else {
 								platform->enemy.isDestroyed = true;
 								player.score += 30;
 							}
@@ -181,12 +179,9 @@ void Bullet::physics()
 			}
 
 			// Check for collision with window edges
-			if (b->pos[0] < 0.0)
-			{
+			if (b->pos[0] < 0.0) {
 				b->pos[0] = 0.0f;
-			}
-			else if (b->pos[0] > (float)g.xres)
-			{
+			} else if (b->pos[0] > (float)g.xres) {
 				b->pos[0] = (float)g.xres;
 			}
 			// else if (b->pos[1] < 0.0)
@@ -204,8 +199,7 @@ void Bullet::physics()
 // Draws the bullet
 void Bullet::draw_bullet()
 {
-    for (int i = 0; i < player.nbullets; i++)
-    {
+	for (int i = 0; i < player.nbullets; i++) {
         Bullet *b = &player.barr[i];
 
         glColor3f(1.0, 0.0, 0.0); // red
@@ -288,28 +282,24 @@ void Player::physics()
 			vel[0] = 0.0;
 	}
 	// player.vel[0] += 0.1;
-	if (g.keys[XK_Up])
-		if (jumpCount < 2)
-		{
+	if (g.keys[XK_Up]) {
+		if (jumpCount < 2) {
 			vel[1] += 4.8;
 			jumpCount++;
 		}
+	}
 
 	// Check for collision with window edges
-	if (pos[0] < 0.0)
-	{
+	if (pos[0] < 0.0) {
 		pos[0] += (float)g.xres;
 		// player.pos[0] = 0.0f;
-	}
-	else if (pos[0] > (float)g.xres)
-	{
+	} else if (pos[0] > (float)g.xres) {
 		pos[0] -= (float)g.xres;
 		// player.pos[0] = (float)g.xres;
 	}
 
 	// check for landing failure...
-	if (pos[1] < 0.0)
-	{
+	if (pos[1] < 0.0) {
 		g.failed_landing = 1;
 		pos[1] = 0.0;
 		blackholeDetected = 1;
@@ -337,74 +327,78 @@ void Player::draw_player()
 void dynamic_collision_detection()
 {
 	// check for collision with dynamic platforms
-	if (!player.enemyDetected && !player.blackholeDetected)
-	{
-		for (unsigned int i = 0; i < gameManager.platforms.size(); i++)
-		{
+	if (!player.enemyDetected && !player.blackholeDetected) {
+		for (unsigned int i = 0; i < gameManager.platforms.size(); i++) {
 			Platform *platform = &gameManager.platforms[i];
 
-			if (platform->pType == 3 || platform->pType == 4)
-			{
-				if ((player.pos[0] + player.width > platform->pos[0] - platform->width && player.pos[0] <= platform->pos[0]) || 
-					(player.pos[0] - player.width < platform->pos[0] + platform->width && player.pos[0] >= platform->pos[0]))
-				{
-					if ((player.pos[1] - player.height <= platform->pos[1] + platform->height && player.pos[1] - player.height >= platform->pos[1]) || 
-						(player.pos[1] + player.height >= platform->pos[1] - platform->height && player.pos[1] + player.height <= platform->pos[1]))
-					{
-						if (platform->pType == 3)
-						{
+			if (platform->pType == 3 || platform->pType == 4) {
+				if ((player.pos[0] + player.width > platform->pos[0]
+				- platform->width && player.pos[0] <=platform->pos[0]) || 
+					(player.pos[0] - player.width < platform->pos[0] + 
+					platform->width && player.pos[0] >= platform->pos[0])) {
+					if ((player.pos[1] - player.height <= platform->pos[1] + 
+					platform->height && player.pos[1] - player.height >= 
+														platform->pos[1]) || 
+					(player.pos[1] + player.height >= platform->pos[1] - 
+					platform->height && player.pos[1] + 
+										player.height <=platform->pos[1])) {
+						if (platform->pType == 3) {
 							player.enemyDetected = 1;
 							player.vel[1] = -8.0f;
 						}		
 
-						if (platform->pType == 4)
-						{
+						if (platform->pType == 4) {
 							player.blackholeDetected = 1;
 						}
 					}
 				}
-			}
-			else
-			{
-				if (player.pos[0] > (platform->pos[0] - platform->width) && player.pos[0] < (platform->pos[0] + platform->width))
-				{
-					if ((platform->pType == 5 && platform->enemy.isDestroyed) || platform->pType != 5)
-					{
-						if (player.pos[1] > (platform->pos[1] - platform->height) && player.pos[1] < (platform->pos[1] + platform->height))
-						{
+			} else {
+				if (player.pos[0] > (platform->pos[0] - platform->width) 
+				&& player.pos[0] < (platform->pos[0] + platform->width)) {
+					if ((platform->pType == 5 &&platform->enemy.isDestroyed) 
+												|| platform->pType != 5) {
+						if (player.pos[1] >
+										(platform->pos[1]-platform->height) 
+						&& player.pos[1] < (platform->pos[1] 
+													+ platform->height)) {
 							// Player is colliding with platform
 							platform->isLanded = true;
 							platform->countLanding++;
 
-							player.pos[1] = platform->pos[1] + platform->height;
+							player.pos[1] = platform->pos[1]
+														+platform->height;
 							player.vel[1] = 0.0;
 							player.vel[0] = 0.0;
 							player.jumpCount = 0;
 
-							if (platform->countLanding == 1 && platform->pType != 2)
-							{
+							if (platform->countLanding == 1 
+												&& platform->pType != 2) {
 								player.score += 10;
 							}
 
-							if (player.angle > 0.0 || player.angle < 0.0)
-							{
+							if (player.angle > 0.0 || player.angle < 0.0) {
 								g.failed_landing = 1;
-							}
-							else
-							{
+							} else {
 								// Player landed successfully
 								// g.landed = 1;
 							}
 						}
-					}
-					else 
-					{
-						if ((player.pos[0] + player.width > platform->enemy.pos[0] - platform->enemy.width && player.pos[0] <= platform->enemy.pos[0]) || 
-							(player.pos[0] - player.width < platform->enemy.pos[0] + platform->enemy.width && player.pos[0] >= platform->enemy.pos[0]))
-						{
-							if ((player.pos[1] - player.height <= platform->enemy.pos[1] + platform->enemy.height && player.pos[1] - player.height >= platform->enemy.pos[1]) || 
-								(player.pos[1] + player.height >= platform->enemy.pos[1] - platform->enemy.height && player.pos[1] + player.height <= platform->enemy.pos[1]))
-							{
+					} else {
+						if ((player.pos[0]+player.width>
+													platform->enemy.pos[0]
+						 - platform->enemy.width && player.pos[0] 
+						 		<= platform->enemy.pos[0]) ||(player.pos[0]- 
+						 				player.width<platform->enemy.pos[0]+ 
+						 				platform->enemy.width&&player.pos[0] 
+						 						>=platform->enemy.pos[0])) {
+							if ((player.pos[1] - player.height <= 
+							platform->enemy.pos[1]+platform->enemy.height && 
+							player.pos[1] - player.height >= 
+												platform->enemy.pos[1]) || 
+							(player.pos[1] + player.height >= 
+							platform->enemy.pos[1]-platform->enemy.height &&
+							player.pos[1] + player.height 
+												<=platform->enemy.pos[1])) {
 								player.enemyDetected = 1;
 								player.vel[1] = -8.0f;
 							}
