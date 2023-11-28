@@ -8,8 +8,7 @@ using namespace std;
 extern int time_since_key_press(const bool get);
 extern void updateAndPrintScore();
 
-class Enemy
-{
+class Enemy {
 public:
     float pos[2];
     float vel[2];

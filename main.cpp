@@ -51,8 +51,7 @@ public:
 	float pos[2];
 	float width;
 	float height;
-	Platform2()
-	{
+	Platform2() {
 		pos[0] = 100.0f;
 		pos[1] = 20.0f;
 		width = 50.0f;
@@ -102,11 +101,9 @@ int main()
 
 	// Main loop
 	int done = 0;
-	while (!done)
-	{
+	while (!done) {
 		// Process external events.
-		while (x11.getXPending())
-		{
+		while (x11.getXPending()) {
 			XEvent e = x11.getXNextEvent();
 			x11.check_resize(&e);
 			x11.check_mouse(&e);
@@ -114,11 +111,9 @@ int main()
 		}
 		// physics();
 		render();
-		if (!inStartMenu)
-		{
+		if (!inStartMenu) {
 			physics();
-			if (!player.blackholeDetected)
-			{
+			if (!player.blackholeDetected) {
 				// Update physics for platforms
 				gameManager.updatePhysics();
 				// Render the platforms
@@ -144,15 +139,13 @@ X11_wrapper::X11_wrapper()
 {
 	GLint att[] = {GLX_RGBA, GLX_DEPTH_SIZE, 24, None};
 	dpy = XOpenDisplay(NULL);
-	if (dpy == NULL)
-	{
+	if (dpy == NULL) {
 		printf("\n\tcannot connect to X server\n\n");
 		exit(EXIT_FAILURE);
 	}
 	Window root = DefaultRootWindow(dpy);
 	XVisualInfo *vi = glXChooseVisual(dpy, 0, att);
-	if (vi == NULL)
-	{
+	if (vi == NULL) {
 		printf("\n\tno appropriate visual found\n\n");
 		exit(EXIT_FAILURE);
 	}
@@ -218,8 +211,7 @@ void X11_wrapper::check_resize(XEvent *e)
 	if (e->type != ConfigureNotify)
 		return;
 	XConfigureEvent xce = e->xconfigure;
-	if (xce.width != g.xres || xce.height != g.yres)
-	{
+	if (xce.width != g.xres || xce.height != g.yres) {
 		// Window size did change.
 		reshape_window(xce.width, xce.height);
 	}
@@ -234,36 +226,29 @@ void X11_wrapper::check_mouse(XEvent *e)
 	// Weed out non-mouse events
 	if (e->type != ButtonRelease &&
 		e->type != ButtonPress &&
-		e->type != MotionNotify)
-	{
+		e->type != MotionNotify) {
 		// This is not a mouse event that we care about.
 		return;
 	}
-	if (e->type == ButtonRelease)
-	{
+	if (e->type == ButtonRelease) {
 		return;
 	}
-	if (e->type == ButtonPress)
-	{
-		if (e->xbutton.button == 1)
-		{
+	if (e->type == ButtonPress) {
+		if (e->xbutton.button == 1) {
 			// Left button was pressed.
 			time_since_mouse_moved(false);
 			// int y = g.yres - e->xbutton.y;
 			return;
 		}
-		if (e->xbutton.button == 3)
-		{
+		if (e->xbutton.button == 3) {
 			// Right button was pressed.
 			time_since_mouse_moved(false);
 			return;
 		}
 	}
-	if (e->type == MotionNotify)
-	{
+	if (e->type == MotionNotify) {
 		// The mouse moved!
-		if (savex != e->xbutton.x || savey != e->xbutton.y)
-		{
+		if (savex != e->xbutton.x || savey != e->xbutton.y) {
 			savex = e->xbutton.x;
 			savey = e->xbutton.y;
 			time_since_mouse_moved(false);
@@ -281,8 +266,7 @@ int X11_wrapper::check_keys(XEvent *e)
 		g.keys[key] = 1;
 	if (e->type == KeyRelease)
 		g.keys[key] = 0;
-	if (e->type == KeyPress)
-	{
+	if (e->type == KeyPress) {
 		time_since_key_press(false);
 		switch (key)
 		{
@@ -339,7 +323,7 @@ void init_opengl(void)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0,
-				 GL_RGB, GL_UNSIGNED_BYTE, t.tex.backImage->data);
+				GL_RGB, GL_UNSIGNED_BYTE, t.tex.backImage->data);
 	t.tex.xc[0] = 0.0;
 	t.tex.xc[1] = 1.0;
 	t.tex.yc[0] = 0.0;
@@ -352,7 +336,7 @@ void init_opengl(void)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexImage2D(GL_TEXTURE_2D, 0, 3, ws, hs, 0,
-				 GL_RGB, GL_UNSIGNED_BYTE, s.tex.backImage->data);
+				GL_RGB, GL_UNSIGNED_BYTE, s.tex.backImage->data);
 	s.tex.xc[0] = 0.0;
 	s.tex.xc[1] = 1.0;
 	s.tex.yc[0] = 0.0;
@@ -372,11 +356,9 @@ void physics()
 
 	// static enemy collision
 	if ((player.pos[0] + player.width > testPlatform.pos[0] - testPlatform.width && player.pos[0] <= testPlatform.pos[0]) ||
-		(player.pos[0] - player.width < testPlatform.pos[0] + testPlatform.width && player.pos[0] >= testPlatform.pos[0]))
-	{
+		(player.pos[0] - player.width < testPlatform.pos[0] + testPlatform.width && player.pos[0] >= testPlatform.pos[0])) {
 		if ((player.pos[1] - player.height <= testPlatform.pos[1] + testPlatform.height && player.pos[1] - player.height >= testPlatform.pos[1]) ||
-			(player.pos[1] + player.height >= testPlatform.pos[1] - testPlatform.height && player.pos[1] + player.height <= testPlatform.pos[1]))
-		{
+			(player.pos[1] + player.height >= testPlatform.pos[1] - testPlatform.height && player.pos[1] + player.height <= testPlatform.pos[1])) {
 			player.enemyDetected = 1;
 			player.vel[1] = -8.0;
 		}
@@ -384,11 +366,9 @@ void physics()
 
 	// static blackhole collision
 	if ((player.pos[0] + player.width > blackholeTest.pos[0] - blackholeTest.width && player.pos[0] <= blackholeTest.pos[0]) ||
-		(player.pos[0] - player.width < blackholeTest.pos[0] + blackholeTest.width && player.pos[0] >= blackholeTest.pos[0]))
-	{
+		(player.pos[0] - player.width < blackholeTest.pos[0] + blackholeTest.width && player.pos[0] >= blackholeTest.pos[0])) {
 		if ((player.pos[1] - player.height <= blackholeTest.pos[1] + blackholeTest.height && player.pos[1] - player.height >= blackholeTest.pos[1]) ||
-			(player.pos[1] + player.height >= blackholeTest.pos[1] - blackholeTest.height && player.pos[1] + player.height <= blackholeTest.pos[1]))
-		{
+			(player.pos[1] + player.height >= blackholeTest.pos[1] - blackholeTest.height && player.pos[1] + player.height <= blackholeTest.pos[1])) {
 			player.blackholeDetected = 1;
 			// player.vel[1] = -8.0;
 		}
@@ -398,21 +378,17 @@ void physics()
 void render()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
-	if (inStartMenu)
-	{
+	if (inStartMenu) {
 		// Display the start menu.
 		startMenu.showStartScreen();
 	}
-	else
-	{
+	else {
 
-		if (player.blackholeDetected)
-		{
+		if (player.blackholeDetected) {
 			blackhole_screen();
 			youDied();
 		}
-		else
-		{
+		else {
 			// Draw Grid
 			glColor3f(1.0, 1.0, 1.0);
 			glBindTexture(GL_TEXTURE_2D, t.tex.backTexture);
@@ -470,49 +446,39 @@ void render()
 			// /* Draw the enemy */
 			// enemy.drawEnemy();
 			// Draw Player
-			
+
 			player.draw_player();
 
-			if (!player.enemyDetected)
-			{
-				if (player.pos[0] > (pf.pos[0] - pf.width) && player.pos[0] < (pf.pos[0] + pf.width))
-				{
-					if (player.pos[1] > (pf.pos[1] - pf.height) && player.pos[1] < (pf.pos[1] + pf.height))
-					{
+			if (!player.enemyDetected) {
+				if (player.pos[0] > (pf.pos[0] - pf.width) && player.pos[0] < (pf.pos[0] + pf.width)) {
+					if (player.pos[1] > (pf.pos[1] - pf.height) && player.pos[1] < (pf.pos[1] + pf.height)) {
 						player.pos[1] = (pf.pos[1]) + pf.height;
 						player.vel[1] = 0.0;
 						player.vel[0] = 0.0;
 						player.jumpCount = 0;
 
-						if (player.angle > 0.0 || player.angle < 0.0)
-						{
+						if (player.angle > 0.0 || player.angle < 0.0) {
 							g.failed_landing = 1;
 						}
-						else
-						{
+						else {
 							// g.landed = 1;
 						}
 					}
 				}
 			}
 
-			if (!player.enemyDetected)
-			{
-				if (player.pos[0] > (pf.pos[0] + 100 - pf.width) && player.pos[0] < (pf.pos[0] + 100 + pf.width))
-				{
-					if (player.pos[1] > (pf.pos[1] + 50 - pf.height) && player.pos[1] < (pf.pos[1] + 50 + pf.height))
-					{
+			if (!player.enemyDetected) {
+				if (player.pos[0] > (pf.pos[0] + 100 - pf.width) && player.pos[0] < (pf.pos[0] + 100 + pf.width)) {
+					if (player.pos[1] > (pf.pos[1] + 50 - pf.height) && player.pos[1] < (pf.pos[1] + 50 + pf.height)) {
 						player.pos[1] = pf.pos[1] + 50 + pf.height;
 						player.vel[1] = 0.0;
 						player.vel[0] = 0.0;
 						player.jumpCount = 0;
 
-						if (player.angle > 0.0 || player.angle < 0.0)
-						{
+						if (player.angle > 0.0 || player.angle < 0.0) {
 							g.failed_landing = 1;
 						}
-						else
-						{
+						else {
 							// g.landed = 1;
 						}
 					}
@@ -524,16 +490,14 @@ void render()
 
 			// check for collision with dynamic platforms
 			dynamic_collision_detection();
-			
-			if (g.failed_landing)
-			{
+
+			if (g.failed_landing) {
 				// show crash graphics here...
 			}
 
 			updateAndPrintScore();
 
-			if (g.showNerdStats)
-			{
+			if (g.showNerdStats) {
 				// Draw a box around the nerd stats
 				glColor3ub(90, 90, 90); // Set the vertex color to gray
 				glPushMatrix();
