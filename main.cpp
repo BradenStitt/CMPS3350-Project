@@ -141,21 +141,13 @@ X11_wrapper::X11_wrapper()
 	int w = g.xres, h = g.yres;
 	dpy = XOpenDisplay(NULL);
 	if (dpy == NULL) {
-<<<<<<< HEAD
-		cout << "\n\tcannot connect to X server\n" << endl;
-=======
 		printf("\n\tcannot connect to X server\n\n");
->>>>>>> af2a406f1808adc85ebbd27b42dfd0a03c84e8e8
 		exit(EXIT_FAILURE);
 	}
 	Window root = DefaultRootWindow(dpy);
 	XVisualInfo *vi = glXChooseVisual(dpy, 0, att);
 	if (vi == NULL) {
-<<<<<<< HEAD
-		cout << "\n\tno appropriate visual found\n" << endl;
-=======
 		printf("\n\tno appropriate visual found\n\n");
->>>>>>> af2a406f1808adc85ebbd27b42dfd0a03c84e8e8
 		exit(EXIT_FAILURE);
 	} 
 	Colormap cmap = XCreateColormap(dpy, root, vi->visual, AllocNone);
