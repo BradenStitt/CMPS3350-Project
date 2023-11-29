@@ -164,8 +164,8 @@ void Bullet::physics()
 						}
 						player.nbullets--;
 
-						if (platform->hitCount >= 3 
-							|| platform->enemy.hitCount >= 3) {
+						if (platform->hitCount >= 2 
+							|| platform->enemy.hitCount >= 2) {
 							if (platform->pType == 3) {
 								platform->isDestroyed = true;
 								player.score += 30;

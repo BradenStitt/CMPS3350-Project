@@ -26,13 +26,11 @@ int time_since_key_press(const bool get)
 {
     static int firstTime = 1;
     static int lastKeyPressTime;
-    if (firstTime)
-    {
+    if (firstTime) {
         firstTime = 0;
         lastKeyPressTime = time(NULL);
     }
-    if (get)
-    {
+    if (get) {
         return time(NULL) - lastKeyPressTime;
     }
     lastKeyPressTime = time(NULL);
@@ -93,8 +91,7 @@ void Enemy::drawEnemyFixed(float x, float y)
 
 void Enemy::drawEnemy()
 {
-    if (!isDestroyed)
-    {
+    if (!isDestroyed) {
         glPushMatrix();
         glColor3ub(255, 0, 0);
 
@@ -110,8 +107,7 @@ void Enemy::drawEnemy()
 
         glPopMatrix();
     }
-    else 
-    {
+    else {
         pos[1] = -100.0f;
     }
 }
@@ -123,8 +119,7 @@ void updateAndPrintScore()
     int currentScore = print_score();
 
     // Check if the score has changed
-    if (currentScore != previousScore)
-    {
+    if (currentScore != previousScore) {
         // Update the previousScore variable
         previousScore = currentScore;
 
@@ -132,5 +127,3 @@ void updateAndPrintScore()
         cout << "Score: " << currentScore << endl;
     }
 }
-
-// Adding Sprites
