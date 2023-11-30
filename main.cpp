@@ -29,6 +29,7 @@ Player player;
 Bullet bullet;
 Platform testPlatform;
 Platform blackholeTest;
+Platform trophy;
 Texture t;
 Texture s;
 StartMenu startMenu;
@@ -276,6 +277,7 @@ int X11_wrapper::check_keys(XEvent *e)
 			// Key R was pressed
 			g.landed = 0;
 			gameManager.resetGame();
+			player.lives = 3;
 			player.init();
 			break;
 		case XK_s:
@@ -288,6 +290,7 @@ int X11_wrapper::check_keys(XEvent *e)
 		case XK_m:
 			inStartMenu = 1;
 			gameManager.resetGame();
+			player.lives = 3;
 			break;
 		case XK_Escape:
 			// Escape key was pressed
@@ -359,6 +362,7 @@ void physics()
 	// static enemy collision
 	if ((player.pos[0] + player.width > testPlatform.pos[0] - testPlatform.width && player.pos[0] <= testPlatform.pos[0]) ||
 		(player.pos[0] - player.width < testPlatform.pos[0] + testPlatform.width && player.pos[0] >= testPlatform.pos[0])) {
+
 		if ((player.pos[1] - player.height <= testPlatform.pos[1] + testPlatform.height && player.pos[1] - player.height >= testPlatform.pos[1]) ||
 			(player.pos[1] + player.height >= testPlatform.pos[1] - testPlatform.height && player.pos[1] + player.height <= testPlatform.pos[1])) {
 			player.enemyDetected = 1;
@@ -369,10 +373,20 @@ void physics()
 	// static blackhole collision
 	if ((player.pos[0] + player.width > blackholeTest.pos[0] - blackholeTest.width && player.pos[0] <= blackholeTest.pos[0]) ||
 		(player.pos[0] - player.width < blackholeTest.pos[0] + blackholeTest.width && player.pos[0] >= blackholeTest.pos[0])) {
+
 		if ((player.pos[1] - player.height <= blackholeTest.pos[1] + blackholeTest.height && player.pos[1] - player.height >= blackholeTest.pos[1]) ||
 			(player.pos[1] + player.height >= blackholeTest.pos[1] - blackholeTest.height && player.pos[1] + player.height <= blackholeTest.pos[1])) {
 			player.blackholeDetected = 1;
-			// player.vel[1] = -8.0;
+		}
+	}
+
+	// trophy collision
+	if ((player.pos[0] + player.width > trophy.pos[0] - trophy.width && player.pos[0] <= trophy.pos[0]) ||
+		(player.pos[0] - player.width < trophy.pos[0] + trophy.width && player.pos[0] >= trophy.pos[0])) {
+
+		if ((player.pos[1] - player.height <= trophy.pos[1] + trophy.height && player.pos[1] - player.height >= trophy.pos[1]) ||
+			(player.pos[1] + player.height >= trophy.pos[1] - trophy.height && player.pos[1] + player.height <= trophy.pos[1])) {
+			player.trophyDetected++; 
 		}
 	}
 }
@@ -448,9 +462,12 @@ void render()
 			blackholeTest.draw_platform_fixed(blackholeTest.pos[0], blackholeTest.pos[1]);
 
 			// Draw the trophy
-			Platform trophy;
+			
 			trophy.pos[0] = g.xres / 2; // Center the trophy
-			trophy.pos[1] = g.yres - 50;
+			trophy.pos[1] = g.yres - 60;
+			// testing positions 
+			// trophy.pos[0] = 200.0f;
+			// trophy.pos[1] = 300.0f;
 			trophy.pType = 6;
 			trophy.draw_platform_fixed(trophy.pos[0], trophy.pos[1]);
 
