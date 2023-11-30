@@ -14,6 +14,7 @@ typedef float Vec[3];
 
 void dynamic_collision_detection();
 void blackhole_screen();
+void life_lost();
 int count_render_function();
 int print_score();
 
@@ -46,6 +47,7 @@ public:
 	int jumpCount;
 	int enemyDetected;
 	int blackholeDetected;
+	int trophyDetected;
 	int score;
 	int lives;
 	// float thrust;

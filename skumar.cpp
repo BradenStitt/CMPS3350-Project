@@ -111,10 +111,8 @@ void Bullet::physics()
 					player.score += 30;
 				}
 			}
-
-			/* bullet collision with dynamic enemies still needs to be 
-             * tested */
-
+			
+			/* dynamic enemy bullet collision */
 			for (unsigned int j = 0; j<gameManager.platforms.size(); j++) {
 				Platform *platform = &gameManager.platforms[j];
 
@@ -164,8 +162,8 @@ void Bullet::physics()
 						}
 						player.nbullets--;
 
-						if (platform->hitCount >= 2 
-							|| platform->enemy.hitCount >= 2) {
+						if (platform->hitCount >= 1 
+							|| platform->enemy.hitCount >= 1) {
 							if (platform->pType == 3) {
 								platform->isDestroyed = true;
 								player.score += 30;
@@ -222,6 +220,7 @@ Player::Player()
 	barr = new Bullet[MAX_BULLETS];
 	nbullets = 0;
 	clock_gettime(CLOCK_REALTIME, &bulletTimer);
+	lives = 3;
 }
 
 Player::~Player()
@@ -251,10 +250,10 @@ void Player::init()
 	jumpCount = 0;
 	enemyDetected = 0;
 	blackholeDetected = 0;
+	trophyDetected = 0;
 	g.failed_landing = 0;
 	score = 0;
 	angle = 0.0;
-	lives = 3;
 }
 
 // Physics for moving the player
@@ -301,9 +300,10 @@ void Player::physics()
 
 	// check for landing failure...
 	if (pos[1] < 0.0) {
-		g.failed_landing = 1;
-		pos[1] = 0.0;
-		blackholeDetected = 1;
+		// g.failed_landing = 1;
+		// pos[1] = 0.0;
+		// blackholeDetected = 1;
+		life_lost();
 	}
 }
 
@@ -420,6 +420,18 @@ void blackhole_screen()
 	glVertex2i(g.xres, g.yres);
 	glVertex2i(g.xres, 0);
 	glEnd();
+}
+
+void life_lost()
+{
+	if (player.lives == 0) {
+		g.failed_landing = 1;
+		player.pos[1] = 0.0;
+		player.blackholeDetected = 1;
+	} else {
+		player.lives--;
+		player.init();
+	}
 }
 
 int count_render_function()
