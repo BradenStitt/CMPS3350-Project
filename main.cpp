@@ -86,6 +86,7 @@ Background sprite[1] = {"finalspritepls.png"};
 void init_opengl(void);
 void physics(void);
 void render(void);
+extern void render_hearts(void);
 
 //=====================================
 // MAIN FUNCTION IS HERE
@@ -410,6 +411,7 @@ void render()
 			glEnd();
 
 			scoreboard();
+			render_hearts();
 
 			// Draw the platform
 			Platform platform; // Declare an instance of the Platform class
@@ -444,6 +446,14 @@ void render()
 			blackholeTest.pos[1] = 200.0f;
 			blackholeTest.pType = 4;
 			blackholeTest.draw_platform_fixed(blackholeTest.pos[0], blackholeTest.pos[1]);
+
+			// Draw the trophy
+			Platform trophy;
+			trophy.pos[0] = g.xres / 2; // Center the trophy
+			trophy.pos[1] = g.yres - 50;
+			trophy.pType = 6;
+			trophy.draw_platform_fixed(trophy.pos[0], trophy.pos[1]);
+
 			// /* Draw the enemy */
 			// enemy.drawEnemy();
 			// Draw Player

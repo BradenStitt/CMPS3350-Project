@@ -254,6 +254,7 @@ void Player::init()
 	g.failed_landing = 0;
 	score = 0;
 	angle = 0.0;
+	lives = 3;
 }
 
 // Physics for moving the player

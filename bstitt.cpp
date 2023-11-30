@@ -8,11 +8,11 @@
 #include <ctime>
 #include <cmath>
 #include <vector>
-#include "defs.h"
 #include "log.h"
 #include "bstitt.h"
 #include "global.h"
 #include "bruiz.h"
+#include "skumar.h"
 #include <algorithm>
 // #include "fonts.h"
 
@@ -20,7 +20,7 @@ using namespace std;
 
 extern Global g;
 extern GameManager gameManager;
-const float GRAVITY = 0.4;
+extern Player player;
 
 // void display_name(int x, int y, const char *name)
 // {
@@ -110,10 +110,15 @@ void Platform::draw_platform_fixed(float x, float y)
     {
         glColor3ub(255, 0, 255);
     }
+    else if (pType == 6) {
+        glColor3ub(250, 250, 20); // yellow
+        width = 10.0f;
+        height = 10.0f;
+    }
     else
     {
         glColor3ub(250, 250, 20); // yellow
-    }
+    } 
     glTranslatef(x, y, 0.0f);
     glBegin(GL_QUADS);
     glVertex2f(-width, -height);
@@ -171,6 +176,10 @@ void Platform::draw_platform_random()
     {
         glColor3ub(255, 0, 255);
     }
+    else if(pType == 6) {
+        width = 10.0f;
+        height = 10.0f;
+    }
     else
     {
         glColor3ub(250, 250, 20); // yellow
@@ -192,7 +201,6 @@ void Platform::draw_platform_random()
     glEnd();
     glPopMatrix();
 }
-
 void Platform::physics_platform()
 {
     // Move the platform down the screen
@@ -400,4 +408,35 @@ int time_since_mouse_moved(const bool get)
     }
     last_time = time(NULL);
     return 0;
+}
+
+void render_hearts() {
+    // Render the hearts
+    for (int i = 0; i <  player.lives; i++)
+    {
+        glColor3ub(255, 0, 0);
+        glPushMatrix();
+        glTranslatef(g.xres - 20 - i * 20, g.yres - 20, 0.0f);
+        glBegin(GL_QUADS);
+        glVertex2f(-10, -10);
+        glVertex2f(-10, 10);
+        glVertex2f(10, 10);
+        glVertex2f(10, -10);
+        glEnd();
+        glColor3ub(20, 20, 20);
+        glBegin(GL_LINE_LOOP);
+        glVertex2f(-10, -10);
+        glVertex2f(-10, 10);
+        glVertex2f(10, 10);
+        glVertex2f(10, -10);
+        glVertex2f(-10, -10);
+        glEnd();
+        glPopMatrix();
+    }
+
+    // this code shows how the player's lives are displayed and destroyed. Call player.lives-- to remove a life
+    // int randNum = rand() % 100;
+    // if (randNum == 0) {
+    //     player.lives--;
+    // }
 }

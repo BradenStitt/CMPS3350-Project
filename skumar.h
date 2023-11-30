@@ -47,6 +47,7 @@ public:
 	int enemyDetected;
 	int blackholeDetected;
 	int score;
+	int lives;
 	// float thrust;
 	double angle;
 
