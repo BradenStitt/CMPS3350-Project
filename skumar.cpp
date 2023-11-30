@@ -300,9 +300,6 @@ void Player::physics()
 
 	// check for landing failure...
 	if (pos[1] < 0.0) {
-		// g.failed_landing = 1;
-		// pos[1] = 0.0;
-		// blackholeDetected = 1;
 		life_lost();
 	}
 }
