@@ -111,7 +111,11 @@ void Platform::draw_platform_fixed(float x, float y)
         glColor3ub(255, 0, 255);
     }
     else if (pType == 6) {
-        glColor3ub(250, 250, 20); // yellow
+        if (player.trophyDetected != 0) {
+            glColor3ub(0, 255, 255); // cyan
+        } else {
+            glColor3ub(250, 250, 20); // yellow
+        }
         width = 10.0f;
         height = 10.0f;
     }
@@ -214,7 +218,7 @@ void Platform::physics_platform()
 
         // Snehal's Test on Mac
         // pos[1] -= 2.0f;
-        usleep(12000);
+        usleep(1000);
     }
 
     // If the platform is a moving platform or an enemy, move it side to side
@@ -342,9 +346,9 @@ void GameManager::updatePhysics()
     // Remove platforms that are out of screen bounds
     platforms.erase(
         remove_if(platforms.begin(), platforms.end(), [](const Platform &p)
-                  {
-                      return p.pos[1] < -50.0f; // Adjust the value based on your requirements
-                  }),
+        {
+            return p.pos[1] < -50.0f; // Adjust the value based on your requirements
+        }),
         platforms.end());
 
     // Update the physics for remaining platforms
@@ -433,10 +437,4 @@ void render_hearts() {
         glEnd();
         glPopMatrix();
     }
-
-    // this code shows how the player's lives are displayed and destroyed. Call player.lives-- to remove a life
-    // int randNum = rand() % 100;
-    // if (randNum == 0) {
-    //     player.lives--;
-    // }
 }
