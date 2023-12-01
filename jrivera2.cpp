@@ -191,34 +191,43 @@ void scoreboard()
 
 }
 
-unsigned char *buildAlphaData(Background *img)
+void makeTrophy()
 {
-    int i;
-    unsigned char *newdata, *ptr;
-    unsigned char *data = (unsigned char *)img->data;
-    newdata = (unsigned char*)malloc(img->width *img->height * 4);
-    ptr = newdata;
-    unsigned char a,b,c;
-    unsigned char t0 = *(data+0);
-    unsigned char t1 = *(data+1);
-    unsigned char t2 = *(data+2);
-    for (i=0; i<img->width * img->height * 3; i+=3) {
-        a = *(data+0);
-        b = *(data+1);
-        c = *(data+2);
-        *(ptr+0) = a;
-        *(ptr+1) = b;
-        *(ptr+2) = c;
-        *(ptr+3) = 1;
-        if (a==t0 && b==t1 && c==t2) {
-            *(ptr+3) = 0;
-        }
-        ptr += 4;
-        data += 3;
-    }
-    return newdata;
+	glBindTexture(GL_TEXTURE_2D, p.tex.backTexture);
+	    glBegin(GL_QUADS);
+		glTexCoord2f(p.tex.xc[0], p.tex.yc[1]); glVertex2f(-15, 0);
+		glTexCoord2f(p.tex.xc[0], p.tex.yc[0]); glVertex2f(-15, 30);
+		glTexCoord2f(p.tex.xc[1], p.tex.yc[0]); glVertex2f(15, 30);
+		glTexCoord2f(p.tex.xc[1], p.tex.yc[1]); glVertex2f(15, 0);
+	    glEnd();
+	    glBindTexture(GL_TEXTURE_2D, 0);
+        glPopMatrix();
 }
 
+void makeHeart(int i)
+{
+	glBindTexture(GL_TEXTURE_2D, he.tex.backTexture);
+		glColor3ub(255, 255, 255);
+        glPushMatrix();
+        glTranslatef(g.xres - 20 - i * 20, g.yres - 20, 0.0f);
+	    glBegin(GL_QUADS);
+		glTexCoord2f(he.tex.xc[0], he.tex.yc[1]); glVertex2f(-10, -10);
+		glTexCoord2f(he.tex.xc[0], he.tex.yc[0]); glVertex2f(-10, 10);
+		glTexCoord2f(he.tex.xc[1], he.tex.yc[0]); glVertex2f(10, 10);
+		glTexCoord2f(he.tex.xc[1], he.tex.yc[1]); glVertex2f(10, -10);
+	    glEnd();
+	    glBindTexture(GL_TEXTURE_2D, 0);
+		glEnd();
+		glColor3ub(20, 20, 20);
+        glBegin(GL_LINE_LOOP);
+        glVertex2f(-10, -10);
+        glVertex2f(-10, 10);
+        glVertex2f(10, 10);
+        glVertex2f(10, -10);
+        glVertex2f(-10, -10);
+        glEnd();
+        glPopMatrix();
+}
 
 int count_physics_function()
 {

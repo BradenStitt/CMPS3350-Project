@@ -17,6 +17,8 @@ extern int count_physics_function();
 void youDied();
 void scoreboard();
 void makeSprite();
+void makeTrophy();
+void makeHeart(int i);
 
 
 class Background {

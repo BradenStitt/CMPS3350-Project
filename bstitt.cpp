@@ -11,6 +11,7 @@
 #include "log.h"
 #include "bstitt.h"
 #include "global.h"
+#include "jrivera2.h"
 #include "bruiz.h"
 #include "skumar.h"
 #include <algorithm>
@@ -24,6 +25,8 @@ extern Player player;
 extern Platform trophy;
 extern Platform testPlatform;
 extern int snehalTest;
+extern void makeTrophy();
+extern void makeHeart(int i);
 
 // void display_name(int x, int y, const char *name)
 // {
@@ -133,22 +136,27 @@ void Platform::draw_platform_fixed(float x, float y)
     {
         glColor3ub(250, 250, 20); // yellow
     } 
-    glTranslatef(x, y, 0.0f);
-    glBegin(GL_QUADS);
-    glVertex2f(-width, -height);
-    glVertex2f(-width, height);
-    glVertex2f(width, height);
-    glVertex2f(width, -height);
-    glEnd();
-    glColor3ub(20, 20, 20);
-    glBegin(GL_LINE_LOOP);
-    glVertex2f(-width, -height);
-    glVertex2f(-width, height);
-    glVertex2f(width, height);
-    glVertex2f(width, -height);
-    glVertex2f(-width, -height);
-    glEnd();
-    glPopMatrix();
+    if (pType == 6) {
+        glTranslatef(x, y, 0.0f);
+        makeTrophy();
+    } else {
+        glTranslatef(x, y, 0.0f);
+        glBegin(GL_QUADS);
+        glVertex2f(-width, -height);
+        glVertex2f(-width, height);
+        glVertex2f(width, height);
+        glVertex2f(width, -height);
+        glEnd();
+        glColor3ub(20, 20, 20);
+        glBegin(GL_LINE_LOOP);
+        glVertex2f(-width, -height);
+        glVertex2f(-width, height);
+        glVertex2f(width, height);
+        glVertex2f(width, -height);
+        glVertex2f(-width, -height);
+        glEnd();
+        glPopMatrix();
+    }
 }
 
 void Platform::draw_platform_random()
@@ -429,23 +437,6 @@ void render_hearts() {
     // Render the hearts
     for (int i = 0; i <  player.lives; i++)
     {
-        glColor3ub(255, 0, 0);
-        glPushMatrix();
-        glTranslatef(g.xres - 20 - i * 20, g.yres - 20, 0.0f);
-        glBegin(GL_QUADS);
-        glVertex2f(-10, -10);
-        glVertex2f(-10, 10);
-        glVertex2f(10, 10);
-        glVertex2f(10, -10);
-        glEnd();
-        glColor3ub(20, 20, 20);
-        glBegin(GL_LINE_LOOP);
-        glVertex2f(-10, -10);
-        glVertex2f(-10, 10);
-        glVertex2f(10, 10);
-        glVertex2f(10, -10);
-        glVertex2f(-10, -10);
-        glEnd();
-        glPopMatrix();
+        makeHeart(i);
     }
 }
