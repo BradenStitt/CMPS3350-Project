@@ -21,6 +21,9 @@ using namespace std;
 extern Global g;
 extern GameManager gameManager;
 extern Player player;
+extern Platform trophy;
+extern Platform testPlatform;
+extern int snehalTest;
 
 // void display_name(int x, int y, const char *name)
 // {
@@ -67,6 +70,7 @@ Platform::Platform()
     velocity = 5.0f;
     isLanded = false;
     isDestroyed = false;
+    defaultTrophyColor = true;
     countLanding = 0;
     disappearTimer = 0;
     hitCount = 0;
@@ -76,7 +80,26 @@ void Platform::draw_platform_fixed(float x, float y)
 {
     // Draw the platform using the specified coordinates
     glPushMatrix();
-    if (pType == 1)
+    if (pType == -1)
+    {
+        width = 700.0f;
+    }
+    else if (pType == -2)
+    {
+        if (!isDestroyed)
+        {
+            glColor3ub(250, 0, 0); // red
+            // set it to a square
+            width = 15.0f;
+            height = 15.0f;
+        }
+        else
+        {
+            width = 0.0f;
+            height = 0.0f;
+        }
+    }
+    else if (pType == 1)
     {
         glColor3ub(0, 0, 250); // blue
     }
@@ -113,9 +136,10 @@ void Platform::draw_platform_fixed(float x, float y)
     else if (pType == 6) {
         if (player.trophyDetected != 0) {
             glColor3ub(0, 255, 255); // cyan
-        } else {
-            glColor3ub(250, 250, 20); // yellow
         }
+        if (defaultTrophyColor)
+            glColor3ub(250, 250, 20); // yellow
+        
         width = 10.0f;
         height = 10.0f;
     }
@@ -218,7 +242,7 @@ void Platform::physics_platform()
 
         // Snehal's Test on Mac
         // pos[1] -= 2.0f;
-        usleep(1000);
+        usleep(6000);
     }
 
     // If the platform is a moving platform or an enemy, move it side to side
@@ -379,6 +403,7 @@ void GameManager::resetGame()
 {
     platforms.clear();
     platformCreationTimer = 0;
+    trophy.defaultTrophyColor = true;
 }
 
 int total_running_time(const bool running)

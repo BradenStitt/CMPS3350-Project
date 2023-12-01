@@ -121,7 +121,7 @@ void StartMenu::showStartScreen() {
 	ggprint8b(&r, 16, 0x00000000, 
 	 	"                             Press 'Space' to Shoot");
 	ggprint8b(&r, 16, 0x00000000, 
-		"                            Press 'R' to restart player");
+		"                            Press 'R' to restart game");
 	r.bot -= 60;
 	ggprint8b(&r, 16, 0x00000000, 
 		"          Created by: Snehal Kumar, Braden Stitt, Joseph Rivera ");

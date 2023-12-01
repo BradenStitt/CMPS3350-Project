@@ -24,8 +24,11 @@ extern Global g;
 extern GameManager gameManager;
 extern Player player;
 extern Enemy enemy;
-extern Platform testPlatform;
+// extern Platform testPlatform;
+extern vector<Platform> testPlatforms;
 extern Texture s;
+
+extern int snehalTest;
 
 int renderCount = 0;
 
@@ -36,6 +39,9 @@ Bullet::Bullet()
 
 void Bullet::physics()
 {
+	if (snehalTest)
+		usleep(20000);
+
 	struct timespec bt;
 	clock_gettime(CLOCK_REALTIME, &bt);
 
@@ -48,10 +54,8 @@ void Bullet::physics()
 			// Adjust the y-position so it's just above the player with
             // more distance
 			b->pos[1] = 38.0f;
-			// Set bullet velocity to move farther upwards
 			b->vel[0] = 0.0f;
-			b->vel[1] = 8.0f + rnd() * 0.05f; // Adjust for more spread
-			// b->vel[1] = 10.0f; // Adjust as needed
+			b->vel[1] = 8.0f + rnd() * 0.05f;
 			b->color[0] = 1.0f;
 			b->color[1] = 1.0f;
 			b->color[2] = 1.0f;
@@ -84,92 +88,101 @@ void Bullet::physics()
 			// Calculate previous position of the bullet.
 			b->prevPosY = b->pos[1] - b->vel[1];
 
-			// Check for collision with testPlatform
-			if (player.pos[0] > testPlatform.pos[0] - testPlatform.width 
-	    	&& player.pos[0] < testPlatform.pos[0] + testPlatform.width) {
-				if (b->prevPosY >= testPlatform.pos[1] - testPlatform.height 
-				&& b->pos[1] <= testPlatform.pos[1]+testPlatform.height) {
-					b->pos[1] = testPlatform.pos[1] + testPlatform.height;
-                    b->bulletHit = true;
-                }
-			}
-		
-			if (b->bulletHit) {
-				testPlatform.hitCount++;
+			if (snehalTest) {
+				// Check for collision with testPlatform
+				for (unsigned int k = 0; k < testPlatforms.size(); k++) {
+					Platform testPlatform = testPlatforms[k];
 
-				// Remove the bullet
-				if (i < player.nbullets - 1) {
-					// Swap the current bullet with the last one and 
-                    // decrease the bullet count.
-					memcpy(&player.barr[i], &player.barr[player.nbullets-1], 
-															sizeof(Bullet));
-				}
-				player.nbullets--;
-
-				if (testPlatform.hitCount >= 2) {
-					testPlatform.isDestroyed = true;
-					player.score += 30;
-				}
-			}
-			
-			/* dynamic enemy bullet collision */
-			for (unsigned int j = 0; j<gameManager.platforms.size(); j++) {
-				Platform *platform = &gameManager.platforms[j];
-
-				if (platform->pType == 3 || platform->pType == 5) {
-					if (platform->pType == 3) {
-						if (player.pos[0]>platform->pos[0] - platform->width 
-				            && player.pos[0] < platform->pos[0] 
-														+ platform->width) {
-							if (b->prevPosY>=platform->pos[1]
-														-platform->height
-								 && b->pos[1] <= platform->pos[1]
-								 					+ platform->height) {
-								b->pos[1] = platform->pos[1]
-                                                         + platform->height;
-								b->bulletHit = true;
-							}
-						}
-					} else {
-						if (player.pos[0] > platform->enemy.pos[0] 
-							- platform->enemy.width && player.pos[0] < 
-							platform->enemy.pos[0] +platform->enemy.width) {
-							if (b->prevPosY >= platform->enemy.pos[1] 
-								- platform->enemy.height && b->pos[1] 
-													<=platform->enemy.pos[1] 
-												+platform->enemy.height) {
-								b->pos[1] = platform->enemy.pos[1] 
-													+platform->enemy.height;
-								b->bulletHit = true;
-							}
+					if (player.pos[0] > testPlatform.pos[0] - testPlatform.width 
+					&& player.pos[0] < testPlatform.pos[0] + testPlatform.width) {
+						if (b->prevPosY >= testPlatform.pos[1] - testPlatform.height 
+						&& b->pos[1] <= testPlatform.pos[1]+testPlatform.height) {
+							b->pos[1] = testPlatform.pos[1] + testPlatform.height;
+							b->bulletHit = true;
 						}
 					}
 				
 					if (b->bulletHit) {
-						if (platform->pType == 3) {
-							platform->hitCount++;
-						} else {
-							platform->enemy.hitCount++;
-						}
+						testPlatform.hitCount++;
+						cout << "testPlatform hitCount: " << testPlatform.hitCount 
+																	<< endl;
 
 						// Remove the bullet
 						if (i < player.nbullets - 1) {
-							// Swap the current bullet with the last one and
+							// Swap the current bullet with the last one and 
 							// decrease the bullet count.
-							memcpy(&player.barr[i], 
-									&player.barr[player.nbullets-1], 
-															sizeof(Bullet));
+							memcpy(&player.barr[i], &player.barr[player.nbullets-1], 
+																	sizeof(Bullet));
 						}
 						player.nbullets--;
 
-						if (platform->hitCount >= 1 
-							|| platform->enemy.hitCount >= 1) {
+						if (testPlatform.hitCount >= 2) {
+							cout << "testPlatform destroyed" << endl;
+							testPlatform.isDestroyed = true;
+							player.score += 30;
+						}
+					}
+				}
+			} else {
+				/* dynamic enemy bullet collision */
+				for (unsigned int j = 0; j<gameManager.platforms.size(); j++) {
+					Platform *platform = &gameManager.platforms[j];
+
+					if (platform->pType == 3 || platform->pType == 5) {
+						if (platform->pType == 3) {
+							if (player.pos[0]>platform->pos[0] - platform->width 
+								&& player.pos[0] < platform->pos[0] 
+															+ platform->width) {
+								if (b->prevPosY>=platform->pos[1]
+															-platform->height
+									&& b->pos[1] <= platform->pos[1]
+														+ platform->height) {
+									b->pos[1] = platform->pos[1]
+															+ platform->height;
+									b->bulletHit = true;
+								}
+							}
+						} else {
+							if (player.pos[0] > platform->enemy.pos[0] 
+								- platform->enemy.width && player.pos[0] < 
+								platform->enemy.pos[0] +platform->enemy.width) {
+								if (b->prevPosY >= platform->enemy.pos[1] 
+									- platform->enemy.height && b->pos[1] 
+														<=platform->enemy.pos[1] 
+													+platform->enemy.height) {
+									b->pos[1] = platform->enemy.pos[1] 
+														+platform->enemy.height;
+									b->bulletHit = true;
+								}
+							}
+						}
+					
+						if (b->bulletHit) {
 							if (platform->pType == 3) {
-								platform->isDestroyed = true;
-								player.score += 30;
+								platform->hitCount++;
 							} else {
-								platform->enemy.isDestroyed = true;
-								player.score += 30;
+								platform->enemy.hitCount++;
+							}
+
+							// Remove the bullet
+							if (i < player.nbullets - 1) {
+								// Swap the current bullet with the last one and
+								// decrease the bullet count.
+								memcpy(&player.barr[i], 
+										&player.barr[player.nbullets-1], 
+																sizeof(Bullet));
+							}
+							player.nbullets--;
+
+							if (platform->hitCount >= 1 
+								|| platform->enemy.hitCount >= 1) {
+								if (platform->pType == 3) {
+									platform->isDestroyed = true;
+									player.score += 30;
+								} else {
+									platform->enemy.isDestroyed = true;
+									player.score += 30;
+								}
 							}
 						}
 					}
@@ -221,6 +234,7 @@ Player::Player()
 	nbullets = 0;
 	clock_gettime(CLOCK_REALTIME, &bulletTimer);
 	lives = 3;
+	trophyDetected = 0;
 }
 
 Player::~Player()
@@ -250,7 +264,6 @@ void Player::init()
 	jumpCount = 0;
 	enemyDetected = 0;
 	blackholeDetected = 0;
-	trophyDetected = 0;
 	g.failed_landing = 0;
 	score = 0;
 	angle = 0.0;
@@ -259,57 +272,63 @@ void Player::init()
 // Physics for moving the player
 void Player::physics()
 {
+	if (snehalTest)
+		usleep(10000);
+
 	// Player physics
 	if (g.failed_landing)
 		return;
 
-	pos[0] += vel[0];
-	pos[1] += vel[1];
-	vel[1] -= GRAVITY;
+	player.pos[0] += vel[0];
+	player.pos[1] += vel[1];
+	player.vel[1] -= GRAVITY;
 
 	// Check keys pressed now
 	if (g.keys[XK_Left]) {
 		if (!enemyDetected)
-			vel[0] -= 0.8;
+			player.vel[0] -= 0.8;
 		else 
-			vel[0] = 0.0;
+			player.vel[0] = 0.0;
 	}
 	// player.vel[0] -= 0.1;
 	if (g.keys[XK_Right]) {
 		if (!enemyDetected)
-			vel[0] += 0.8;
+			player.vel[0] += 0.8;
 		else 
-			vel[0] = 0.0;
+			player.vel[0] = 0.0;
 	}
 	// player.vel[0] += 0.1;
 	if (g.keys[XK_Up]) {
 		if (jumpCount < 2) {
-			vel[1] += 4.8;
+			player.vel[1] += 4.8;
 			jumpCount++;
 		}
 	}
 
 	// Check for collision with window edges
 	if (pos[0] < 0.0) {
-		pos[0] += (float)g.xres;
+		player.pos[0] += (float)g.xres;
 		// player.pos[0] = 0.0f;
 	} else if (pos[0] > (float)g.xres) {
-		pos[0] -= (float)g.xres;
+		player.pos[0] -= (float)g.xres;
 		// player.pos[0] = (float)g.xres;
 	}
 
 	// check for landing failure...
-	if (pos[1] < 0.0) {
+	if (player.pos[1] < 0.0) {
 		life_lost();
 	}
+	
 }
 
 // Draws the player
 void Player::draw_player()
 {
 	glPushMatrix();
-	glColor3ub(255, 165, 0);
-	// glColor3ub(255, 255, 255);
+	if (snehalTest)
+		glColor3ub(255, 255, 255);
+	else
+		glColor3ub(255, 165, 0); 
 	if (enemyDetected)
 		glColor3ub(255, 165, 0); // orange
 	if (blackholeDetected)
@@ -317,9 +336,18 @@ void Player::draw_player()
 	if (g.failed_landing)
 		glColor3ub(250, 0, 0); // red
 	// draws the player
-	glTranslatef(pos[0], pos[1], 0.0f);
+	glTranslatef(player.pos[0], player.pos[1], 0.0f);
 	glRotatef(angle, 0.0f, 0.0f, 1.0f);
-	makeSprite();
+	if (snehalTest) {
+		glBegin(GL_QUADS);
+			glVertex2f(verts[0][0], verts[0][1]);
+			glVertex2f(verts[1][0], verts[1][1]);
+			glVertex2f(verts[2][0], verts[2][1]);
+			glVertex2f(verts[3][0], verts[3][1]);
+		glEnd();
+	} else {
+		makeSprite();
+	}
 }
 
 void dynamic_collision_detection()
@@ -421,10 +449,15 @@ void blackhole_screen()
 
 void life_lost()
 {
-	if (player.lives == 0) {
+	if (player.lives == 1) {
 		g.failed_landing = 1;
 		player.pos[1] = 0.0;
 		player.blackholeDetected = 1;
+	} else if (snehalTest) {
+		player.lives--;
+		player.pos[0] = g.xres / 2;
+		player.pos[1] = 40.0f;
+		player.vel[0] = player.vel[1] = 0.0f;
 	} else {
 		player.lives--;
 		player.init();

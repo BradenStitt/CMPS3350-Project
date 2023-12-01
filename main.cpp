@@ -44,6 +44,10 @@ typedef float Flt;
 
 // const int MAXPLATFORMS = 10;
 int numPlatforms = 0;
+int snehalTest = 0;
+bool stop = false;
+
+vector<Platform> testPlatforms;
 
 class Platform2
 {
@@ -99,7 +103,7 @@ int main()
 	printf("Press Up arrow to Jump.\n");
 	printf("Press Left or Right arrows to move player.\n");
 	printf("Press Space to Shoot.\n");
-	printf("Press R to reset player.\n");
+	printf("Press R to restart game.\n");
 
 	// Main loop
 	int done = 0;
@@ -111,11 +115,11 @@ int main()
 			x11.check_mouse(&e);
 			done = x11.check_keys(&e);
 		}
-		// physics();
+
 		render();
 		if (!inStartMenu) {
 			physics();
-			if (!player.blackholeDetected) {
+			if (!player.blackholeDetected && !snehalTest) {
 				// Update physics for platforms
 				gameManager.updatePhysics();
 				// Render the platforms
@@ -275,6 +279,7 @@ int X11_wrapper::check_keys(XEvent *e)
 		{
 		case XK_r:
 			// Key R was pressed
+			snehalTest = 0;
 			g.landed = 0;
 			gameManager.resetGame();
 			player.lives = 3;
@@ -289,8 +294,16 @@ int X11_wrapper::check_keys(XEvent *e)
 			break;
 		case XK_m:
 			inStartMenu = 1;
+			snehalTest = 0;
 			gameManager.resetGame();
 			player.lives = 3;
+			break;
+		case XK_k:
+			snehalTest = 1;
+			player.pos[0] = g.xres / 2;
+			player.pos[1] = 40.0f;
+			player.lives = 5;
+			player.score = 0;
 			break;
 		case XK_Escape:
 			// Escape key was pressed
@@ -352,21 +365,27 @@ void physics()
 {
 	count_physics_function();
 
-	t.tex.yc[0] -= 0.0033;
-	t.tex.yc[1] -= 0.0033;
-
+	if (!snehalTest) {
+		t.tex.yc[0] -= 0.0033;
+		t.tex.yc[1] -= 0.0033;
+	}
+	
 	// Player physics
 	player.physics();
 	bullet.physics();
 
 	// static enemy collision
-	if ((player.pos[0] + player.width > testPlatform.pos[0] - testPlatform.width && player.pos[0] <= testPlatform.pos[0]) ||
-		(player.pos[0] - player.width < testPlatform.pos[0] + testPlatform.width && player.pos[0] >= testPlatform.pos[0])) {
+	for (unsigned int i = 0; i < testPlatforms.size(); i++) {
+		Platform testPlatform = testPlatforms[i];
 
-		if ((player.pos[1] - player.height <= testPlatform.pos[1] + testPlatform.height && player.pos[1] - player.height >= testPlatform.pos[1]) ||
-			(player.pos[1] + player.height >= testPlatform.pos[1] - testPlatform.height && player.pos[1] + player.height <= testPlatform.pos[1])) {
-			player.enemyDetected = 1;
-			player.vel[1] = -8.0;
+		if ((player.pos[0] + player.width > testPlatform.pos[0] - testPlatform.width && player.pos[0] <= testPlatform.pos[0]) ||
+			(player.pos[0] - player.width < testPlatform.pos[0] + testPlatform.width && player.pos[0] >= testPlatform.pos[0])) {
+
+			if ((player.pos[1] - player.height <= testPlatform.pos[1] + testPlatform.height && player.pos[1] - player.height >= testPlatform.pos[1]) ||
+				(player.pos[1] + player.height >= testPlatform.pos[1] - testPlatform.height && player.pos[1] + player.height <= testPlatform.pos[1])) {
+				player.enemyDetected = 1;
+				player.vel[1] = -8.0;
+			}
 		}
 	}
 
@@ -386,7 +405,10 @@ void physics()
 
 		if ((player.pos[1] - player.height <= trophy.pos[1] + trophy.height && player.pos[1] - player.height >= trophy.pos[1]) ||
 			(player.pos[1] + player.height >= trophy.pos[1] - trophy.height && player.pos[1] + player.height <= trophy.pos[1])) {
+			trophy.defaultTrophyColor = false;
 			player.trophyDetected++; 
+			gameManager.resetGame();
+			player.init();
 		}
 	}
 }
@@ -402,7 +424,8 @@ void render()
 
 		if (player.blackholeDetected) {
 			blackhole_screen();
-			youDied();
+			if (player.lives == 1)
+				youDied();
 		}
 		else {
 			// Draw Grid
@@ -427,78 +450,107 @@ void render()
 			scoreboard();
 			render_hearts();
 
+
 			// Draw the platform
 			Platform platform; // Declare an instance of the Platform class
+			
+			if (snehalTest) {
+				platform.pos[0] = g.xres / 2;
+				platform.pos[1] = 40.0f;
+				platform.pType = -1;
 
-			// Set the position explicitly
-			platform.pos[0] = 100.0f;
-			platform.pos[1] = 20.0f;
+				if (!stop) {
+					for (int i = 0; i < 3; i++) {
+						testPlatform.pos[0] = 100.0f + (i * 50);
+						testPlatform.pos[1] = 300.0f;
+						testPlatform.pType = -2;
+						testPlatforms.push_back(testPlatform);
+						Platform testPlatform;
+					}
 
+					stop = true;
+				}
+
+				for (int j = 0; j < 3; j++) {
+					Platform testPlatform = testPlatforms[j];
+					testPlatform.draw_platform_fixed(testPlatform.pos[0], testPlatform.pos[1]);
+				}
+			}
+			else {
+				platform.pos[0] = 100.0f;
+				platform.pos[1] = 20.0f;
+			}
+		
 			// Draw the platform at the specified location
 			platform.draw_platform_fixed(platform.pos[0], platform.pos[1]);
 
-			// Draw the platform 2
-			Platform platform2; // Declare an instance of the Platform class
+			if (!snehalTest) {
+				// Draw the platform 2
+				Platform platform2; // Declare an instance of the Platform class
 
-			// Set the position explicitly
-			platform2.pos[0] = 200.0f;
-			platform2.pos[1] = 70.0f;
+				// Set the position explicitly
+				platform2.pos[0] = 200.0f;
+				platform2.pos[1] = 70.0f;
 
-			// Draw the platform at the specified location
-			platform2.draw_platform_fixed(platform2.pos[0], platform2.pos[1]);
+				// Draw the platform at the specified location
+				platform2.draw_platform_fixed(platform2.pos[0], platform2.pos[1]);
 
-			// Draw the test platform
-			// Platform testPlatform; // Declare an instance of the Platform class
-			testPlatform.pos[0] = 100.0f;
-			testPlatform.pos[1] = 150.0f;
-			testPlatform.pType = 3;
-			// Draw the platform at the specified location
-			testPlatform.draw_platform_fixed(testPlatform.pos[0], testPlatform.pos[1]);
+				// Draw the test platform
+				// if (snehalTest) {
+				// 	for (int i = 0; i < 3; i++) {
+				// 		testPlatform.pos[0] = 100.0f + (i * 50);
+				// 		testPlatform.pos[1] = 300.0f;
+				// 		testPlatform.pType = 3;
+				// 		testPlatform.draw_platform_fixed(testPlatform.pos[0], testPlatform.pos[1]);	
+				// 	}
+				// }
+				// testPlatform.pos[0] = 100.0f;
+				// testPlatform.pos[1] = 150.0f;
+				// testPlatform.pType = 3;
+				
+				// testPlatform.draw_platform_fixed(testPlatform.pos[0], testPlatform.pos[1]);
 
-			// Platform blackholeTest;
-			blackholeTest.pos[0] = 100.0f;
-			blackholeTest.pos[1] = 200.0f;
-			blackholeTest.pType = 4;
-			blackholeTest.draw_platform_fixed(blackholeTest.pos[0], blackholeTest.pos[1]);
+				// Platform blackholeTest;
+				blackholeTest.pos[0] = 100.0f;
+				blackholeTest.pos[1] = 200.0f;
+				blackholeTest.pType = 4;
+				blackholeTest.draw_platform_fixed(blackholeTest.pos[0], blackholeTest.pos[1]);
 
-			// Draw the trophy
-			
-			trophy.pos[0] = g.xres / 2; // Center the trophy
-			trophy.pos[1] = g.yres - 60;
-			// testing positions 
-			// trophy.pos[0] = 200.0f;
-			// trophy.pos[1] = 300.0f;
-			trophy.pType = 6;
-			trophy.draw_platform_fixed(trophy.pos[0], trophy.pos[1]);
+				// Draw the trophy
+				trophy.pos[0] = g.xres / 2; // Center the trophy
+				trophy.pos[1] = g.yres - 60;
+				// testing positions 
+				// trophy.pos[0] = 200.0f;
+				// trophy.pos[1] = 300.0f;
+				trophy.pType = 6;
+				trophy.draw_platform_fixed(trophy.pos[0], trophy.pos[1]);
 
-			// /* Draw the enemy */
-			// enemy.drawEnemy();
-			// Draw Player
+					if (!player.enemyDetected) {
+						if (player.pos[0] > (platform2.pos[0] - platform2.width) && player.pos[0] < (platform2.pos[0] + platform2.width)) {
+							if (player.pos[1] > (platform2.pos[1] - platform2.height) && player.pos[1] < (platform2.pos[1] + platform2.height)) {
+								player.pos[1] = platform2.pos[1] + platform2.height;
+								player.vel[1] = 0.0;
+								player.vel[0] = 0.0;
+								player.jumpCount = 0;
 
-			player.draw_player();
-
-			if (!player.enemyDetected) {
-				if (player.pos[0] > (pf.pos[0] - pf.width) && player.pos[0] < (pf.pos[0] + pf.width)) {
-					if (player.pos[1] > (pf.pos[1] - pf.height) && player.pos[1] < (pf.pos[1] + pf.height)) {
-						player.pos[1] = (pf.pos[1]) + pf.height;
-						player.vel[1] = 0.0;
-						player.vel[0] = 0.0;
-						player.jumpCount = 0;
-
-						if (player.angle > 0.0 || player.angle < 0.0) {
-							g.failed_landing = 1;
+								if (player.angle > 0.0 || player.angle < 0.0) {
+									g.failed_landing = 1;
+								}
+								else {
+									// g.landed = 1;
+								}
+							}
 						}
-						else {
-							// g.landed = 1;
-						}
-					}
 				}
 			}
 
+			// Draw Player
+			player.draw_player();
+
 			if (!player.enemyDetected) {
-				if (player.pos[0] > (pf.pos[0] + 100 - pf.width) && player.pos[0] < (pf.pos[0] + 100 + pf.width)) {
-					if (player.pos[1] > (pf.pos[1] + 50 - pf.height) && player.pos[1] < (pf.pos[1] + 50 + pf.height)) {
-						player.pos[1] = pf.pos[1] + 50 + pf.height;
+				if (player.pos[0] > (platform.pos[0] - platform.width) && player.pos[0] < (platform.pos[0] + platform.width)) {
+					if (player.pos[1] > (platform.pos[1] - platform.height) && player.pos[1] < (platform.pos[1] + platform.height)) {
+						player.pos[1] = platform.pos[1] + platform.height;
 						player.vel[1] = 0.0;
 						player.vel[0] = 0.0;
 						player.jumpCount = 0;
@@ -517,13 +569,15 @@ void render()
 			bullet.draw_bullet();
 
 			// check for collision with dynamic platforms
-			dynamic_collision_detection();
+			if (!snehalTest)
+				dynamic_collision_detection();
 
 			if (g.failed_landing) {
 				// show crash graphics here...
 			}
 
 			updateAndPrintScore();
+			
 
 			if (g.showNerdStats) {
 				// Draw a box around the nerd stats

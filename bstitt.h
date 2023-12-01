@@ -24,6 +24,7 @@ public:
     bool isLanded;
     bool blackholeExists;
     bool isDestroyed;
+    bool defaultTrophyColor;
     int countLanding;
     int disappearTimer;
     int hitCount;
