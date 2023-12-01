@@ -53,7 +53,6 @@ public:
 	int trophyDetected;
 	int score;
 	int lives;
-	// float thrust;
 	double angle;
 
 	void init();

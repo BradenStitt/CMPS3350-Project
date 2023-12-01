@@ -27,7 +27,7 @@ Rect r;
 GameManager gameManager(10); // Adjust the number of platforms as needed
 Player player;
 Bullet bullet;
-Platform testPlatform;
+Platform testEnemy;
 Platform blackholeTest;
 Platform trophy;
 Texture t, s, soccer, p, he;
@@ -45,8 +45,10 @@ int numPlatforms = 0;
 int snehalTest = 0;
 int snehalsInstructions = 0;
 bool stop = false;
+bool pKey = true;
+bool kKey = true;
 
-vector<Platform> testPlatforms;
+vector<Platform> testEnemies;
 
 class Platform2
 {
@@ -102,10 +104,10 @@ int main()
 {
 	logOpen();
 	init_opengl();
-	printf("Press Up arrow to Jump.\n");
-	printf("Press Left or Right arrows to move player.\n");
-	printf("Press Space to Shoot.\n");
-	printf("Press R to restart game.\n");
+	// printf("Press Up arrow to Jump.\n");
+	// printf("Press Left or Right arrows to move player.\n");
+	// printf("Press Space to Shoot.\n");
+	// printf("Press R to restart game.\n");
 
 	// Main loop
 	int done = 0;
@@ -286,31 +288,42 @@ int X11_wrapper::check_keys(XEvent *e)
 			gameManager.resetGame();
 			player.lives = 3;
 			player.score = 0;
+			player.trophyDetected = 0;
 			player.init();
 			stop = false;
+			kKey = true;
 			snehalsInstructions = 0;
 			break;
 		case XK_s:
 			g.showNerdStats = !g.showNerdStats;
 			break;
 		case XK_p:
-			inStartMenu = 0;
-			player.init();
+			if (pKey) {
+				inStartMenu = 0;
+				player.init();
+			}
+			pKey = false;
 			break;
 		case XK_m:
 			inStartMenu = 1;
+			kKey = true;
+			pKey = true;
 			snehalTest = 0;
 			gameManager.resetGame();
 			player.lives = 3;
+			snehalsInstructions = 0;
 			break;
 		case XK_k:
-			snehalTest = 1;
-			player.pos[0] = g.xres / 2;
-			player.pos[1] = 40.0f;
-			player.lives = 5;
-			player.score = 0;
-			testPlatforms.clear();
-			snehalTestBackground();
+			if (kKey) {
+				snehalTest = 1;
+				player.pos[0] = g.xres / 2;
+				player.pos[1] = 40.0f;
+				player.lives = 5;
+				player.score = 0;
+				testEnemies.clear();
+				snehalTestBackground();
+			}
+			kKey = false;
 			break;
 		case XK_i:
 			snehalsInstructions = !snehalsInstructions;
@@ -428,30 +441,21 @@ void physics()
 
 	if (snehalTest) {
 		// static enemy collision
-		for (unsigned int i = 0; i < testPlatforms.size(); i++) {
-			Platform testPlatform = testPlatforms[i];
+		for (unsigned int i = 0; i < testEnemies.size(); i++) {
+			Platform testEnemy = testEnemies[i];
 
-			if ((player.pos[0] + player.width > testPlatform.pos[0] - testPlatform.width && player.pos[0] <= testPlatform.pos[0]) ||
-				(player.pos[0] - player.width < testPlatform.pos[0] + testPlatform.width && player.pos[0] >= testPlatform.pos[0])) {
+			if ((player.pos[0] + player.width > testEnemy.pos[0] - testEnemy.width && player.pos[0] <= testEnemy.pos[0]) ||
+				(player.pos[0] - player.width < testEnemy.pos[0] + testEnemy.width && player.pos[0] >= testEnemy.pos[0])) {
 
-				if ((player.pos[1] - player.height <= testPlatform.pos[1] + testPlatform.height && player.pos[1] - player.height >= testPlatform.pos[1]) ||
-					(player.pos[1] + player.height >= testPlatform.pos[1] - testPlatform.height && player.pos[1] + player.height <= testPlatform.pos[1])) {
+				if ((player.pos[1] - player.height <= testEnemy.pos[1] + testEnemy.height && player.pos[1] - player.height >= testEnemy.pos[1]) ||
+					(player.pos[1] + player.height >= testEnemy.pos[1] - testEnemy.height && player.pos[1] + player.height <= testEnemy.pos[1])) {
 					player.enemyDetected = 1;
 					player.vel[1] = -8.0;
 				}
 			}
 		}
 	} else {
-		// static blackhole collision
-		if ((player.pos[0] + player.width > blackholeTest.pos[0] - blackholeTest.width && player.pos[0] <= blackholeTest.pos[0]) ||
-			(player.pos[0] - player.width < blackholeTest.pos[0] + blackholeTest.width && player.pos[0] >= blackholeTest.pos[0])) {
-
-			if ((player.pos[1] - player.height <= blackholeTest.pos[1] + blackholeTest.height && player.pos[1] - player.height >= blackholeTest.pos[1]) ||
-				(player.pos[1] + player.height >= blackholeTest.pos[1] - blackholeTest.height && player.pos[1] + player.height <= blackholeTest.pos[1])) {
-				player.blackholeDetected = 1;
-			}
-		}
-
+		
 		// trophy collision
 		if ((player.pos[0] + player.width > trophy.pos[0] - trophy.width && player.pos[0] <= trophy.pos[0]) ||
 			(player.pos[0] - player.width < trophy.pos[0] + trophy.width && player.pos[0] >= trophy.pos[0])) {
@@ -460,6 +464,7 @@ void physics()
 				(player.pos[1] + player.height >= trophy.pos[1] - trophy.height && player.pos[1] + player.height <= trophy.pos[1])) {
 				trophy.defaultTrophyColor = false;
 				player.trophyDetected++; 
+				player.score = player.score + (1000 * player.trophyDetected);
 				gameManager.resetGame();
 				player.init();
 			}
@@ -478,8 +483,7 @@ void render()
 
 		if (player.blackholeDetected) {
 			blackhole_screen();
-			if (player.lives == 1)
-				youDied();
+			youDied();
 		}
 		else {
 			// Draw Grid
@@ -504,19 +508,19 @@ void render()
 
 				if (!stop) {
 					for (int i = 0; i < 3; i++) {
-						Platform testPlatform;
-						testPlatform.pos[0] = g.xres / 2 - 100 + (i * 100);
-						testPlatform.pos[1] = 300.0f;
-						testPlatform.pType = 3;
-						testPlatforms.push_back(testPlatform);
+						Platform testEnemy;
+						testEnemy.pos[0] = g.xres / 2 - 100 + (i * 100);
+						testEnemy.pos[1] = 300.0f;
+						testEnemy.pType = 3;
+						testEnemies.push_back(testEnemy);
 					}
 
 					stop = true;
 				}
 				
-				for (unsigned int j = 0; j < testPlatforms.size(); j++) {
-					testPlatform = testPlatforms[j];
-					testPlatform.draw_platform_fixed(testPlatform.pos[0], testPlatform.pos[1]);
+				for (unsigned int j = 0; j < testEnemies.size(); j++) {
+					testEnemy = testEnemies[j];
+					testEnemy.draw_platform_fixed(testEnemy.pos[0], testEnemy.pos[1]);
 				}
 
 				platform.draw_platform_fixed(platform.pos[0], platform.pos[1]);
@@ -546,9 +550,6 @@ void render()
 				bullet.draw_bullet();
 				updateAndPrintScore();
 
-				
-				
-
 			} else {
 				glColor3f(1.0, 1.0, 1.0);
 				glBindTexture(GL_TEXTURE_2D, t.tex.backTexture);
@@ -572,33 +573,27 @@ void render()
 				render_hearts();
 				
 				// Draw the platform
-				Platform platform; // Declare an instance of the Platform class
+				// Platform platform; // Declare an instance of the Platform class
 
-				platform.pos[0] = 100.0f;
-				platform.pos[1] = 20.0f;
-				platform.draw_platform_fixed(platform.pos[0], platform.pos[1]);
+				// platform.pos[0] = 100.0f;
+				// platform.pos[1] = 20.0f;
+				// platform.draw_platform_fixed(platform.pos[0], platform.pos[1]);
 
 				// Draw the platform 2
 				Platform platform2; // Declare an instance of the Platform class
 
 				// Set the position explicitly
 				platform2.pos[0] = 200.0f;
-				platform2.pos[1] = 70.0f;
+				platform2.pos[1] = 20.0f;
 
 				// Draw the platform at the specified location
 				platform2.draw_platform_fixed(platform2.pos[0], platform2.pos[1]);
-
-				// Platform blackholeTest;
-				blackholeTest.pos[0] = 100.0f;
-				blackholeTest.pos[1] = 200.0f;
-				blackholeTest.pType = 4;
-				blackholeTest.draw_platform_fixed(blackholeTest.pos[0], blackholeTest.pos[1]);
 
 				// Draw the trophy
 				trophy.pos[0] = g.xres / 2; // Center the trophy
 				trophy.pos[1] = g.yres - 110;
 				// testing positions 
-				// trophy.pos[0] = 200.0
+				// trophy.pos[0] = 200.0f;
 				// trophy.pos[1] = 300.0f;
 				trophy.pType = 6;
 				trophy.draw_platform_fixed(trophy.pos[0], trophy.pos[1]);
@@ -624,23 +619,23 @@ void render()
 				// Draw Player
 				player.draw_player();
 
-				if (!player.enemyDetected) {
-					if (player.pos[0] > (platform.pos[0] - platform.width) && player.pos[0] < (platform.pos[0] + platform.width)) {
-						if (player.pos[1] > (platform.pos[1] - platform.height) && player.pos[1] < (platform.pos[1] + platform.height)) {
-							player.pos[1] = platform.pos[1] + platform.height;
-							player.vel[1] = 0.0;
-							player.vel[0] = 0.0;
-							player.jumpCount = 0;
+				// if (!player.enemyDetected) {
+				// 	if (player.pos[0] > (platform.pos[0] - platform.width) && player.pos[0] < (platform.pos[0] + platform.width)) {
+				// 		if (player.pos[1] > (platform.pos[1] - platform.height) && player.pos[1] < (platform.pos[1] + platform.height)) {
+				// 			player.pos[1] = platform.pos[1] + platform.height;
+				// 			player.vel[1] = 0.0;
+				// 			player.vel[0] = 0.0;
+				// 			player.jumpCount = 0;
 
-							if (player.angle > 0.0 || player.angle < 0.0) {
-								g.failed_landing = 1;
-							}
-							else {
-								// g.landed = 1;
-							}
-						}
-					}
-				}
+				// 			if (player.angle > 0.0 || player.angle < 0.0) {
+				// 				g.failed_landing = 1;
+				// 			}
+				// 			else {
+				// 				// g.landed = 1;
+				// 			}
+				// 		}
+				// 	}
+				// }
 
 				// Draw the bullets
 				bullet.draw_bullet();

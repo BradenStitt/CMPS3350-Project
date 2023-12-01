@@ -25,7 +25,7 @@ extern Global g;
 extern GameManager gameManager;
 extern Player player;
 extern Enemy enemy;
-extern vector<Platform> testPlatforms;
+extern vector<Platform> testEnemies;
 extern Texture s;
 extern Texture soccer;
 extern Rect r;
@@ -41,8 +41,7 @@ Bullet::Bullet()
 void Bullet::physics()
 {
 	if (snehalTest)
-		//usleep(20000); // Mac
-		usleep(1000); // Odin 
+		// usleep(20000); // Mac 
 
 	struct timespec bt;
 	clock_gettime(CLOCK_REALTIME, &bt);
@@ -91,22 +90,22 @@ void Bullet::physics()
 			b->prevPosY = b->pos[1] - b->vel[1];
 
 			if (snehalTest) {
-				// Check for collision with testPlatform
-				for (unsigned int k = 0; k < testPlatforms.size(); k++) {
-					Platform *testPlatform = &testPlatforms[k];
+				// Check for collision with testEnemy
+				for (unsigned int k = 0; k < testEnemies.size(); k++) {
+					Platform *testEnemy = &testEnemies[k];
 
-					if (player.pos[0] > testPlatform->pos[0] - testPlatform->width 
-					&& player.pos[0] < testPlatform->pos[0] + testPlatform->width) {
-						if (b->prevPosY >= testPlatform->pos[1] - testPlatform->height 
-						&& b->pos[1] <= testPlatform->pos[1]+testPlatform->height) {
-							b->pos[1] = testPlatform->pos[1] + testPlatform->height;
+					if (player.pos[0] > testEnemy->pos[0] - testEnemy->width 
+					&& player.pos[0] < testEnemy->pos[0] + testEnemy->width) {
+						if (b->prevPosY >= testEnemy->pos[1] - testEnemy->height 
+						&& b->pos[1] <= testEnemy->pos[1]+testEnemy->height) {
+							b->pos[1] = testEnemy->pos[1] + testEnemy->height;
 							b->bulletHit = true;
 						}
 					}
 				
 					if (b->bulletHit) {
-						testPlatform->hitCount++;
-						cout << "hitCount: " << testPlatform->hitCount << endl;
+						testEnemy->hitCount++;
+						// cout << "hitCount: " << testEnemy->hitCount << endl;
 						// Remove the bullet
 						if (i < player.nbullets - 1) {
 							// Swap the current bullet with the last one and 
@@ -116,13 +115,13 @@ void Bullet::physics()
 						}
 						player.nbullets--;
 
-						if (testPlatform->hitCount >= 2) {
-							if (testPlatform->pType == 3) {
-								testPlatform->isDestroyed = true;
+						if (testEnemy->hitCount >= 2) {
+							if (testEnemy->pType == 3) {
+								testEnemy->isDestroyed = true;
 								player.score += 30;
 							}
-							testPlatform->hitCount = 0;
-							testPlatforms.erase(testPlatforms.begin() + k);
+							testEnemy->hitCount = 0;
+							testEnemies.erase(testEnemies.begin() + k);
 						}
 					}
 				}
@@ -247,7 +246,7 @@ Player::~Player()
 
 void Player::init()
 {
-	pos[0] = 100.0f;
+	pos[0] = 200.0f;
 	pos[1] = 40.0f;
 
 	vel[0] = vel[1] = 0.0f;
@@ -268,7 +267,6 @@ void Player::init()
 	enemyDetected = 0;
 	blackholeDetected = 0;
 	g.failed_landing = 0;
-	score = 0;
 	angle = 0.0;
 }
 
@@ -276,8 +274,7 @@ void Player::init()
 void Player::physics()
 {
 	if (snehalTest)
-		//usleep(10000); // Mac
-		usleep(500); // Odin
+		// usleep(10000); // Mac
 
 	// Player physics
 	if (g.failed_landing)
@@ -465,8 +462,10 @@ void life_lost()
 		player.pos[1] = 60.0f;
 		player.vel[0] = player.vel[1] = 0.0f;
 	} else {
-		player.lives--;
-		player.init();
+		if (!player.blackholeDetected) {
+			player.lives--;
+			player.init();
+		}
 	}
 }
 

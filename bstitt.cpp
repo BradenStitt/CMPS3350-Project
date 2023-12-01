@@ -23,7 +23,7 @@ extern Global g;
 extern GameManager gameManager;
 extern Player player;
 extern Platform trophy;
-extern Platform testPlatform;
+extern Platform testEnemy;
 extern int snehalTest;
 extern void makeTrophy();
 extern void makeHeart(int i);
