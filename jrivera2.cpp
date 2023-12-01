@@ -107,7 +107,7 @@ void StartMenu::showStartScreen() {
 	r.bot -=40;
     ggprint8b(&r, 64, 0x00000000, "");
 	r.bot -= 20;
-    ggprint16(&r, 24, 0x00000000, "      WELCOME TO SCRIBBLE-JUMP!");
+    ggprint16(&r, 24, 0x00000000, "        WELCOME TO SCRIBBLE-HOP!");
 	r.bot -= 2;
 	ggprint8b(&r, 16, 0x00000000, 
 		"                                   Press 'P' to Play");

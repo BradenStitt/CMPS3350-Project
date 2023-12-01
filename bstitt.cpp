@@ -82,22 +82,8 @@ void Platform::draw_platform_fixed(float x, float y)
     glPushMatrix();
     if (pType == -1)
     {
+        glColor3ub(0, 0, 0);
         width = 700.0f;
-    }
-    else if (pType == -2)
-    {
-        if (!isDestroyed)
-        {
-            glColor3ub(250, 0, 0); // red
-            // set it to a square
-            width = 15.0f;
-            height = 15.0f;
-        }
-        else
-        {
-            width = 0.0f;
-            height = 0.0f;
-        }
     }
     else if (pType == 1)
     {

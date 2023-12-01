@@ -16,6 +16,7 @@ void dynamic_collision_detection();
 void blackhole_screen();
 void life_lost();
 int count_render_function();
+void snehalTestBackground();
 int print_score();
 
 class Bullet

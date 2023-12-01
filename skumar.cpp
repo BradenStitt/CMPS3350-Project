@@ -24,9 +24,9 @@ extern Global g;
 extern GameManager gameManager;
 extern Player player;
 extern Enemy enemy;
-// extern Platform testPlatform;
 extern vector<Platform> testPlatforms;
 extern Texture s;
+extern Texture soccer;
 
 extern int snehalTest;
 
@@ -91,22 +91,20 @@ void Bullet::physics()
 			if (snehalTest) {
 				// Check for collision with testPlatform
 				for (unsigned int k = 0; k < testPlatforms.size(); k++) {
-					Platform testPlatform = testPlatforms[k];
+					Platform *testPlatform = &testPlatforms[k];
 
-					if (player.pos[0] > testPlatform.pos[0] - testPlatform.width 
-					&& player.pos[0] < testPlatform.pos[0] + testPlatform.width) {
-						if (b->prevPosY >= testPlatform.pos[1] - testPlatform.height 
-						&& b->pos[1] <= testPlatform.pos[1]+testPlatform.height) {
-							b->pos[1] = testPlatform.pos[1] + testPlatform.height;
+					if (player.pos[0] > testPlatform->pos[0] - testPlatform->width 
+					&& player.pos[0] < testPlatform->pos[0] + testPlatform->width) {
+						if (b->prevPosY >= testPlatform->pos[1] - testPlatform->height 
+						&& b->pos[1] <= testPlatform->pos[1]+testPlatform->height) {
+							b->pos[1] = testPlatform->pos[1] + testPlatform->height;
 							b->bulletHit = true;
 						}
 					}
 				
 					if (b->bulletHit) {
-						testPlatform.hitCount++;
-						cout << "testPlatform hitCount: " << testPlatform.hitCount 
-																	<< endl;
-
+						testPlatform->hitCount++;
+						cout << "hitCount: " << testPlatform->hitCount << endl;
 						// Remove the bullet
 						if (i < player.nbullets - 1) {
 							// Swap the current bullet with the last one and 
@@ -116,10 +114,13 @@ void Bullet::physics()
 						}
 						player.nbullets--;
 
-						if (testPlatform.hitCount >= 2) {
-							cout << "testPlatform destroyed" << endl;
-							testPlatform.isDestroyed = true;
-							player.score += 30;
+						if (testPlatform->hitCount >= 2) {
+							if (testPlatform->pType == 3) {
+								testPlatform->isDestroyed = true;
+								player.score += 30;
+							}
+							testPlatform->hitCount = 0;
+							testPlatforms.erase(testPlatforms.begin() + k);
 						}
 					}
 				}
@@ -455,8 +456,10 @@ void life_lost()
 		player.blackholeDetected = 1;
 	} else if (snehalTest) {
 		player.lives--;
+		g.failed_landing = 0;
+		player.enemyDetected = 0;
 		player.pos[0] = g.xres / 2;
-		player.pos[1] = 40.0f;
+		player.pos[1] = 60.0f;
 		player.vel[0] = player.vel[1] = 0.0f;
 	} else {
 		player.lives--;
@@ -473,4 +476,17 @@ int count_render_function()
 int print_score()
 {
 	return player.score;
+}
+
+void snehalTestBackground()
+{
+	glPushMatrix();
+	glColor3f(1.0, 1.0, 1.0);
+	glBindTexture(GL_TEXTURE_2D, soccer.tex.backTexture);
+	glBegin(GL_QUADS);
+		glTexCoord2f(soccer.tex.xc[0], soccer.tex.yc[1]); glVertex2i(0,      0);
+		glTexCoord2f(soccer.tex.xc[0], soccer.tex.yc[0]); glVertex2i(0,      g.yres);
+		glTexCoord2f(soccer.tex.xc[1], soccer.tex.yc[0]); glVertex2i(g.xres, g.yres);
+		glTexCoord2f(soccer.tex.xc[1], soccer.tex.yc[1]); glVertex2i(g.xres, 0);
+	glPopMatrix();
 }
