@@ -30,7 +30,7 @@ Bullet bullet;
 Platform testPlatform;
 Platform blackholeTest;
 Platform trophy;
-Texture t, s, soccer;
+Texture t, s, soccer, p, he;
 StartMenu startMenu;
 Enemy enemy;
 // floating point random numbers
@@ -87,6 +87,8 @@ int inStartMenu = 1;
 Background img[1] = {"underwater.png"};
 Background space[1] = {"spacebck.png"};
 Background sprite[1] = {"finalspritepls.png"};
+Background trophyImage[1] = {"trophypls.png"};
+Background hearts[1] = {"heart.png"};
 void init_opengl(void);
 void physics(void);
 void render(void);
@@ -335,9 +337,10 @@ void init_opengl(void)
 	initialize_fonts();
 
 	t.tex.backImage = &img[0];
-	soccer.tex.backImage = &space
-[0];
+	soccer.tex.backImage = &space[0];
 	s.tex.backImage = &sprite[0];
+	p.tex.backImage = &trophyImage[0];
+	he.tex.backImage = &hearts[0];
 	// create opengl texture elements
 	glGenTextures(1, &t.tex.backTexture);
 	int w = t.tex.backImage->width;
@@ -377,6 +380,32 @@ void init_opengl(void)
 	soccer.tex.xc[1] = 1.0;
 	soccer.tex.yc[0] = 0.0;
 	soccer.tex.yc[1] = 1.0;
+
+	glGenTextures(1, &p.tex.backTexture);
+	int wp = p.tex.backImage->width;
+	int hp = p.tex.backImage->height;
+	glBindTexture(GL_TEXTURE_2D, p.tex.backTexture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, wp, hp, 0,
+				GL_RGB, GL_UNSIGNED_BYTE, p.tex.backImage->data);
+	p.tex.xc[0] = 0.0;
+	p.tex.xc[1] = 1.0;
+	p.tex.yc[0] = 0.0;
+	p.tex.yc[1] = 1.0;
+
+	glGenTextures(1, &he.tex.backTexture);
+	int wh = he.tex.backImage->width;
+	int hh = he.tex.backImage->height;
+	glBindTexture(GL_TEXTURE_2D, he.tex.backTexture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, wh, hh, 0,
+				GL_RGB, GL_UNSIGNED_BYTE, he.tex.backImage->data);
+	he.tex.xc[0] = 0.0;
+	he.tex.xc[1] = 1.0;
+	he.tex.yc[0] = 0.0;
+	he.tex.yc[1] = 1.0;
 }
 
 void physics()
@@ -551,7 +580,7 @@ void render()
 
 				// Draw the trophy
 				trophy.pos[0] = g.xres / 2; // Center the trophy
-				trophy.pos[1] = g.yres - 60;
+				trophy.pos[1] = g.yres - 80;
 				// testing positions 
 				// trophy.pos[0] = 200.0f;
 				// trophy.pos[1] = 300.0f;

@@ -40,7 +40,8 @@ Bullet::Bullet()
 void Bullet::physics()
 {
 	if (snehalTest)
-		usleep(20000);
+		//usleep(20000); // Mac
+		usleep(1000); // Odin 
 
 	struct timespec bt;
 	clock_gettime(CLOCK_REALTIME, &bt);
@@ -274,7 +275,8 @@ void Player::init()
 void Player::physics()
 {
 	if (snehalTest)
-		usleep(10000);
+		//usleep(10000); // Mac
+		usleep(500); // Odin
 
 	// Player physics
 	if (g.failed_landing)

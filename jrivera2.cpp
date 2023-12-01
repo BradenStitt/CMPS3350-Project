@@ -27,7 +27,7 @@ using namespace std;
 extern Global g;
 extern Rect r;
 extern Texture t;
-extern Texture s;
+extern Texture s, p, he;
 extern int print_score();
 
 int physics_count = 0;
