@@ -17,7 +17,9 @@ void blackhole_screen();
 void life_lost();
 int count_render_function();
 void snehalTestBackground();
+void snehalsText();
 int print_score();
+
 
 class Bullet
 {

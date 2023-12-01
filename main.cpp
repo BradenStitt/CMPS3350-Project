@@ -43,6 +43,7 @@ typedef float Flt;
 // const int MAXPLATFORMS = 10;
 int numPlatforms = 0;
 int snehalTest = 0;
+int snehalsInstructions = 0;
 bool stop = false;
 
 vector<Platform> testPlatforms;
@@ -287,6 +288,7 @@ int X11_wrapper::check_keys(XEvent *e)
 			player.score = 0;
 			player.init();
 			stop = false;
+			snehalsInstructions = 0;
 			break;
 		case XK_s:
 			g.showNerdStats = !g.showNerdStats;
@@ -309,6 +311,9 @@ int X11_wrapper::check_keys(XEvent *e)
 			player.score = 0;
 			testPlatforms.clear();
 			snehalTestBackground();
+			break;
+		case XK_i:
+			snehalsInstructions = !snehalsInstructions;
 			break;
 		case XK_Escape:
 			// Escape key was pressed
@@ -480,8 +485,15 @@ void render()
 			// Draw Grid
 			if (snehalTest) {
 				snehalTestBackground();
+				snehalsText();
 				scoreboard();
 				render_hearts();
+
+				r.center = 0;
+				r.bot = g.yres - 45;
+				r.left = 5;
+				ggprint8b(&r, 16, 0x00000000, "");
+				ggprint8b(&r, 16, 0x0055ff55, "   Press 'I' for Instructions");
 
 				// Draw the platform
 				Platform platform; // Declare an instance of the Platform class
@@ -534,6 +546,9 @@ void render()
 				bullet.draw_bullet();
 				updateAndPrintScore();
 
+				
+				
+
 			} else {
 				glColor3f(1.0, 1.0, 1.0);
 				glBindTexture(GL_TEXTURE_2D, t.tex.backTexture);
@@ -550,7 +565,8 @@ void render()
 				r.bot = g.yres - 40;
 				r.left = 10;
 				ggprint8b(&r, 16, 0x00000000, "");
-				ggprint8b(&r, 16, 0x00000000, " Press 'M' for MENU");
+				ggprint8b(&r, 16, 0x0055ff55, " Press 'M' for MENU");
+				ggprint8b(&r, 16, 0x0055ff55, " Press 'K' for SNEHAL'S FEATURES");
 				glEnd();
 				scoreboard();
 				render_hearts();
@@ -580,9 +596,9 @@ void render()
 
 				// Draw the trophy
 				trophy.pos[0] = g.xres / 2; // Center the trophy
-				trophy.pos[1] = g.yres - 80;
+				trophy.pos[1] = g.yres - 110;
 				// testing positions 
-				// trophy.pos[0] = 200.0f;
+				// trophy.pos[0] = 200.0
 				// trophy.pos[1] = 300.0f;
 				trophy.pType = 6;
 				trophy.draw_platform_fixed(trophy.pos[0], trophy.pos[1]);
@@ -661,7 +677,40 @@ void render()
 				ggprint8b(&r, 12, 0x00ffff00, " Number of Physics() Calls: %i", count_physics_function());
 				ggprint8b(&r, 12, 0x00ffff00, " Number of Render() Calls: %i", count_render_function());
 			}
+
 			glPopMatrix();
+		}
+		if (snehalTest) {
+			if (snehalsInstructions) {
+				// Draw a box around the nerd stats
+				
+						 // Set the vertex color to gray
+				glPushMatrix();
+				glBegin(GL_QUADS);
+				glColor3ub(90, 90, 90);
+				glVertex2f(40, g.yres - 130.0);  
+				glVertex2f(40, g.yres - 215.0);  
+				glVertex2f(g.xres - 50.0, g.yres - 215.0);  
+				glVertex2f(g.xres - 50.0, g.yres - 130.0);
+				glEnd();
+
+				r.center = 0;
+				r.bot = g.yres - 20;
+				r.left = 10;
+
+				r.bot -= 127;
+				ggprint8b(&r, 16, 0x0055ff55,                                 
+				"                                 GAME CONTROLS");
+				ggprint8b(&r, 16, 0x00ffff00, 
+				"                            Press Up arrow to Jump");
+				ggprint8b(&r, 16, 0x00ffff00, 
+				"                Press Left or Right arrows to move player");
+				ggprint8b(&r, 16, 0x00ffff00, 
+				"                             Press 'Space' to Shoot");
+				ggprint8b(&r, 16, 0x00ffff00, 
+				"                              Press 'R' to return");
+				glPopMatrix();
+			}
 		}
 	}
 }

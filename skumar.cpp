@@ -11,6 +11,7 @@
 #include <ctime>
 #include "log.h"
 #include "global.h"
+#include "fonts.h"
 #include "skumar.h"
 #include "bstitt.h"
 #include "bruiz.h"
@@ -27,7 +28,7 @@ extern Enemy enemy;
 extern vector<Platform> testPlatforms;
 extern Texture s;
 extern Texture soccer;
-
+extern Rect r;
 extern int snehalTest;
 
 int renderCount = 0;
@@ -491,4 +492,26 @@ void snehalTestBackground()
 		glTexCoord2f(soccer.tex.xc[1], soccer.tex.yc[0]); glVertex2i(g.xres, g.yres);
 		glTexCoord2f(soccer.tex.xc[1], soccer.tex.yc[1]); glVertex2i(g.xres, 0);
 	glPopMatrix();
+}
+
+void snehalsText()
+{
+	r.center = 0;
+	r.bot = g.yres - 20;
+	r.left = 10;
+	glPushMatrix();
+	glBegin(GL_QUADS);
+	glColor3f(1.0, 1.0, 1.0);
+	glVertex2f(40, g.yres - 80.0);  
+    glVertex2f(40, g.yres - 130.0);  
+    glVertex2f(g.xres - 50.0, g.yres - 130.0);  
+	glVertex2f(g.xres - 50.0, g.yres - 80.0);
+
+	r.bot -=20;
+    ggprint8b(&r, 64, 0x00000000, "");
+	r.bot -= 14;
+    ggprint16(&r, 24, 0xFFFFFFFF, "         SNEHAL'S FEATURE MODE");
+
+	glEnd();
+    glPopMatrix();
 }
