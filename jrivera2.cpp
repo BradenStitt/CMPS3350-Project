@@ -18,6 +18,7 @@
 #include <vector>
 #include "log.h"
 #include "bstitt.h"
+#include "skumar.h"
 #include "jrivera2.h"
 #include "global.h"
 #include "fonts.h"
@@ -26,12 +27,15 @@ using namespace std;
 
 extern Global g;
 extern Rect r;
-extern Texture t;
-extern Texture s, p, he;
+extern Player player;
+extern Texture graph, t, soc, hop, ice;
+extern Texture s, p, he, soccer, victory;
+extern StartMenu startMenu;
 extern int print_score();
 
 int physics_count = 0;
 float coord[4][2];
+int fixer = 0;
 
 //StartMenu menu;
 
@@ -85,7 +89,7 @@ StartMenu::~StartMenu() {
     
 }
 
-void StartMenu::showStartScreen() {
+void StartMenu::showStartScreen(Texture texture) {
     // This function displays the start screen on the game window
 	
 	r.center = 0;
@@ -94,12 +98,12 @@ void StartMenu::showStartScreen() {
 
 	glPushMatrix();
 	glColor3f(1.0, 1.0, 1.0);
-	glBindTexture(GL_TEXTURE_2D, t.tex.backTexture);
+	glBindTexture(GL_TEXTURE_2D, texture.tex.backTexture);
 	glBegin(GL_QUADS);
-		glTexCoord2f(t.tex.xc[0], t.tex.yc[1]); glVertex2i(0,      0);
-		glTexCoord2f(t.tex.xc[0], t.tex.yc[0]); glVertex2i(0,      g.yres);
-		glTexCoord2f(t.tex.xc[1], t.tex.yc[0]); glVertex2i(g.xres, g.yres);
-		glTexCoord2f(t.tex.xc[1], t.tex.yc[1]); glVertex2i(g.xres, 0);
+		glTexCoord2f(texture.tex.xc[0], texture.tex.yc[1]); glVertex2i(0,      0);
+		glTexCoord2f(texture.tex.xc[0], texture.tex.yc[0]); glVertex2i(0,      g.yres);
+		glTexCoord2f(texture.tex.xc[1], texture.tex.yc[0]); glVertex2i(g.xres, g.yres);
+		glTexCoord2f(texture.tex.xc[1], texture.tex.yc[1]); glVertex2i(g.xres, 0);
 
 	//glColor3f(1.0, 1.0, 1.0);
 	
@@ -227,6 +231,87 @@ void makeHeart(int i)
         glVertex2f(-10, -10);
         glEnd();
         glPopMatrix();
+}
+
+void levelOne(Texture image)
+{
+	glColor3f(1.0, 1.0, 1.0);
+	glBindTexture(GL_TEXTURE_2D, image.tex.backTexture);
+	glBegin(GL_QUADS);
+	glTexCoord2f(image.tex.xc[0], image.tex.yc[1]); glVertex2i(0, 0);
+	glTexCoord2f(image.tex.xc[0], image.tex.yc[0]); glVertex2i(0, g.yres);
+	glTexCoord2f(image.tex.xc[1], image.tex.yc[0]); glVertex2i(g.xres, g.yres);
+	glTexCoord2f(image.tex.xc[1], image.tex.yc[1]); glVertex2i(g.xres, 0);
+	r.center = 0;
+	r.bot = g.yres - 40;
+	r.left = 10;
+	ggprint8b(&r, 16, 0x00000000, "");
+	ggprint8b(&r, 16, 0x0055ff55, " Press 'M' for MENU");
+	ggprint8b(&r, 16, 0x0055ff55, " Press 'S' for STATISTICS");
+	ggprint8b(&r, 16, 0x0055ff55, " Press 'K' for SNEHAL'S FEATURES");
+	glEnd();
+}
+
+void makeLevels(int increment)
+{
+	if (player.trophyDetected == 0) {
+		levelOne(graph);
+		if (increment <= 150) {
+			r.bot = 300.0f;
+			ggprint8b(&r, 16, 0x00000000, "");
+			ggprint16(&r, 24, 0x00000000, "                      LEVEL 1");
+		}
+	} else if (player.trophyDetected == 1) {
+		levelOne(soc);
+		r.bot = 300.0f;
+		if (increment <= 150) {
+			ggprint8b(&r, 16, 0x00000000, "");
+			ggprint16(&r, 24, 0x00000000, "                      LEVEL 2");
+		}
+	} else if (player.trophyDetected == 2) {
+		levelOne(t);
+		r.bot = 300.0f;
+		if (increment <= 150) {
+			ggprint8b(&r, 16, 0x00000000, "");
+			ggprint16(&r, 24, 0x00000000, "                      LEVEL 3");
+		}
+	} else if (player.trophyDetected == 3) {
+		levelOne(hop);
+		r.bot = 300.0f;
+		if (increment <= 150) {
+			ggprint8b(&r, 16, 0x00000000, "");
+			ggprint16(&r, 24, 0x00000000, "                      LEVEL 4");
+		}
+	} else if (player.trophyDetected == 4) {
+		levelOne(ice);
+		r.bot = 300.0f;
+		if (increment <= 150) {
+			ggprint8b(&r, 16, 0x00000000, "");
+			ggprint16(&r, 24, 0x00000000, "                      LEVEL 5");
+		}
+	} else {
+		victoryScreen();
+	}
+
+}
+
+void victoryScreen() 
+{
+	glPushMatrix();
+	glColor3f(1.0, 1.0, 1.0);
+	glBindTexture(GL_TEXTURE_2D, victory.tex.backTexture);
+	glBegin(GL_QUADS);
+	glTexCoord2f(victory.tex.xc[0], victory.tex.yc[1]); glVertex2i(0, 0);
+	glTexCoord2f(victory.tex.xc[0], victory.tex.yc[0]); glVertex2i(0, g.yres);
+	glTexCoord2f(victory.tex.xc[1], victory.tex.yc[0]); glVertex2i(g.xres, g.yres);
+	glTexCoord2f(victory.tex.xc[1], victory.tex.yc[1]); glVertex2i(g.xres, 0);
+	glEnd();
+    glPopMatrix();
+	r.center = 0;
+	r.bot = g.yres - 420;
+	r.left = 10;
+	ggprint16(&r, 24, 0xFFFFFFFF, "                 Total Score: %i", print_score() );
+	//glEnd();
 }
 
 int count_physics_function()

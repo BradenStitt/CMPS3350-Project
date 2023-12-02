@@ -19,6 +19,8 @@ void scoreboard();
 void makeSprite();
 void makeTrophy();
 void makeHeart(int i);
+void makeLevels(int increment);
+void victoryScreen();
 
 
 class Background {
@@ -43,12 +45,14 @@ public:
     Picture tex;
 };
 
+void levelOne(Texture image);
+
 class StartMenu {
 public:
      StartMenu();
      ~StartMenu();
     
-    void showStartScreen();
+    void showStartScreen(Texture texture);
     
     
 };

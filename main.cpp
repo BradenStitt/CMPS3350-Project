@@ -31,7 +31,8 @@ Platform testEnemy;
 Platform testPlatform;
 Platform blackholeTest;
 Platform trophy;
-Texture t, s, soccer, p, he;
+Texture graph, t, soc, hop, ice;
+Texture soccer, he, p, s, victory;
 StartMenu startMenu;
 Enemy enemy;
 
@@ -93,15 +94,21 @@ public:
 } x11;
 
 // Function prototypes
-Background img[1] = {"underwater.png"};
-Background space[1] = {"spacebck.png"};
+Background graphb[1] = {"better.jpeg"}; // Level 1 background
+Background img[1] = {"underwater.png"}; // Level 2 background
+Background socb[1] = {"soccerbck.png"}; // Level 3 background
+Background hopb[1] = {"hop.png"}; // Level 4 background
+Background iceb[1] = {"ice.png"}; // Level 5 background
 Background sprite[1] = {"finalspritepls.png"};
 Background trophyImage[1] = {"trophypls.png"};
 Background hearts[1] = {"heart.png"};
+Background space[1] = {"spacebck.png"}; // Snehals Test background
+Background vict[1] = {"victoryscreen.png"};
 void init_opengl(void);
 void physics(void);
 void render(void);
 extern void render_hearts(void);
+int levelNum = 0;
 
 //=====================================
 // MAIN FUNCTION IS HERE
@@ -378,12 +385,18 @@ void init_opengl(void)
 	glEnable(GL_TEXTURE_2D);
 	initialize_fonts();
 
-	t.tex.backImage = &img[0];
-	soccer.tex.backImage = &space[0];
-	s.tex.backImage = &sprite[0];
-	p.tex.backImage = &trophyImage[0];
-	he.tex.backImage = &hearts[0];
+	t.tex.backImage = &img[0]; // underwater
+	soccer.tex.backImage = &space[0]; // space
+	s.tex.backImage = &sprite[0]; // Sprite
+	p.tex.backImage = &trophyImage[0]; // trophy
+	he.tex.backImage = &hearts[0]; // Heart
+	soc.tex.backImage = &socb[0]; // soccer
+	graph.tex.backImage = &graphb[0]; // graph
+	hop.tex.backImage = &hopb[0]; // field
+	ice.tex.backImage = &iceb[0]; // ice
+	victory.tex.backImage = &vict[0];
 	// create opengl texture elements
+	//Underwater
 	glGenTextures(1, &t.tex.backTexture);
 	int w = t.tex.backImage->width;
 	int h = t.tex.backImage->height;
@@ -397,6 +410,7 @@ void init_opengl(void)
 	t.tex.yc[0] = 0.0;
 	t.tex.yc[1] = 1.0;
 
+	//Sprite
 	glGenTextures(1, &s.tex.backTexture);
 	int ws = s.tex.backImage->width;
 	int hs = s.tex.backImage->height;
@@ -410,6 +424,7 @@ void init_opengl(void)
 	s.tex.yc[0] = 0.0;
 	s.tex.yc[1] = 1.0;
 
+	// Space
 	glGenTextures(1, &soccer.tex.backTexture);
 	int wsoccer = soccer.tex.backImage->width;
 	int hsoccer = soccer.tex.backImage->height;
@@ -423,6 +438,7 @@ void init_opengl(void)
 	soccer.tex.yc[0] = 0.0;
 	soccer.tex.yc[1] = 1.0;
 
+	// Trophy
 	glGenTextures(1, &p.tex.backTexture);
 	int wp = p.tex.backImage->width;
 	int hp = p.tex.backImage->height;
@@ -436,6 +452,7 @@ void init_opengl(void)
 	p.tex.yc[0] = 0.0;
 	p.tex.yc[1] = 1.0;
 
+	// Hearts
 	glGenTextures(1, &he.tex.backTexture);
 	int wh = he.tex.backImage->width;
 	int hh = he.tex.backImage->height;
@@ -448,6 +465,78 @@ void init_opengl(void)
 	he.tex.xc[1] = 1.0;
 	he.tex.yc[0] = 0.0;
 	he.tex.yc[1] = 1.0;
+
+	// Soccer
+	glGenTextures(1, &soc.tex.backTexture);
+	int wsoc = soc.tex.backImage->width;
+	int hsoc = soc.tex.backImage->height;
+	glBindTexture(GL_TEXTURE_2D, soc.tex.backTexture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, wsoc, hsoc, 0,
+				GL_RGB, GL_UNSIGNED_BYTE, soc.tex.backImage->data);
+	soc.tex.xc[0] = 0.0;
+	soc.tex.xc[1] = 1.0;
+	soc.tex.yc[0] = 0.0;
+	soc.tex.yc[1] = 1.0;
+
+	// Graph
+	glGenTextures(1, &graph.tex.backTexture);
+	int wgraph = graph.tex.backImage->width;
+	int hgraph = graph.tex.backImage->height;
+	glBindTexture(GL_TEXTURE_2D, graph.tex.backTexture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, wgraph, hgraph, 0,
+				GL_RGB, GL_UNSIGNED_BYTE, graph.tex.backImage->data);
+	graph.tex.xc[0] = 0.0;
+	graph.tex.xc[1] = 1.0;
+	graph.tex.yc[0] = 0.0;
+	graph.tex.yc[1] = 1.0;
+
+	// Field
+	glGenTextures(1, &hop.tex.backTexture);
+	int whop = hop.tex.backImage->width;
+	int hhop = hop.tex.backImage->height;
+	glBindTexture(GL_TEXTURE_2D, hop.tex.backTexture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, whop, hhop, 0,
+				GL_RGB, GL_UNSIGNED_BYTE, hop.tex.backImage->data);
+	hop.tex.xc[0] = 0.0;
+	hop.tex.xc[1] = 1.0;
+	hop.tex.yc[0] = 0.0;
+	hop.tex.yc[1] = 1.0;
+
+	// Ice
+	glGenTextures(1, &ice.tex.backTexture);
+	int wice = ice.tex.backImage->width;
+	int hice = ice.tex.backImage->height;
+	glBindTexture(GL_TEXTURE_2D, ice.tex.backTexture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, wice, hice, 0,
+				GL_RGB, GL_UNSIGNED_BYTE, ice.tex.backImage->data);
+	ice.tex.xc[0] = 0.0;
+	ice.tex.xc[1] = 1.0;
+	ice.tex.yc[0] = 0.0;
+	ice.tex.yc[1] = 1.0;
+
+	// victory
+	glGenTextures(1, &victory.tex.backTexture);
+	int wvictory = victory.tex.backImage->width;
+	int hvictory = victory.tex.backImage->height;
+	glBindTexture(GL_TEXTURE_2D, victory.tex.backTexture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, wvictory, hvictory, 0,
+				GL_RGB, GL_UNSIGNED_BYTE, victory.tex.backImage->data);
+	victory.tex.xc[0] = 0.0;
+	victory.tex.xc[1] = 1.0;
+	victory.tex.yc[0] = 0.0;
+	victory.tex.yc[1] = 1.0;
+
+	
 }
 
 void physics()
@@ -538,8 +627,9 @@ void physics()
 			if ((player.pos[1] - player.height <= trophy.pos[1] + trophy.height && player.pos[1] - player.height >= trophy.pos[1]) ||
 				(player.pos[1] + player.height >= trophy.pos[1] - trophy.height && player.pos[1] + player.height <= trophy.pos[1])) {
 				trophy.defaultTrophyColor = false;
-				player.trophyDetected++; 
+				player.trophyDetected += 5; 
 				player.score = player.score + (1000 * player.trophyDetected);
+				levelNum = 0;
 				gameManager.resetGame();
 				player.init();
 			}
@@ -552,10 +642,20 @@ void render()
 	glClear(GL_COLOR_BUFFER_BIT);
 	if (inStartMenu) {
 		// Display the start menu.
-		startMenu.showStartScreen();
-	}
-	else {
-
+		if (player.trophyDetected == 0) {
+			startMenu.showStartScreen(graph);
+		} else if (player.trophyDetected == 1) {
+			startMenu.showStartScreen(soc);
+		} else if (player.trophyDetected == 2) {
+			startMenu.showStartScreen(t);
+		} else if (player.trophyDetected == 3) {
+			startMenu.showStartScreen(hop);
+		} else if (player.trophyDetected == 4){
+			startMenu.showStartScreen(ice);
+		} else {
+			victoryScreen();
+		}
+	} else {
 		if (player.blackholeDetected) {
 			blackhole_screen();
 			youDied();
@@ -618,27 +718,16 @@ void render()
 				updateAndPrintScore();
 
 			} else {
-				glColor3f(1.0, 1.0, 1.0);
-				glBindTexture(GL_TEXTURE_2D, t.tex.backTexture);
-				glBegin(GL_QUADS);
-				glTexCoord2f(t.tex.xc[0], t.tex.yc[1]);
-				glVertex2i(0, 0);
-				glTexCoord2f(t.tex.xc[0], t.tex.yc[0]);
-				glVertex2i(0, g.yres);
-				glTexCoord2f(t.tex.xc[1], t.tex.yc[0]);
-				glVertex2i(g.xres, g.yres);
-				glTexCoord2f(t.tex.xc[1], t.tex.yc[1]);
-				glVertex2i(g.xres, 0);
-				r.center = 0;
-				r.bot = g.yres - 40;
-				r.left = 10;
-				ggprint8b(&r, 16, 0x00000000, "");
-				ggprint8b(&r, 16, 0x0055ff55, " Press 'M' for MENU");
-				ggprint8b(&r, 16, 0x0055ff55, " Press 'S' for STATISTICS");
-				ggprint8b(&r, 16, 0x0055ff55, " Press 'K' for SNEHAL'S FEATURES");
-				glEnd();
+				//levelOne(soccer);
+				levelNum++;
+
+				makeLevels(levelNum);
 				scoreboard();
 				render_hearts();
+
+				if (player.trophyDetected == 5) {
+					inStartMenu = 1;
+				}
 
 				// Draw the platform 2
 				Platform platform2; // Declare an instance of the Platform class
@@ -651,11 +740,11 @@ void render()
 				platform2.draw_platform_fixed(platform2.pos[0], platform2.pos[1]);
 
 				// Draw the trophy
-				trophy.pos[0] = g.xres / 2; // Center the trophy
-				trophy.pos[1] = g.yres - 130;
+				// trophy.pos[0] = g.xres / 2; // Center the trophy
+				// trophy.pos[1] = g.yres - 130;
 				// testing positions 
-				// trophy.pos[0] = 200.0f;
-				// trophy.pos[1] = 300.0f;
+				trophy.pos[0] = 200.0f;
+				trophy.pos[1] = 300.0f;
 				trophy.pType = 6;
 				trophy.draw_platform_fixed(trophy.pos[0], trophy.pos[1]);
 
