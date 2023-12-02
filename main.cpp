@@ -28,11 +28,16 @@ GameManager gameManager(10); // Adjust the number of platforms as needed
 Player player;
 Bullet bullet;
 Platform testEnemy;
+Platform testPlatform;
 Platform blackholeTest;
 Platform trophy;
 Texture t, s, soccer, p, he;
 StartMenu startMenu;
 Enemy enemy;
+
+vector<Platform> testEnemies;
+vector<Platform> testPlatforms;
+
 // floating point random numbers
 typedef float Flt;
 
@@ -42,13 +47,15 @@ typedef float Flt;
 
 // const int MAXPLATFORMS = 10;
 int numPlatforms = 0;
+int inStartMenu = 1;
 int snehalTest = 0;
-int snehalsInstructions = 0;
-bool stop = false;
-bool pKey = true;
-bool kKey = true;
+int snehalControls = 0;
+int snehalFeatures = 0;
+bool done = false;
+bool pKey = false;
+bool kKey = false;
+bool bKey = false;
 
-vector<Platform> testEnemies;
 
 class Platform2
 {
@@ -86,7 +93,6 @@ public:
 } x11;
 
 // Function prototypes
-int inStartMenu = 1;
 Background img[1] = {"underwater.png"};
 Background space[1] = {"spacebck.png"};
 Background sprite[1] = {"finalspritepls.png"};
@@ -104,10 +110,6 @@ int main()
 {
 	logOpen();
 	init_opengl();
-	// printf("Press Up arrow to Jump.\n");
-	// printf("Press Left or Right arrows to move player.\n");
-	// printf("Press Space to Shoot.\n");
-	// printf("Press R to restart game.\n");
 
 	// Main loop
 	int done = 0;
@@ -120,9 +122,11 @@ int main()
 			done = x11.check_keys(&e);
 		}
 
-		render();
-		if (!inStartMenu) {
+		if (inStartMenu)
+			render();
+		else if (!inStartMenu) {
 			physics();
+			render();
 			if (!player.blackholeDetected && !snehalTest) {
 				// Update physics for platforms
 				gameManager.updatePhysics();
@@ -281,56 +285,76 @@ int X11_wrapper::check_keys(XEvent *e)
 		time_since_key_press(false);
 		switch (key)
 		{
-		case XK_r:
-			// Key R was pressed
-			snehalTest = 0;
-			g.landed = 0;
-			gameManager.resetGame();
-			player.lives = 3;
-			player.score = 0;
-			player.trophyDetected = 0;
-			player.init();
-			stop = false;
-			kKey = true;
-			snehalsInstructions = 0;
-			break;
-		case XK_s:
-			g.showNerdStats = !g.showNerdStats;
-			break;
-		case XK_p:
-			if (pKey) {
-				inStartMenu = 0;
-				player.init();
-			}
-			pKey = false;
-			break;
-		case XK_m:
-			inStartMenu = 1;
-			kKey = true;
-			pKey = true;
-			snehalTest = 0;
-			gameManager.resetGame();
-			player.lives = 3;
-			snehalsInstructions = 0;
-			break;
-		case XK_k:
-			if (kKey) {
-				snehalTest = 1;
-				player.pos[0] = g.xres / 2;
-				player.pos[1] = 40.0f;
-				player.lives = 5;
+			case XK_r:
+				// Key R was pressed
+				snehalTest = 0;
+				g.landed = 0;
+				gameManager.resetGame();
+				player.lives = 3;
 				player.score = 0;
-				testEnemies.clear();
-				snehalTestBackground();
-			}
-			kKey = false;
-			break;
-		case XK_i:
-			snehalsInstructions = !snehalsInstructions;
-			break;
-		case XK_Escape:
-			// Escape key was pressed
-			return 1;
+				player.trophyDetected = 0;
+				player.init();
+				done = false;
+				bKey = false;
+				kKey = false;
+				snehalControls = 0;
+				snehalFeatures = 0;
+				break;
+			case XK_s:
+				g.showNerdStats = !g.showNerdStats;
+				break;
+			case XK_p:
+				if (!pKey) {
+					inStartMenu = 0;
+					player.init();
+				}
+				pKey = true;
+				break;
+			case XK_m:
+				inStartMenu = 1;
+				kKey = false;
+				pKey = false;
+				bKey = false;
+				done = false;
+				snehalTest = 0;
+				gameManager.resetGame();
+				player.lives = 3;
+				snehalControls = 0;
+				snehalFeatures = 0;
+				break;
+			case XK_k:
+				if (!kKey) {
+					snehalTest = 1;
+					player.pos[0] = g.xres / 2;
+					player.pos[1] = 40.0f;
+					player.lives = 5;
+					player.score = 0;
+					testEnemies.clear();
+					testPlatforms.clear();
+					snehalTestBackground();
+				}
+				kKey = true;
+				break;
+			case XK_b:
+				if (snehalTest) {
+					testEnemies.clear();
+					done = false;
+					bKey = true;
+				}
+				break;
+			case XK_c:
+				if (snehalTest) {
+					snehalControls = !snehalControls;
+				}
+				break;
+			case XK_f:
+				if (snehalTest) {
+					snehalFeatures = !snehalFeatures;
+				}
+				break;
+			case XK_Escape:
+				// Escape key was pressed
+				return 1;
 		}
 	}
 	return 0;
@@ -440,7 +464,37 @@ void physics()
 	bullet.physics();
 
 	if (snehalTest) {
-		// static enemy collision
+		// testPlatform physics
+		for (unsigned int i = 0; i < testPlatforms.size(); i++) {
+			Platform testPlatform = testPlatforms[i];
+			// cout << "testPlatform.pos[0] 1: " << testPlatform.pos[0] << endl;
+			if (i == 0) {
+				testPlatform.pos[0] -= testPlatform.velocity;
+				// cout << "testPlatform.pos[0] 2: " << testPlatform.pos[0] << endl;
+				if (testPlatform.pos[0] - testPlatform.width < 0.0f) {
+					testPlatform.pos[0] = testPlatform.width;
+					testPlatform.velocity = -testPlatform.velocity;
+				} else if (testPlatform.pos[0] + testPlatform.width > g.xres) {
+					testPlatform.pos[0] = g.xres - testPlatform.width;
+					testPlatform.velocity = -testPlatform.velocity;
+				}
+				testPlatforms[i] = testPlatform;
+
+			} else if (i == 1) {
+				testPlatform.pos[0] += testPlatform.velocity;
+
+				if (testPlatform.pos[0] + testPlatform.width > g.xres) {
+					testPlatform.pos[0] = g.xres - testPlatform.width;
+					testPlatform.velocity = -testPlatform.velocity;
+				} else if (testPlatform.pos[0] - testPlatform.width < 0.0f) {
+					testPlatform.pos[0] = testPlatform.width;
+					testPlatform.velocity = -testPlatform.velocity;
+				}
+				testPlatforms[i] = testPlatform;
+			}
+		}
+
+		// testEnemy collision
 		for (unsigned int i = 0; i < testEnemies.size(); i++) {
 			Platform testEnemy = testEnemies[i];
 
@@ -454,6 +508,27 @@ void physics()
 				}
 			}
 		}
+
+		if (!player.enemyDetected) {
+			// testPlatform collision
+			for (unsigned int j = 0; j < testPlatforms.size(); j++) 
+			{
+				Platform testPlatform = testPlatforms[j];
+
+				if (player.pos[0] > (testPlatform.pos[0] - testPlatform.width) && player.pos[0] < (testPlatform.pos[0] + testPlatform.width)) 
+				{
+					if (player.pos[1] > (testPlatform.pos[1] - testPlatform.height) && player.pos[1] < (testPlatform.pos[1] + testPlatform.height)) 
+					{
+						// Player is colliding with platform
+						player.pos[1] = testPlatform.pos[1] + testPlatform.height;
+						player.vel[1] = 0.0;
+						player.vel[0] = 0.0;
+						player.jumpCount = 0;
+					}
+				}
+			}
+		}
+
 	} else {
 		
 		// trophy collision
@@ -497,31 +572,23 @@ void render()
 				r.bot = g.yres - 45;
 				r.left = 5;
 				ggprint8b(&r, 16, 0x00000000, "");
-				ggprint8b(&r, 16, 0x0055ff55, "   Press 'I' for Instructions");
+				ggprint8b(&r, 16, 0x0055ff55, "   Press 'R' to Return");
+				ggprint8b(&r, 16, 0x0055ff55, "   Press 'C' for Controls");
+				ggprint8b(&r, 16, 0x0055ff55, "   Press 'F' for Features List");
 
 				// Draw the platform
 				Platform platform; // Declare an instance of the Platform class
 
 				platform.pos[0] = g.xres / 2;
-				platform.pos[1] = 40.0f;
+				platform.pos[1] = 20.0f;
 				platform.pType = -1;
 
-				if (!stop) {
-					for (int i = 0; i < 3; i++) {
-						Platform testEnemy;
-						testEnemy.pos[0] = g.xres / 2 - 100 + (i * 100);
-						testEnemy.pos[1] = 300.0f;
-						testEnemy.pType = 3;
-						testEnemies.push_back(testEnemy);
-					}
+				if (!done) {
+					pushTestPlatforms();
+					done = true;
+				}
 
-					stop = true;
-				}
-				
-				for (unsigned int j = 0; j < testEnemies.size(); j++) {
-					testEnemy = testEnemies[j];
-					testEnemy.draw_platform_fixed(testEnemy.pos[0], testEnemy.pos[1]);
-				}
+				renderTestPlatforms();
 
 				platform.draw_platform_fixed(platform.pos[0], platform.pos[1]);
 
@@ -567,17 +634,11 @@ void render()
 				r.left = 10;
 				ggprint8b(&r, 16, 0x00000000, "");
 				ggprint8b(&r, 16, 0x0055ff55, " Press 'M' for MENU");
+				ggprint8b(&r, 16, 0x0055ff55, " Press 'S' for STATISTICS");
 				ggprint8b(&r, 16, 0x0055ff55, " Press 'K' for SNEHAL'S FEATURES");
 				glEnd();
 				scoreboard();
 				render_hearts();
-				
-				// Draw the platform
-				// Platform platform; // Declare an instance of the Platform class
-
-				// platform.pos[0] = 100.0f;
-				// platform.pos[1] = 20.0f;
-				// platform.draw_platform_fixed(platform.pos[0], platform.pos[1]);
 
 				// Draw the platform 2
 				Platform platform2; // Declare an instance of the Platform class
@@ -591,7 +652,7 @@ void render()
 
 				// Draw the trophy
 				trophy.pos[0] = g.xres / 2; // Center the trophy
-				trophy.pos[1] = g.yres - 110;
+				trophy.pos[1] = g.yres - 130;
 				// testing positions 
 				// trophy.pos[0] = 200.0f;
 				// trophy.pos[1] = 300.0f;
@@ -618,24 +679,6 @@ void render()
 
 				// Draw Player
 				player.draw_player();
-
-				// if (!player.enemyDetected) {
-				// 	if (player.pos[0] > (platform.pos[0] - platform.width) && player.pos[0] < (platform.pos[0] + platform.width)) {
-				// 		if (player.pos[1] > (platform.pos[1] - platform.height) && player.pos[1] < (platform.pos[1] + platform.height)) {
-				// 			player.pos[1] = platform.pos[1] + platform.height;
-				// 			player.vel[1] = 0.0;
-				// 			player.vel[0] = 0.0;
-				// 			player.jumpCount = 0;
-
-				// 			if (player.angle > 0.0 || player.angle < 0.0) {
-				// 				g.failed_landing = 1;
-				// 			}
-				// 			else {
-				// 				// g.landed = 1;
-				// 			}
-				// 		}
-				// 	}
-				// }
 
 				// Draw the bullets
 				bullet.draw_bullet();
@@ -675,37 +718,64 @@ void render()
 
 			glPopMatrix();
 		}
-		if (snehalTest) {
-			if (snehalsInstructions) {
-				// Draw a box around the nerd stats
-				
-						 // Set the vertex color to gray
+		if (snehalTest && !player.blackholeDetected) {
+			if (snehalControls) {
+				// Set the vertex color to gray
 				glPushMatrix();
 				glBegin(GL_QUADS);
 				glColor3ub(90, 90, 90);
-				glVertex2f(40, g.yres - 130.0);  
-				glVertex2f(40, g.yres - 215.0);  
-				glVertex2f(g.xres - 50.0, g.yres - 215.0);  
-				glVertex2f(g.xres - 50.0, g.yres - 130.0);
+				glVertex2f(40, g.yres - 170.0);  
+				glVertex2f(40, g.yres - 255.0);  
+				glVertex2f(g.xres - 50.0, g.yres - 255.0);  
+				glVertex2f(g.xres - 50.0, g.yres - 170.0);
 				glEnd();
 
 				r.center = 0;
 				r.bot = g.yres - 20;
 				r.left = 10;
 
-				r.bot -= 127;
-				ggprint8b(&r, 16, 0x0055ff55,                                 
+				r.bot -= 167;
+				ggprint8b(&r, 16, 0x0001dee6,                                 
 				"                                 GAME CONTROLS");
-				ggprint8b(&r, 16, 0x00ffff00, 
+				ggprint8b(&r, 16, 0x00f1b620, 
 				"                            Press Up arrow to Jump");
-				ggprint8b(&r, 16, 0x00ffff00, 
+				ggprint8b(&r, 16, 0x00f1b620, 
 				"                Press Left or Right arrows to move player");
-				ggprint8b(&r, 16, 0x00ffff00, 
+				ggprint8b(&r, 16, 0x00f1b620, 
+				"                      Press 'B' to Bring Enemies Back");
+				ggprint8b(&r, 16, 0x00f1b620, 
 				"                             Press 'Space' to Shoot");
-				ggprint8b(&r, 16, 0x00ffff00, 
-				"                              Press 'R' to return");
+				glPopMatrix();
+			}
+
+			if (snehalFeatures) {
+				glPushMatrix();
+					glBegin(GL_QUADS);
+					glColor3ub(90, 90, 90); 
+					glVertex2f(40, g.yres - 255.0);  
+					glVertex2f(40, g.yres - 320.0);  
+					glVertex2f(g.xres - 50.0, g.yres - 320.0);  
+					glVertex2f(g.xres - 50.0, g.yres - 255.0);
+					glEnd();
+
+					r.center = 0;
+					r.bot = g.yres - 20;
+					r.left = 10;
+
+					r.bot -= 258;
+					
+					ggprint8b(&r, 16, 0x00fbf608,                                 
+					"                                      FEATURES");
+					ggprint8b(&r, 16, 0x004db3e4, 
+					"                          Player Movement & Bullets");
+					ggprint8b(&r, 16, 0x004db3e4, 
+					"                 Collisions:"
+					"					 - Bullet"
+					"					 - Enemy"
+					"					 - Platform");
 				glPopMatrix();
 			}
 		}
+
 	}
 }

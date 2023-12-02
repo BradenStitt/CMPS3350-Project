@@ -15,9 +15,11 @@ typedef float Vec[3];
 void dynamic_collision_detection();
 void blackhole_screen();
 void life_lost();
-int count_render_function();
 void snehalTestBackground();
 void snehalsText();
+void pushTestPlatforms();
+void renderTestPlatforms();
+int count_render_function();
 int print_score();
 
 

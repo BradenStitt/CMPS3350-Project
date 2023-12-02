@@ -22,5 +22,5 @@ Global::Global()
     landed = 0;
     failed_landing = 0;
     test_mode = 1;
-    showNerdStats = 1;
+    showNerdStats = 0;
 }

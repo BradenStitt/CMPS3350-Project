@@ -25,11 +25,15 @@ extern Global g;
 extern GameManager gameManager;
 extern Player player;
 extern Enemy enemy;
+extern Platform testEnemy;
+extern Platform testPlatform;
 extern vector<Platform> testEnemies;
+extern vector<Platform> testPlatforms;
 extern Texture s;
 extern Texture soccer;
 extern Rect r;
 extern int snehalTest;
+extern bool bKey;
 
 int renderCount = 0;
 
@@ -41,7 +45,7 @@ Bullet::Bullet()
 void Bullet::physics()
 {
 	if (snehalTest)
-		// usleep(20000); // Mac 
+		usleep(20000); // Mac 
 
 	struct timespec bt;
 	clock_gettime(CLOCK_REALTIME, &bt);
@@ -274,7 +278,7 @@ void Player::init()
 void Player::physics()
 {
 	if (snehalTest)
-		// usleep(10000); // Mac
+		usleep(10000); // Mac
 
 	// Player physics
 	if (g.failed_landing)
@@ -501,16 +505,56 @@ void snehalsText()
 	glPushMatrix();
 	glBegin(GL_QUADS);
 	glColor3f(1.0, 1.0, 1.0);
-	glVertex2f(40, g.yres - 80.0);  
-    glVertex2f(40, g.yres - 130.0);  
-    glVertex2f(g.xres - 50.0, g.yres - 130.0);  
-	glVertex2f(g.xres - 50.0, g.yres - 80.0);
+	glVertex2f(40, g.yres - 110.0);  
+    glVertex2f(40, g.yres - 160.0);  
+    glVertex2f(g.xres - 50.0, g.yres - 160.0);  
+	glVertex2f(g.xres - 50.0, g.yres - 110.0);
 
-	r.bot -=20;
+	r.bot -= 20;
     ggprint8b(&r, 64, 0x00000000, "");
-	r.bot -= 14;
+	r.bot -= 43;
     ggprint16(&r, 24, 0xFFFFFFFF, "         SNEHAL'S FEATURE MODE");
 
 	glEnd();
     glPopMatrix();
+}
+
+void pushTestPlatforms()
+{
+	for (int i = 0; i < 3; i++) {
+		Platform testEnemy;
+		testEnemy.pos[0] = g.xres / 2 - 100 + (i * 100);
+		testEnemy.pos[1] = 250.0f;
+		testEnemy.pType = 3;
+		testEnemies.push_back(testEnemy);
+	}
+
+	if (!bKey) {
+		for (int j = 0; j < 2; j++) {
+			Platform testPlatform;
+			testPlatform.pos[0] = g.xres / 2 - 100 + (j * 200);
+			if (j == 0) {
+				testPlatform.pos[1] = 100.0f;
+			}
+			else if (j == 1) {
+				testPlatform.pos[1] = 150.0f;
+			}
+			testPlatform.pType = 1;
+			testPlatforms.push_back(testPlatform);
+		}
+	}
+}
+
+void renderTestPlatforms()
+{
+	for (unsigned int j = 0; j < testEnemies.size(); j++) {
+		testEnemy = testEnemies[j];
+		testEnemy.draw_platform_fixed(testEnemy.pos[0], testEnemy.pos[1]);
+	}
+
+	for (unsigned int i = 0; i < testPlatforms.size(); i++) {
+		testPlatform = testPlatforms[i];
+		// cout << "testPlatform.pos[0] 3: " << testPlatform.pos[0] << endl;
+		testPlatform.draw_platform_fixed(testPlatform.pos[0], testPlatform.pos[1]);
+	}
 }
