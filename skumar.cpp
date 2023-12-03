@@ -99,10 +99,10 @@ void Bullet::physics()
 					Platform *testEnemy = &testEnemies[k];
 
 					if (player.pos[0] > testEnemy->pos[0] - testEnemy->width 
-					&& player.pos[0] < testEnemy->pos[0] + testEnemy->width) {
-						if (b->prevPosY >= testEnemy->pos[1] - testEnemy->height 
-						&& b->pos[1] <= testEnemy->pos[1]+testEnemy->height) {
-							b->pos[1] = testEnemy->pos[1] + testEnemy->height;
+					&& player.pos[0] < testEnemy->pos[0]+testEnemy->width) {
+						if (b->prevPosY>=testEnemy->pos[1]-testEnemy->height 
+						&& b->pos[1]<=testEnemy->pos[1]+testEnemy->height) {
+							b->pos[1] = testEnemy->pos[1]+testEnemy->height;
 							b->bulletHit = true;
 						}
 					}
@@ -113,8 +113,9 @@ void Bullet::physics()
 						if (i < player.nbullets - 1) {
 							// Swap the current bullet with the last one and 
 							// decrease the bullet count.
-							memcpy(&player.barr[i], &player.barr[player.nbullets-1], 
-																	sizeof(Bullet));
+							memcpy(&player.barr[i], 
+									&player.barr[player.nbullets-1], 
+															sizeof(Bullet));
 						}
 						player.nbullets--;
 
@@ -130,33 +131,35 @@ void Bullet::physics()
 				}
 			} else {
 				/* dynamic enemy bullet collision */
-				for (unsigned int j = 0; j<gameManager.platforms.size(); j++) {
+				for (unsigned int j=0; j<gameManager.platforms.size();j++) {
 					Platform *platform = &gameManager.platforms[j];
 
 					if (platform->pType == 3 || platform->pType == 5) {
 						if (platform->pType == 3) {
-							if (player.pos[0]>platform->pos[0] - platform->width 
+							if (player.pos[0]>platform->pos[0] - 
+															platform->width 
 								&& player.pos[0] < platform->pos[0] 
-															+ platform->width) {
+														+ platform->width) {
 								if (b->prevPosY>=platform->pos[1]
-															-platform->height
+														-platform->height
 									&& b->pos[1] <= platform->pos[1]
-														+ platform->height) {
+														+platform->height) {
 									b->pos[1] = platform->pos[1]
-															+ platform->height;
+														+platform->height;
 									b->bulletHit = true;
 								}
 							}
 						} else {
 							if (player.pos[0] > platform->enemy.pos[0] 
 								- platform->enemy.width && player.pos[0] < 
-								platform->enemy.pos[0] +platform->enemy.width) {
+								platform->enemy.pos[0] 
+												+ platform->enemy.width) {
 								if (b->prevPosY >= platform->enemy.pos[1] 
 									- platform->enemy.height && b->pos[1] 
-														<=platform->enemy.pos[1] 
-													+platform->enemy.height) {
+												<= platform->enemy.pos[1] 
+												+ platform->enemy.height) {
 									b->pos[1] = platform->enemy.pos[1] 
-														+platform->enemy.height;
+													+platform->enemy.height;
 									b->bulletHit = true;
 								}
 							}
@@ -171,11 +174,11 @@ void Bullet::physics()
 
 							// Remove the bullet
 							if (i < player.nbullets - 1) {
-								// Swap the current bullet with the last one and
-								// decrease the bullet count.
+								// Swap the current bullet with the last one
+								// and decrease the bullet count.
 								memcpy(&player.barr[i], 
 										&player.barr[player.nbullets-1], 
-																sizeof(Bullet));
+															sizeof(Bullet));
 							}
 							player.nbullets--;
 
@@ -489,10 +492,13 @@ void snehalTestBackground()
 	glColor3f(1.0, 1.0, 1.0);
 	glBindTexture(GL_TEXTURE_2D, soccer.tex.backTexture);
 	glBegin(GL_QUADS);
-		glTexCoord2f(soccer.tex.xc[0], soccer.tex.yc[1]); glVertex2i(0,      0);
-		glTexCoord2f(soccer.tex.xc[0], soccer.tex.yc[0]); glVertex2i(0,      g.yres);
-		glTexCoord2f(soccer.tex.xc[1], soccer.tex.yc[0]); glVertex2i(g.xres, g.yres);
-		glTexCoord2f(soccer.tex.xc[1], soccer.tex.yc[1]); glVertex2i(g.xres, 0);
+		glTexCoord2f(soccer.tex.xc[0], soccer.tex.yc[1]); glVertex2i(0,0);
+		glTexCoord2f(soccer.tex.xc[0], soccer.tex.yc[0]); 
+													glVertex2i(0,g.yres);
+		glTexCoord2f(soccer.tex.xc[1], soccer.tex.yc[0]); 
+												glVertex2i(g.xres, g.yres);
+		glTexCoord2f(soccer.tex.xc[1], soccer.tex.yc[1]); 
+													glVertex2i(g.xres, 0);
 	glPopMatrix();
 }
 
@@ -553,6 +559,7 @@ void renderTestPlatforms()
 
 	for (unsigned int i = 0; i < testPlatforms.size(); i++) {
 		testPlatform = testPlatforms[i];
-		testPlatform.draw_platform_fixed(testPlatform.pos[0], testPlatform.pos[1]);
+		testPlatform.draw_platform_fixed(testPlatform.pos[0], 
+													testPlatform.pos[1]);
 	}
 }

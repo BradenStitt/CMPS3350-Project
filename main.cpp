@@ -569,8 +569,8 @@ void physics()
 			hop.tex.yc[0] -= 0.0033;
 			hop.tex.yc[1] -= 0.0033;
 		} else if (player.trophyDetected == 4){
-			ice.tex.yc[0] -= 0.0033;
-			ice.tex.yc[1] -= 0.0033;
+			halloween.tex.yc[0] -= 0.0033;
+			halloween.tex.yc[1] -= 0.0033;
 		}
 	}
 	
