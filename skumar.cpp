@@ -283,8 +283,8 @@ void Player::physics()
 	if (g.failed_landing)
 		return;
 
-	player.pos[0] += vel[0];
-	player.pos[1] += vel[1];
+	player.pos[0] += player.vel[0];
+	player.pos[1] += player.vel[1];
 	player.vel[1] -= GRAVITY;
 
 	// Check keys pressed now
@@ -311,11 +311,11 @@ void Player::physics()
 
 	// Check for collision with window edges
 	if (pos[0] < 0.0) {
-		player.pos[0] += (float)g.xres;
+		player.pos[0] += g.xres;
 		// player.pos[0] = 0.0f;
-	} else if (pos[0] > (float)g.xres) {
-		player.pos[0] -= (float)g.xres;
-		// player.pos[0] = (float)g.xres;
+	} else if (pos[0] > g.xres) {
+		player.pos[0] -= g.xres;
+		// player.pos[0] = g.xres;
 	}
 
 	// check for landing failure...
