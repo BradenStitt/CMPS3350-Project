@@ -21,6 +21,7 @@ void makeTrophy();
 void makeHeart(int i);
 void makeLevels(int increment);
 void victoryScreen();
+void switchColor();
 
 
 class Background {

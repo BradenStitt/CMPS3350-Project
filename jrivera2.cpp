@@ -28,7 +28,7 @@ using namespace std;
 extern Global g;
 extern Rect r;
 extern Player player;
-extern Texture graph, t, soc, hop, ice;
+extern Texture graph, t, soc, hop, halloween;
 extern Texture s, p, he, soccer, victory;
 extern StartMenu startMenu;
 extern int print_score();
@@ -36,6 +36,12 @@ extern int print_score();
 int physics_count = 0;
 float coord[4][2];
 int fixer = 0;
+int textColor = 0;
+int black = 0x00000000;
+int white = 0x00ffffff;
+int blue = 0x000000ff;
+int green = 0x0055ff55;
+int yellow = 0x00ffff00;
 
 //StartMenu menu;
 
@@ -173,6 +179,8 @@ void youDied()
 
 void scoreboard()
 {
+	switchColor();
+
 	glPushMatrix();
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
@@ -190,7 +198,7 @@ void scoreboard()
 	r.center = 0;
 	r.bot = g.yres - 30;
 	r.left = 10;
-	ggprint16(&r, 24, 0x00ffff00, " score: %i", print_score() );
+	ggprint16(&r, 24, textColor, " score: %i", print_score() );
 	glPopMatrix();
 
 }
@@ -235,6 +243,8 @@ void makeHeart(int i)
 
 void levelOne(Texture image)
 {
+	switchColor();
+
 	glColor3f(1.0, 1.0, 1.0);
 	glBindTexture(GL_TEXTURE_2D, image.tex.backTexture);
 	glBegin(GL_QUADS);
@@ -244,11 +254,15 @@ void levelOne(Texture image)
 	glTexCoord2f(image.tex.xc[1], image.tex.yc[1]); glVertex2i(g.xres, 0);
 	r.center = 0;
 	r.bot = g.yres - 40;
-	r.left = 10;
-	ggprint8b(&r, 16, 0x00000000, "");
-	ggprint8b(&r, 16, 0x0055ff55, " Press 'M' for MENU");
-	ggprint8b(&r, 16, 0x0055ff55, " Press 'S' for STATISTICS");
-	ggprint8b(&r, 16, 0x0055ff55, " Press 'K' for SNEHAL'S FEATURES");
+	if (player.trophyDetected == 1)
+		r.left = 15;
+	else
+		r.left = 10;
+	ggprint8b(&r, 16, textColor, "");
+	ggprint8b(&r, 16, textColor, " Press 'M' for MENU");
+	ggprint8b(&r, 16, textColor, " Press 'S' for STATISTICS");
+	ggprint8b(&r, 16, textColor, " Press 'K' for SNEHAL'S FEATURES");
+	ggprint8b(&r, 16, textColor, " Press 'L' to lower TROPHY POSITION");
 	glEnd();
 }
 
@@ -283,7 +297,7 @@ void makeLevels(int increment)
 			ggprint16(&r, 24, 0x00000000, "                      LEVEL 4");
 		}
 	} else if (player.trophyDetected == 4) {
-		levelOne(ice);
+		levelOne(halloween);
 		r.bot = 300.0f;
 		if (increment <= 150) {
 			ggprint8b(&r, 16, 0x00000000, "");
@@ -319,4 +333,18 @@ int count_physics_function()
 {
 	physics_count++;
 	return physics_count;
+}
+
+void switchColor()
+{
+	if (player.trophyDetected == 0) 
+		textColor = black;
+	if (player.trophyDetected == 1)
+		textColor = white;
+	if (player.trophyDetected == 2)
+		textColor = yellow;
+	if (player.trophyDetected == 3)
+		textColor = blue;
+	if (player.trophyDetected == 4)
+		textColor = green;
 }

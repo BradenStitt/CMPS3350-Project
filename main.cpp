@@ -31,7 +31,7 @@ Platform testEnemy;
 Platform testPlatform;
 Platform blackholeTest;
 Platform trophy;
-Texture graph, t, soc, hop, ice;
+Texture graph, t, soc, hop, halloween;
 Texture soccer, he, p, s, victory;
 StartMenu startMenu;
 Enemy enemy;
@@ -49,6 +49,7 @@ typedef float Flt;
 // const int MAXPLATFORMS = 10;
 int numPlatforms = 0;
 int inStartMenu = 1;
+int levelNum = 0;
 int snehalTest = 0;
 int snehalControls = 0;
 int snehalFeatures = 0;
@@ -99,7 +100,7 @@ Background graphb[1] = {"better.jpeg"}; // Level 1 background
 Background img[1] = {"underwater.png"}; // Level 2 background
 Background socb[1] = {"soccerbck.png"}; // Level 3 background
 Background hopb[1] = {"hop.png"}; // Level 4 background
-Background iceb[1] = {"ice.png"}; // Level 5 background
+Background halloweenb[1] = {"halloween.png"}; // Level 5 background
 Background sprite[1] = {"finalspritepls.png"};
 Background trophyImage[1] = {"trophypls.png"};
 Background hearts[1] = {"heart.png"};
@@ -109,7 +110,6 @@ void init_opengl(void);
 void physics(void);
 void render(void);
 extern void render_hearts(void);
-int levelNum = 0;
 
 //=====================================
 // MAIN FUNCTION IS HERE
@@ -299,6 +299,8 @@ int X11_wrapper::check_keys(XEvent *e)
 					pKey = false;
 
 				snehalTest = 0;
+				snehalControls = 0;
+				snehalFeatures = 0;
 				g.landed = 0;
 				gameManager.resetGame();
 				player.lives = 3;
@@ -309,8 +311,7 @@ int X11_wrapper::check_keys(XEvent *e)
 				bKey = false;
 				kKey = false;
 				lKey = false;
-				snehalControls = 0;
-				snehalFeatures = 0;
+				levelNum = 0;
 				break;
 			case XK_s:
 				g.showNerdStats = !g.showNerdStats;
@@ -330,10 +331,10 @@ int X11_wrapper::check_keys(XEvent *e)
 				lKey = false;
 				done = false;
 				snehalTest = 0;
-				gameManager.resetGame();
-				player.lives = 3;
 				snehalControls = 0;
 				snehalFeatures = 0;
+				gameManager.resetGame();
+				player.lives = 3;
 				break;
 			case XK_k:
 				if (!kKey) {
@@ -404,7 +405,7 @@ void init_opengl(void)
 	soc.tex.backImage = &socb[0]; // soccer
 	graph.tex.backImage = &graphb[0]; // graph
 	hop.tex.backImage = &hopb[0]; // field
-	ice.tex.backImage = &iceb[0]; // ice
+	halloween.tex.backImage = &halloweenb[0]; // halloween
 	victory.tex.backImage = &vict[0];
 	// create opengl texture elements
 	//Underwater
@@ -519,19 +520,19 @@ void init_opengl(void)
 	hop.tex.yc[0] = 0.0;
 	hop.tex.yc[1] = 1.0;
 
-	// Ice
-	glGenTextures(1, &ice.tex.backTexture);
-	int wice = ice.tex.backImage->width;
-	int hice = ice.tex.backImage->height;
-	glBindTexture(GL_TEXTURE_2D, ice.tex.backTexture);
+	// halloween
+	glGenTextures(1, &halloween.tex.backTexture);
+	int whalloween = halloween.tex.backImage->width;
+	int hhalloween = halloween.tex.backImage->height;
+	glBindTexture(GL_TEXTURE_2D, halloween.tex.backTexture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, 3, wice, hice, 0,
-				GL_RGB, GL_UNSIGNED_BYTE, ice.tex.backImage->data);
-	ice.tex.xc[0] = 0.0;
-	ice.tex.xc[1] = 1.0;
-	ice.tex.yc[0] = 0.0;
-	ice.tex.yc[1] = 1.0;
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, whalloween, hhalloween, 0,
+				GL_RGB, GL_UNSIGNED_BYTE, halloween.tex.backImage->data);
+	halloween.tex.xc[0] = 0.0;
+	halloween.tex.xc[1] = 1.0;
+	halloween.tex.yc[0] = 0.0;
+	halloween.tex.yc[1] = 1.0;
 
 	// victory
 	glGenTextures(1, &victory.tex.backTexture);
@@ -677,7 +678,7 @@ void render()
 		} else if (player.trophyDetected == 3) {
 			startMenu.showStartScreen(hop);
 		} else if (player.trophyDetected == 4){
-			startMenu.showStartScreen(ice);
+			startMenu.showStartScreen(halloween);
 		} else {
 			victoryScreen();
 			victoryScreenDisplayed = true;
@@ -769,7 +770,7 @@ void render()
 				// Draw the trophy
 				if (!lKey) {
 					trophy.pos[0] = g.xres / 2; // Center the trophy
-					trophy.pos[1] = g.yres - 130;
+					trophy.pos[1] = g.yres - 145;
 				}
 				else if (lKey) {
 					// testing positions 
