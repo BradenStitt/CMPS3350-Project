@@ -627,7 +627,7 @@ void physics()
 			if ((player.pos[1] - player.height <= trophy.pos[1] + trophy.height && player.pos[1] - player.height >= trophy.pos[1]) ||
 				(player.pos[1] + player.height >= trophy.pos[1] - trophy.height && player.pos[1] + player.height <= trophy.pos[1])) {
 				trophy.defaultTrophyColor = false;
-				player.trophyDetected += 5; 
+				player.trophyDetected++; 
 				player.score = player.score + (1000 * player.trophyDetected);
 				levelNum = 0;
 				gameManager.resetGame();
