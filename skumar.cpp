@@ -109,7 +109,6 @@ void Bullet::physics()
 				
 					if (b->bulletHit) {
 						testEnemy->hitCount++;
-						// cout << "hitCount: " << testEnemy->hitCount << endl;
 						// Remove the bullet
 						if (i < player.nbullets - 1) {
 							// Swap the current bullet with the last one and 
@@ -295,14 +294,14 @@ void Player::physics()
 		else 
 			player.vel[0] = 0.0;
 	}
-	// player.vel[0] -= 0.1;
+	
 	if (g.keys[XK_Right]) {
 		if (!enemyDetected)
 			player.vel[0] += 0.8;
 		else 
 			player.vel[0] = 0.0;
 	}
-	// player.vel[0] += 0.1;
+	
 	if (g.keys[XK_Up]) {
 		if (jumpCount < 2) {
 			player.vel[1] += 4.8;
@@ -554,7 +553,6 @@ void renderTestPlatforms()
 
 	for (unsigned int i = 0; i < testPlatforms.size(); i++) {
 		testPlatform = testPlatforms[i];
-		// cout << "testPlatform.pos[0] 3: " << testPlatform.pos[0] << endl;
 		testPlatform.draw_platform_fixed(testPlatform.pos[0], testPlatform.pos[1]);
 	}
 }
