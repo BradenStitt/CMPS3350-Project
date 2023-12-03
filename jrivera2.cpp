@@ -97,6 +97,7 @@ StartMenu::~StartMenu() {
 
 void StartMenu::showStartScreen(Texture texture) {
     // This function displays the start screen on the game window
+	switchColor();
 	
 	r.center = 0;
 	r.bot = g.yres - 20;
@@ -115,27 +116,27 @@ void StartMenu::showStartScreen(Texture texture) {
 	
 
 	r.bot -=40;
-    ggprint8b(&r, 64, 0x00000000, "");
+    ggprint8b(&r, 64, textColor, "");
 	r.bot -= 20;
-    ggprint16(&r, 24, 0x00000000, "        WELCOME TO SCRIBBLE-HOP!");
+    ggprint16(&r, 24, textColor, "        WELCOME TO SCRIBBLE-HOP!");
 	r.bot -= 2;
-	ggprint8b(&r, 16, 0x00000000, 
+	ggprint8b(&r, 16, textColor, 
 		"                                   Press 'P' to Play");
 	r.bot -=250;
-	ggprint8b(&r, 16, 0x00000000,                                 
+	ggprint8b(&r, 16, textColor,                                 
 	 	"                                 GAME CONTROLS");
-	ggprint8b(&r, 16, 0x00000000, 
+	ggprint8b(&r, 16, textColor, 
 	 	"                            Press Up arrow to Jump");
-	ggprint8b(&r, 16, 0x00000000, 
+	ggprint8b(&r, 16, textColor, 
 		"                Press Left or Right arrows to move player");
-	ggprint8b(&r, 16, 0x00000000, 
+	ggprint8b(&r, 16, textColor, 
 	 	"                             Press 'Space' to Shoot");
-	ggprint8b(&r, 16, 0x00000000, 
+	ggprint8b(&r, 16, textColor, 
 		"                            Press 'R' to restart game");
 	r.bot -= 60;
-	ggprint8b(&r, 16, 0x00000000, 
+	ggprint8b(&r, 16, textColor, 
 		"          Created by: Snehal Kumar, Braden Stitt, Joseph Rivera ");
-	ggprint8b(&r, 16, 0x00000000, 
+	ggprint8b(&r, 16, textColor, 
 		"                                        & Brian Ruiz ");
 
 	glPopMatrix();
@@ -170,10 +171,10 @@ void youDied()
 	r.left = 10;
 	glPushMatrix();
 	r.bot -= 275;
-	ggprint16(&r, 24, 0xFF0000, "                 GAME OVER");
+	ggprint16(&r, 24, 0xFF0000, "                  GAME OVER");
 	r.bot -= 10;
 	ggprint8b(&r, 16, 0xFF0000, 
-	"                              Press 'R' to Restart");
+	"                               Press 'R' to Restart");
 
 }
 
