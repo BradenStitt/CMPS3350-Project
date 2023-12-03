@@ -52,11 +52,12 @@ int inStartMenu = 1;
 int snehalTest = 0;
 int snehalControls = 0;
 int snehalFeatures = 0;
+bool victoryScreenDisplayed = false;
 bool done = false;
 bool pKey = false;
 bool kKey = false;
 bool bKey = false;
-
+bool lKey = false;
 
 class Platform2
 {
@@ -294,6 +295,9 @@ int X11_wrapper::check_keys(XEvent *e)
 		{
 			case XK_r:
 				// Key R was pressed
+				if (victoryScreenDisplayed) 
+					pKey = false;
+
 				snehalTest = 0;
 				g.landed = 0;
 				gameManager.resetGame();
@@ -304,6 +308,7 @@ int X11_wrapper::check_keys(XEvent *e)
 				done = false;
 				bKey = false;
 				kKey = false;
+				lKey = false;
 				snehalControls = 0;
 				snehalFeatures = 0;
 				break;
@@ -322,6 +327,7 @@ int X11_wrapper::check_keys(XEvent *e)
 				kKey = false;
 				pKey = false;
 				bKey = false;
+				lKey = false;
 				done = false;
 				snehalTest = 0;
 				gameManager.resetGame();
@@ -358,6 +364,11 @@ int X11_wrapper::check_keys(XEvent *e)
 				if (snehalTest) {
 					snehalFeatures = !snehalFeatures;
 				}
+			case XK_l:
+				// lower trophy for testing or reset to
+				// original position
+				if (!snehalTest)
+					lKey = !lKey;
 				break;
 			case XK_Escape:
 				// Escape key was pressed
@@ -570,10 +581,10 @@ void physics()
 		// testPlatform physics
 		for (unsigned int i = 0; i < testPlatforms.size(); i++) {
 			Platform testPlatform = testPlatforms[i];
-			// cout << "testPlatform.pos[0] 1: " << testPlatform.pos[0] << endl;
+			
 			if (i == 0) {
 				testPlatform.pos[0] -= testPlatform.velocity;
-				// cout << "testPlatform.pos[0] 2: " << testPlatform.pos[0] << endl;
+			
 				if (testPlatform.pos[0] - testPlatform.width < 0.0f) {
 					testPlatform.pos[0] = testPlatform.width;
 					testPlatform.velocity = -testPlatform.velocity;
@@ -643,6 +654,7 @@ void physics()
 				trophy.defaultTrophyColor = false;
 				player.trophyDetected++; 
 				player.score = player.score + (1000 * player.trophyDetected);
+
 				levelNum = 0;
 				gameManager.resetGame();
 				player.init();
@@ -668,6 +680,7 @@ void render()
 			startMenu.showStartScreen(ice);
 		} else {
 			victoryScreen();
+			victoryScreenDisplayed = true;
 		}
 	} else {
 		if (player.blackholeDetected) {
@@ -754,11 +767,15 @@ void render()
 				platform2.draw_platform_fixed(platform2.pos[0], platform2.pos[1]);
 
 				// Draw the trophy
-				// trophy.pos[0] = g.xres / 2; // Center the trophy
-				// trophy.pos[1] = g.yres - 130;
-				// testing positions 
-				trophy.pos[0] = 200.0f;
-				trophy.pos[1] = 300.0f;
+				if (!lKey) {
+					trophy.pos[0] = g.xres / 2; // Center the trophy
+					trophy.pos[1] = g.yres - 130;
+				}
+				else if (lKey) {
+					// testing positions 
+					trophy.pos[0] = 200.0f;
+					trophy.pos[1] = 130.0f;
+				}
 				trophy.pType = 6;
 				trophy.draw_platform_fixed(trophy.pos[0], trophy.pos[1]);
 
