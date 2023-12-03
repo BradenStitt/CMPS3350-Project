@@ -143,7 +143,7 @@ void Bullet::physics()
 								if (b->prevPosY>=platform->pos[1]
 														-platform->height
 									&& b->pos[1] <= platform->pos[1]
-														+ platform->height) {
+														+platform->height) {
 									b->pos[1] = platform->pos[1]
 														+platform->height;
 									b->bulletHit = true;
@@ -174,8 +174,8 @@ void Bullet::physics()
 
 							// Remove the bullet
 							if (i < player.nbullets - 1) {
-								// Swap the current bullet with the last one and
-								// decrease the bullet count.
+								// Swap the current bullet with the last one
+								// and decrease the bullet count.
 								memcpy(&player.barr[i], 
 										&player.barr[player.nbullets-1], 
 															sizeof(Bullet));
