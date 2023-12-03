@@ -544,8 +544,22 @@ void physics()
 	count_physics_function();
 
 	if (!snehalTest) {
-		t.tex.yc[0] -= 0.0033;
-		t.tex.yc[1] -= 0.0033;
+		if (player.trophyDetected == 0) {
+			graph.tex.yc[0] -= 0.0033;
+			graph.tex.yc[1] -= 0.0033;
+		} else if (player.trophyDetected == 1) {
+			soc.tex.yc[0] -= 0.0033;
+			soc.tex.yc[1] -= 0.0033;
+		} else if (player.trophyDetected == 2) {
+			t.tex.yc[0] -= 0.0033;
+			t.tex.yc[1] -= 0.0033;
+		} else if (player.trophyDetected == 3) {
+			hop.tex.yc[0] -= 0.0033;
+			hop.tex.yc[1] -= 0.0033;
+		} else if (player.trophyDetected == 4){
+			ice.tex.yc[0] -= 0.0033;
+			ice.tex.yc[1] -= 0.0033;
+		}
 	}
 	
 	// Player physics
