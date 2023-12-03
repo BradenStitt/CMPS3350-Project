@@ -311,6 +311,7 @@ void victoryScreen()
 	r.bot = g.yres - 420;
 	r.left = 10;
 	ggprint16(&r, 24, 0xFFFFFFFF, "                 Total Score: %i", print_score() );
+	ggprint16(&r, 12, 0x00ffff00, "            Press 'R' to return to Menu" );
 	//glEnd();
 }
 
