@@ -25,6 +25,9 @@ using namespace std;
 
 extern Enemy enemy;
 extern Platform platform;
+extern Player player;
+extern OpenALPlayer openALPlayer;
+
 
 void soundFinishedCallback(ALuint source, ALuint, ALshort*, ALsizei, ALsizei, ALenum, const void*);
 // Time since last key was pressed function
@@ -194,10 +197,15 @@ OpenALPlayer::OpenALPlayer() {
     setupSources();
 
     // Load sounds using the sound manager
-    soundManager.loadSound("./start.wav");
-    soundManager.loadSound("./jump.wav");
-    soundManager.loadSound("./arcadeLaser.wav");
-    soundManager.loadSound("./eggCrack.wav");
+    soundManager.loadSound("./Audio/start.wav");
+    soundManager.loadSound("./Audio/jump.wav");
+    soundManager.loadSound("./Audio/arcadeLaser.wav");
+    soundManager.loadSound("./Audio/eggCrack.wav");
+    soundManager.loadSound("./Audio/shot-shotgun.wav");
+    soundManager.loadSound("./Audio/shot-underwater.wav");
+    soundManager.loadSound("./Audio/win.wav");
+    soundManager.loadSound("./Audio/shot-snowball.wav");
+    soundManager.loadSound("./Audio/shot-skull.wav");
     // Add more sounds if needed
 }
 
@@ -209,21 +217,35 @@ void OpenALPlayer::playSound(const string& filePath) {
     // Find the index of the sound in the sound manager
     int soundIndex = -1;
     for (size_t i = 0; i < soundManager.getNumSounds(); ++i) {
-        if (filePath == "./start.wav" && i == 0) {
+        if (filePath == "./Audio/start.wav" && i == 0) {
             soundIndex = i;
             break;
-        } else if (filePath == "./jump.wav" && i == 1) {
+        } else if (filePath == "./Audio/jump.wav" && i == 1) {
             soundIndex = i;
             break;
-        } else if (filePath == "./arcadeLaser.wav" && i == 2) { 
+        } else if (filePath == "./Audio/arcadeLaser.wav" && i == 2) { 
             soundIndex = i;
             break;
-        }else if (filePath == "./eggCrack.wav" && i == 3) {
+        }else if (filePath == "./Audio/eggCrack.wav" && i == 3) {
             soundIndex = i;
             break;
-}
-
-        // Add more conditions for additional sounds
+        }else if (filePath == "./Audio/shot-shotgun.wav" && i == 4) {
+            soundIndex = i;
+            break;
+        }else if (filePath == "./Audio/shot-underwater.wav" && i == 5) {
+            soundIndex = i;
+            break;
+        }else if (filePath == "./Audio/win.wav" && i == 6) {
+            soundIndex = i;
+            break;
+        }else if (filePath == "./Audio/shot-snowball.wav" && i == 7) {
+            soundIndex = i;
+            break;
+        }else if (filePath == "./Audio/shot-skull.wav" && i == 8) {
+            soundIndex = i;
+            break;
+        }
+    // Add more conditions for additional sounds
     }
 
     // Play the sound using the sound manager
@@ -251,15 +273,22 @@ void OpenALPlayer::setupListener()
 
 void OpenALPlayer::setupBuffers()
 {
-    alBuffer[0] = alutCreateBufferFromFile("./start.wav");
-    alBuffer[1] = alutCreateBufferFromFile("./jump.wav");
-    alBuffer[2] = alutCreateBufferFromFile("./arcadeLaser.wav");
+    alBuffer[0] = alutCreateBufferFromFile("./Audio/start.wav");
+    alBuffer[1] = alutCreateBufferFromFile("./Audio/jump.wav");
+    alBuffer[2] = alutCreateBufferFromFile("./Audio/arcadeLaser.wav");
+    alBuffer[3] = alutCreateBufferFromFile("./Audio/eggCrack.wav");
+    alBuffer[4] = alutCreateBufferFromFile("./Audio/shot-shotgun.wav");
+    alBuffer[5] = alutCreateBufferFromFile("./Audio/shot-underwater.wav");
+    alBuffer[6] = alutCreateBufferFromFile("./Audio/win.wav");
+    alBuffer[7] = alutCreateBufferFromFile("./Audio/shot-snowball.wav");
+    alBuffer[8] = alutCreateBufferFromFile("./Audio/shot-skull.wav");
+
     // Add more buffers if needed for additional sounds
 }
 
 void OpenALPlayer::setupSources()
 {
-    alGenSources(3, alSource);
+    alGenSources(8, alSource);
     alSourcei(alSource[0], AL_BUFFER, alBuffer[0]);
     alSourcei(alSource[1], AL_BUFFER, alBuffer[1]);
     alSourcei(alSource[1], AL_BUFFER, alBuffer[2]);
@@ -279,16 +308,28 @@ void OpenALPlayer::setupSources()
 
 void OpenALPlayer::cleanup()
 {
-    alDeleteSources(1, &alSource[0]);
-    alDeleteSources(1, &alSource[1]);
-    alDeleteSources(1, &alSource[2]);
-    alDeleteBuffers(1, &alBuffer[0]);
-    alDeleteBuffers(1, &alBuffer[1]);
-    alDeleteBuffers(1, &alBuffer[2]);
+for (int i = 0; i < 8; ++i) {
+        alDeleteSources(1, &alSource[i]);
+        alDeleteBuffers(1, &alBuffer[i]);
+    }
 
     ALCcontext *Context = alcGetCurrentContext();
     ALCdevice *Device = alcGetContextsDevice(Context);
     alcMakeContextCurrent(NULL);
     alcDestroyContext(Context);
     alcCloseDevice(Device);
+}
+
+void switchGunSound(){
+		if (player.trophyDetected == 0) {
+		openALPlayer.playSound("./Audio/arcadeLaser.wav"); 
+		} else if (player.trophyDetected == 1) {
+		openALPlayer.playSound("./Audio/shot-shotgun.wav"); 
+		} else if (player.trophyDetected == 2) {
+		openALPlayer.playSound("./Audio/shot-underwater.wav"); 
+		} else if (player.trophyDetected == 3) {
+		openALPlayer.playSound("./Audio/shot-snowball.wav"); 
+		} else if (player.trophyDetected == 4){
+		openALPlayer.playSound("./Audio/shot-skull.wav"); 
+		}
 }

@@ -68,8 +68,7 @@ void Bullet::physics()
 			++player.nbullets;
 		}
 		// Play shoot sound
-		openALPlayer.playSound("./arcadeLaser.wav"); 
-
+		switchGunSound();
 		// Clear the space key state to continuously generate bullets
 		g.keys[XK_space] = 0;
 	}
@@ -421,7 +420,7 @@ void dynamic_collision_detection()
 							}
 
 							if (platform->pType == 2) {
-								openALPlayer.playSound("./eggCrack.wav");
+								openALPlayer.playSound("./Audio/eggCrack.wav");
 							}
 
 							if (player.angle > 0.0 || player.angle < 0.0) {

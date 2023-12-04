@@ -12,6 +12,7 @@ using namespace std;
 
 extern int time_since_key_press(const bool get);
 extern void updateAndPrintScore();
+extern void switchGunSound();
 
 class Enemy {
 public:
@@ -61,8 +62,8 @@ private:
     void cleanup();
 
 private:
-    ALuint alBuffer[3];
-    ALuint alSource[3];
+    ALuint alBuffer[8];
+    ALuint alSource[8];
     SoundManager soundManager;
 };
 

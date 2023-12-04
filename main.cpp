@@ -321,8 +321,8 @@ int X11_wrapper::check_keys(XEvent *e)
 				if (!pKey) {
 					inStartMenu = 0;
 					player.init();
-				}
-				openALPlayer.playSound("./start.wav");  // Play start sound
+				}// Play start sound
+				openALPlayer.playSound("./Audio/start.wav");
 				pKey = true;
 				break;
 			case XK_m:
@@ -378,7 +378,7 @@ int X11_wrapper::check_keys(XEvent *e)
 				return 1;
 			case XK_Up:
                 // Up arrow key was pressed
-				openALPlayer.playSound("./jump.wav");  // Play jump sound
+				openALPlayer.playSound("./Audio/jump.wav");  // Play jump sound
                 break;
 		}
 	}
@@ -688,6 +688,7 @@ void render()
 		} else {
 			victoryScreen();
 			victoryScreenDisplayed = true;
+			// openALPlayer.playSound("./Audio/win.wav"); 
 		}
 	} else {
 		if (player.blackholeDetected) {
