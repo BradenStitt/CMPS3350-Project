@@ -126,6 +126,7 @@ void Bullet::physics()
 							if (testEnemy->pType == 3) {
 								testEnemy->isDestroyed = true;
 								player.score += 30;
+								openALPlayer.playSound("./Audio/monster-crash.wav");
 							}
 							testEnemy->hitCount = 0;
 							testEnemies.erase(testEnemies.begin() + k);
@@ -190,9 +191,11 @@ void Bullet::physics()
 								if (platform->pType == 3) {
 									platform->isDestroyed = true;
 									player.score += 30;
+									openALPlayer.playSound("./Audio/monster-crash.wav");
 								} else {
 									platform->enemy.isDestroyed = true;
 									player.score += 30;
+									openALPlayer.playSound("./Audio/monster-crash.wav");
 								}
 							}
 						}

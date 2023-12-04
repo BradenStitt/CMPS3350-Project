@@ -206,6 +206,7 @@ OpenALPlayer::OpenALPlayer() {
     soundManager.loadSound("./Audio/win.wav");
     soundManager.loadSound("./Audio/shot-snowball.wav");
     soundManager.loadSound("./Audio/shot-skull.wav");
+    soundManager.loadSound("./Audio/monster-crash.wav");
     // Add more sounds if needed
 }
 
@@ -242,6 +243,10 @@ void OpenALPlayer::playSound(const string& filePath) {
             soundIndex = i;
             break;
         }else if (filePath == "./Audio/shot-skull.wav" && i == 8) {
+            soundIndex = i;
+            break;
+        }
+        else if (filePath == "./Audio/monster-crash.wav" && i == 9) {
             soundIndex = i;
             break;
         }
@@ -282,13 +287,14 @@ void OpenALPlayer::setupBuffers()
     alBuffer[6] = alutCreateBufferFromFile("./Audio/win.wav");
     alBuffer[7] = alutCreateBufferFromFile("./Audio/shot-snowball.wav");
     alBuffer[8] = alutCreateBufferFromFile("./Audio/shot-skull.wav");
+    alBuffer[9] = alutCreateBufferFromFile("./Audio/monster-crash.wav");
 
     // Add more buffers if needed for additional sounds
 }
 
 void OpenALPlayer::setupSources()
 {
-    alGenSources(8, alSource);
+    alGenSources(9, alSource);
     alSourcei(alSource[0], AL_BUFFER, alBuffer[0]);
     alSourcei(alSource[1], AL_BUFFER, alBuffer[1]);
     alSourcei(alSource[1], AL_BUFFER, alBuffer[2]);
@@ -308,7 +314,7 @@ void OpenALPlayer::setupSources()
 
 void OpenALPlayer::cleanup()
 {
-for (int i = 0; i < 8; ++i) {
+for (int i = 0; i < 9; ++i) {
         alDeleteSources(1, &alSource[i]);
         alDeleteBuffers(1, &alBuffer[i]);
     }

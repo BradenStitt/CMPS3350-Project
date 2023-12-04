@@ -62,8 +62,8 @@ private:
     void cleanup();
 
 private:
-    ALuint alBuffer[8];
-    ALuint alSource[8];
+    ALuint alBuffer[9];
+    ALuint alSource[9];
     SoundManager soundManager;
 };
 
