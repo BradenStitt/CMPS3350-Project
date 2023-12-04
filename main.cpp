@@ -145,7 +145,7 @@ int main()
 		}
 
 		x11.swapBuffers();
-		usleep(400);
+		// usleep(400);
 	}
 
 	logClose();
