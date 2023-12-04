@@ -27,6 +27,7 @@ extern Enemy enemy;
 extern Platform platform;
 extern Player player;
 extern OpenALPlayer openALPlayer;
+extern int snehalTest;
 
 
 void soundFinishedCallback(ALuint source, ALuint, ALshort*, ALsizei, ALsizei, ALenum, const void*);
@@ -327,15 +328,21 @@ for (int i = 0; i < 9; ++i) {
 }
 
 void switchGunSound(){
-		if (player.trophyDetected == 0) {
-		openALPlayer.playSound("./Audio/arcadeLaser.wav"); 
-		} else if (player.trophyDetected == 1) {
-		openALPlayer.playSound("./Audio/shot-shotgun.wav"); 
-		} else if (player.trophyDetected == 2) {
-		openALPlayer.playSound("./Audio/shot-underwater.wav"); 
-		} else if (player.trophyDetected == 3) {
-		openALPlayer.playSound("./Audio/shot-snowball.wav"); 
-		} else if (player.trophyDetected == 4){
-		openALPlayer.playSound("./Audio/shot-skull.wav"); 
-		}
+    if (snehalTest) {
+        openALPlayer.playSound("./Audio/arcadeLaser.wav");
+    }
+    else {
+        if (player.trophyDetected == 0) {
+        openALPlayer.playSound("./Audio/arcadeLaser.wav"); 
+        } else if (player.trophyDetected == 1) {
+        openALPlayer.playSound("./Audio/shot-shotgun.wav"); 
+        } else if (player.trophyDetected == 2) {
+        openALPlayer.playSound("./Audio/shot-underwater.wav"); 
+        } else if (player.trophyDetected == 3) {
+        openALPlayer.playSound("./Audio/shot-snowball.wav"); 
+        } else if (player.trophyDetected == 4){
+        openALPlayer.playSound("./Audio/shot-skull.wav"); 
+        }
+    }
+		
 }

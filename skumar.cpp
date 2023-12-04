@@ -55,8 +55,10 @@ void Bullet::physics()
 	if (g.keys[XK_space]) {
 		// Shoot a bullet...
 		// Play shoot sound
-		if (!player.blackholeDetected && !victoryScreenDisplayed)
+		if (!player.blackholeDetected && victoryScreenDisplayed) {
 			switchGunSound();
+		}
+			
 
 		if (player.nbullets < MAX_BULLETS) {
 			Bullet *b = &player.barr[player.nbullets];
