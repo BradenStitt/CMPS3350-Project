@@ -46,8 +46,8 @@ Bullet::Bullet()
 
 void Bullet::physics()
 {
-	// if (snehalTest)
-	// 	usleep(20000); // Mac 
+	if (snehalTest)
+		usleep(20000); // Mac 
 
 	struct timespec bt;
 	clock_gettime(CLOCK_REALTIME, &bt);
@@ -91,7 +91,7 @@ void Bullet::physics()
 				// Swap the current bullet with the last one and
                 // decrease the bullet count 
 				memcpy(&player.barr[i], &player.barr[player.nbullets - 1],
-                                                         sizeof(Bullet));
+															sizeof(Bullet));
 			}
 			player.nbullets--;
 		} else {
@@ -230,7 +230,7 @@ void Bullet::draw_bullet()
 		else {
 		if (player.trophyDetected == 0) 
 			// red
-        	glColor3f(1.0, 0.0, 0.0); 
+			glColor3f(1.0, 0.0, 0.0); 
 		if (player.trophyDetected == 1) 
 			// white
 			glColor3f(1.0, 1.0, 1.0);
@@ -298,8 +298,8 @@ void Player::init()
 // Physics for moving the player
 void Player::physics()
 {
-	// if (snehalTest)
-	//  usleep(10000); // Mac
+	if (snehalTest)
+		usleep(10000); // Mac
 
 	// Player physics
 	if (g.failed_landing)
