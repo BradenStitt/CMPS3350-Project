@@ -59,7 +59,6 @@ void Bullet::physics()
 			switchGunSound();
 		}
 			
-
 		if (player.nbullets < MAX_BULLETS) {
 			Bullet *b = &player.barr[player.nbullets];
 			timeCopy(&b->time, &bt);
@@ -439,11 +438,11 @@ void dynamic_collision_detection()
 					} else {
 						if ((player.pos[0]+player.width>
 													platform->enemy.pos[0]
-						 - platform->enemy.width && player.pos[0] 
-						 		<= platform->enemy.pos[0]) ||(player.pos[0]- 
-						 				player.width<platform->enemy.pos[0]+ 
-						 				platform->enemy.width&&player.pos[0] 
-						 						>=platform->enemy.pos[0])) {
+								- platform->enemy.width && player.pos[0] 
+								<= platform->enemy.pos[0]) ||(player.pos[0]- 
+										player.width<platform->enemy.pos[0]+ 
+										platform->enemy.width&&player.pos[0] 
+												>=platform->enemy.pos[0])) {
 							if ((player.pos[1] - player.height <= 
 							platform->enemy.pos[1]+platform->enemy.height && 
 							player.pos[1] - player.height >= 
