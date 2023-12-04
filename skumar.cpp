@@ -83,7 +83,7 @@ void Bullet::physics()
 			// Time to delete the bullet.
 			if (i < player.nbullets - 1) {
 				// Swap the current bullet with the last one and
-                // decrease the bullet count.
+                // decrease the bullet count 
 				memcpy(&player.barr[i], &player.barr[player.nbullets - 1],
                                                          sizeof(Bullet));
 			}
@@ -407,10 +407,7 @@ void dynamic_collision_detection()
 
 							if (player.angle > 0.0 || player.angle < 0.0) {
 								g.failed_landing = 1;
-							} else {
-								// Player landed successfully
-								// g.landed = 1;
-							}
+							} 
 						}
 					} else {
 						if ((player.pos[0]+player.width>
