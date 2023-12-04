@@ -200,17 +200,9 @@ void Bullet::physics()
 			// Check for collision with window edges
 			if (b->pos[0] < 0.0) {
 				b->pos[0] = 0.0f;
-			} else if (b->pos[0] > (float)g.xres) {
-				b->pos[0] = (float)g.xres;
+			} else if (b->pos[0] > g.xres) {
+				b->pos[0] = g.xres;
 			}
-			// else if (b->pos[1] < 0.0)
-			// {
-			// 	b->pos[1] = (float)g.yres;
-			// }
-			// else if (b->pos[1] > (float)g.yres)
-			// {
-			// 	b->pos[1] -= (float)g.yres;
-			// }
 		}
 	}
 }
@@ -222,14 +214,11 @@ void Bullet::draw_bullet()
         Bullet *b = &player.barr[i];
 
         glColor3f(1.0, 0.0, 0.0); // red
-
-        // Adjust size of the bullet
+        // Adjust size of bullet
         glPointSize(4.0f);
-
         glBegin(GL_POINTS);
         glVertex2f(b->pos[0], b->pos[1]);
         glEnd();
-
         // Reset point size to default value
         glPointSize(1.0f);
     }
