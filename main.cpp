@@ -378,7 +378,9 @@ int X11_wrapper::check_keys(XEvent *e)
 				return 1;
 			case XK_Up:
                 // Up arrow key was pressed
-				openALPlayer.playSound("./Audio/jump.wav");  // Play jump sound
+				if (!player.blackholeDetected && !victoryScreenDisplayed)
+					openALPlayer.playSound("./Audio/jump.wav");  // Play jump sound
+					
                 break;
 		}
 	}
@@ -553,8 +555,6 @@ void init_opengl(void)
 	victory.tex.xc[1] = 1.0;
 	victory.tex.yc[0] = 0.0;
 	victory.tex.yc[1] = 1.0;
-
-	
 }
 
 void physics()
