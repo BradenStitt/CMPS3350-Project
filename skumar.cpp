@@ -33,6 +33,7 @@ extern Texture s;
 extern Texture soccer;
 extern Rect r;
 extern int snehalTest;
+extern int victoryScreenDisplayed;
 extern bool bKey;
 extern OpenALPlayer openALPlayer;
 
@@ -53,6 +54,10 @@ void Bullet::physics()
 
 	if (g.keys[XK_space]) {
 		// Shoot a bullet...
+		// Play shoot sound
+		if (player.blackholeDetected && !victoryScreenDisplayed)
+			switchGunSound();
+
 		if (player.nbullets < MAX_BULLETS) {
 			Bullet *b = &player.barr[player.nbullets];
 			timeCopy(&b->time, &bt);
@@ -67,8 +72,7 @@ void Bullet::physics()
 			b->color[2] = 1.0f;
 			++player.nbullets;
 		}
-		// Play shoot sound
-		switchGunSound();
+	
 		// Clear the space key state to continuously generate bullets
 		g.keys[XK_space] = 0;
 	}
