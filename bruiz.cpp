@@ -15,12 +15,18 @@
 #include "global.h"
 #include "skumar.h"
 #include "bstitt.h"
+#include <AL/al.h>
+#include <AL/alc.h>
+#include <AL/alut.h>
+#include <thread>
+
 
 using namespace std;
 
 extern Enemy enemy;
 extern Platform platform;
 
+void soundFinishedCallback(ALuint source, ALuint, ALshort*, ALsizei, ALsizei, ALenum, const void*);
 // Time since last key was pressed function
 int time_since_key_press(const bool get)
 {
@@ -112,8 +118,8 @@ void Enemy::drawEnemy()
     }
 }
 
-static int previousScore = -1;
 // Print Score without Spam
+static int previousScore = -1;
 void updateAndPrintScore()
 {
     int currentScore = print_score();
@@ -126,4 +132,163 @@ void updateAndPrintScore()
         // Print the updated score
         cout << "Score: " << currentScore << endl;
     }
+}
+
+// Adding audio to the game
+
+// Implementation of SoundManager class
+SoundManager::SoundManager() {
+    alutInit(0, NULL);
+}
+
+SoundManager::~SoundManager() {
+    for (ALuint buffer : soundBuffers) {
+        alDeleteBuffers(1, &buffer);
+    }
+    alutExit();
+}
+
+void SoundManager::loadSound(const string& filePath) {
+    ALuint buffer = alutCreateBufferFromFile(filePath.c_str());
+    if (buffer == AL_NONE) {
+        cerr << "Error loading sound file: " << filePath << endl;
+        return;
+    }
+    soundBuffers.push_back(buffer);
+}
+
+thread soundThread;
+
+void SoundManager::playSound(int soundIndex) {
+    if (soundIndex >= 0 && soundIndex < static_cast<int>(soundBuffers.size())) {
+        ALuint source;
+        alGenSources(1, &source);
+        alSourcei(source, AL_BUFFER, soundBuffers[soundIndex]);
+        alSourcePlay(source);
+
+        // Start a new thread to handle sound playback and deletion
+        soundThread = thread(&SoundManager::checkSoundStateAndDelete, this, source);
+        soundThread.detach(); // Detach the thread to allow it to run independently
+    }
+}
+
+void SoundManager::checkSoundStateAndDelete(ALuint source) {
+    // Wait for the sound to finish playing
+    ALint state;
+    do {
+        alGetSourcei(source, AL_SOURCE_STATE, &state);
+    } while (state == AL_PLAYING);
+
+    // Delete the source once it's done playing
+    alDeleteSources(1, &source);
+}
+
+size_t SoundManager::getNumSounds() const {
+    return soundBuffers.size();
+}
+
+// Implementation of OpenALPlayer class
+OpenALPlayer::OpenALPlayer() {
+    initOpenAL();
+    setupListener();
+    setupSources();
+
+    // Load sounds using the sound manager
+    soundManager.loadSound("./start.wav");
+    soundManager.loadSound("./jump.wav");
+    soundManager.loadSound("./arcadeLaser.wav");
+    soundManager.loadSound("./eggCrack.wav");
+    // Add more sounds if needed
+}
+
+OpenALPlayer::~OpenALPlayer() {
+    cleanup();
+}
+
+void OpenALPlayer::playSound(const string& filePath) {
+    // Find the index of the sound in the sound manager
+    int soundIndex = -1;
+    for (size_t i = 0; i < soundManager.getNumSounds(); ++i) {
+        if (filePath == "./start.wav" && i == 0) {
+            soundIndex = i;
+            break;
+        } else if (filePath == "./jump.wav" && i == 1) {
+            soundIndex = i;
+            break;
+        } else if (filePath == "./arcadeLaser.wav" && i == 2) { 
+            soundIndex = i;
+            break;
+        }else if (filePath == "./eggCrack.wav" && i == 3) {
+            soundIndex = i;
+            break;
+}
+
+        // Add more conditions for additional sounds
+    }
+
+    // Play the sound using the sound manager
+    soundManager.playSound(soundIndex);
+}
+
+void OpenALPlayer::initOpenAL()
+{
+    alutInit(0, NULL);
+    if (alGetError() != AL_NO_ERROR)
+    {
+        cerr << "ERROR: alutInit()" << endl;
+        // Handle initialization error
+    }
+    alGetError(); // Clear error state
+}
+
+void OpenALPlayer::setupListener()
+{
+    float vec[6] = {0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f};
+    alListener3f(AL_POSITION, 0.0f, 0.0f, 0.0f);
+    alListenerfv(AL_ORIENTATION, vec);
+    alListenerf(AL_GAIN, 1.0f);
+}
+
+void OpenALPlayer::setupBuffers()
+{
+    alBuffer[0] = alutCreateBufferFromFile("./start.wav");
+    alBuffer[1] = alutCreateBufferFromFile("./jump.wav");
+    alBuffer[2] = alutCreateBufferFromFile("./arcadeLaser.wav");
+    // Add more buffers if needed for additional sounds
+}
+
+void OpenALPlayer::setupSources()
+{
+    alGenSources(3, alSource);
+    alSourcei(alSource[0], AL_BUFFER, alBuffer[0]);
+    alSourcei(alSource[1], AL_BUFFER, alBuffer[1]);
+    alSourcei(alSource[1], AL_BUFFER, alBuffer[2]);
+
+    alSourcef(alSource[0], AL_GAIN, 1.0f);
+    alSourcef(alSource[0], AL_PITCH, 1.0f);
+    alSourcei(alSource[0], AL_LOOPING, AL_FALSE);
+    
+    alSourcef(alSource[1], AL_GAIN, 0.5f);
+    alSourcef(alSource[1], AL_PITCH, 1.0f);
+    alSourcei(alSource[1], AL_LOOPING, AL_FALSE);
+
+    alSourcef(alSource[2], AL_GAIN, 1.0f);
+    alSourcef(alSource[2], AL_PITCH, 1.0f);
+    alSourcei(alSource[2], AL_LOOPING, AL_FALSE);
+}
+
+void OpenALPlayer::cleanup()
+{
+    alDeleteSources(1, &alSource[0]);
+    alDeleteSources(1, &alSource[1]);
+    alDeleteSources(1, &alSource[2]);
+    alDeleteBuffers(1, &alBuffer[0]);
+    alDeleteBuffers(1, &alBuffer[1]);
+    alDeleteBuffers(1, &alBuffer[2]);
+
+    ALCcontext *Context = alcGetCurrentContext();
+    ALCdevice *Device = alcGetContextsDevice(Context);
+    alcMakeContextCurrent(NULL);
+    alcDestroyContext(Context);
+    alcCloseDevice(Device);
 }

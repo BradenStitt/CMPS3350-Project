@@ -35,6 +35,7 @@ Texture graph, t, soc, hop, halloween;
 Texture soccer, he, p, s, victory;
 StartMenu startMenu;
 Enemy enemy;
+OpenALPlayer openALPlayer;
 
 vector<Platform> testEnemies;
 vector<Platform> testPlatforms;
@@ -321,6 +322,7 @@ int X11_wrapper::check_keys(XEvent *e)
 					inStartMenu = 0;
 					player.init();
 				}
+				openALPlayer.playSound("./start.wav");  // Play start sound
 				pKey = true;
 				break;
 			case XK_m:
@@ -374,6 +376,10 @@ int X11_wrapper::check_keys(XEvent *e)
 			case XK_Escape:
 				// Escape key was pressed
 				return 1;
+			case XK_Up:
+                // Up arrow key was pressed
+				openALPlayer.playSound("./jump.wav");  // Play jump sound
+                break;
 		}
 	}
 	return 0;

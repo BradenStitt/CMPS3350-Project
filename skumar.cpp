@@ -34,6 +34,7 @@ extern Texture soccer;
 extern Rect r;
 extern int snehalTest;
 extern bool bKey;
+extern OpenALPlayer openALPlayer;
 
 int renderCount = 0;
 
@@ -66,6 +67,8 @@ void Bullet::physics()
 			b->color[2] = 1.0f;
 			++player.nbullets;
 		}
+		openALPlayer.playSound("./arcadeLaser.wav"); // Play shoot sound
+
 		// Clear the space key state to continuously generate bullets
 		g.keys[XK_space] = 0;
 	}
@@ -396,6 +399,10 @@ void dynamic_collision_detection()
 							if (platform->countLanding == 1 
 												&& platform->pType != 2) {
 								player.score += 10;
+							}
+
+							if (platform->pType == 2){
+								openALPlayer.playSound("./eggCrack.wav");
 							}
 
 							if (player.angle > 0.0 || player.angle < 0.0) {
