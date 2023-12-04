@@ -235,8 +235,8 @@ void Bullet::draw_bullet()
 			// blue
 			glColor3f(0.0, 0.0, 1.0);
 		if (player.trophyDetected == 4)
-			// pink
-			glColor3f(1.0, 0.0, 1.0);
+			// orange
+			glColor3f(1.0, 0.5, 0.0);
 		}
         // Adjust size of bullet
         glPointSize(4.0f);
