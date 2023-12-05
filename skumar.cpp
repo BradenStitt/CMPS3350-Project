@@ -68,9 +68,6 @@ void Bullet::physics()
 			b->pos[1] = 38.0f;
 			b->vel[0] = 0.0f;
 			b->vel[1] = 8.0f + rnd() * 0.05f;
-			b->color[0] = 1.0f;
-			b->color[1] = 1.0f;
-			b->color[2] = 1.0f;
 			++player.nbullets;
 		}
 	
