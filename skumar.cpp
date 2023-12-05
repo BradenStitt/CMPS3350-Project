@@ -67,7 +67,7 @@ void Bullet::physics()
             // more distance
 			b->pos[1] = 38.0f;
 			b->vel[0] = 0.0f;
-			b->vel[1] = 8.0f + rnd() * 0.05f;
+			b->vel[1] = 8.0f + 0.05f;
 			++player.nbullets;
 		}
 	
