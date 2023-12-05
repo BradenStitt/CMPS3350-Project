@@ -13,12 +13,12 @@
 #include "bruiz.h"
 #include "log.h"
 #include "global.h"
+#include <thread>
 #include "skumar.h"
 #include "bstitt.h"
 #include <AL/al.h>
 #include <AL/alc.h>
 #include <AL/alut.h>
-#include <thread>
 
 
 using namespace std;
@@ -29,8 +29,6 @@ extern Player player;
 extern OpenALPlayer openALPlayer;
 extern int snehalTest;
 
-
-void soundFinishedCallback(ALuint source, ALuint, ALshort*, ALsizei, ALsizei, ALenum, const void*);
 // Time since last key was pressed function
 int time_since_key_press(const bool get)
 {
@@ -162,7 +160,6 @@ void SoundManager::loadSound(const string& filePath) {
 }
 
 thread soundThread;
-
 void SoundManager::playSound(int soundIndex) {
     if (soundIndex >= 0 && soundIndex < static_cast<int>(soundBuffers.size())) {
         ALuint source;
@@ -192,7 +189,8 @@ size_t SoundManager::getNumSounds() const {
 }
 
 // Implementation of OpenALPlayer class
-OpenALPlayer::OpenALPlayer() {
+OpenALPlayer::OpenALPlayer() 
+{
     initOpenAL();
     setupListener();
     setupSources();
@@ -211,11 +209,13 @@ OpenALPlayer::OpenALPlayer() {
     // Add more sounds if needed
 }
 
-OpenALPlayer::~OpenALPlayer() {
+OpenALPlayer::~OpenALPlayer() 
+{
     cleanup();
 }
 
-void OpenALPlayer::playSound(const string& filePath) {
+void OpenALPlayer::playSound(const string& filePath) 
+{
     // Find the index of the sound in the sound manager
     int soundIndex = -1;
     for (size_t i = 0; i < soundManager.getNumSounds(); ++i) {
@@ -261,8 +261,7 @@ void OpenALPlayer::playSound(const string& filePath) {
 void OpenALPlayer::initOpenAL()
 {
     alutInit(0, NULL);
-    if (alGetError() != AL_NO_ERROR)
-    {
+    if (alGetError() != AL_NO_ERROR) {
         cerr << "ERROR: alutInit()" << endl;
         // Handle initialization error
     }
@@ -344,5 +343,4 @@ void switchGunSound(){
         openALPlayer.playSound("./Audio/shot-skull.wav"); 
         }
     }
-		
 }
