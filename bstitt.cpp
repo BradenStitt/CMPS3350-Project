@@ -236,7 +236,7 @@ void Platform::physics_platform()
 
         // Snehal's Test on Mac
         // pos[1] -= 2.0f;
-        usleep(6000);
+        //usleep(6000);
     }
 
     // If the platform is a moving platform or an enemy, move it side to side
@@ -313,38 +313,100 @@ void GameManager::createPlatform()
 
     Platform newPlatform;
 
-    if (platformType == 0 || platformType == 1 || platformType == 2 || platformType == 3 || platformType == 4
-        || platformType == 5 || platformType == 6 || platformType == 7 || platformType == 8 || platformType == 9)
-    {
+    // Level 1 Probability
+    if (player.trophyDetected == 0) {
+        if (platformType == 0 || platformType == 1 || platformType == 2 || platformType == 3 || platformType == 4
+            || platformType == 5 || platformType == 6 || platformType == 7 || platformType == 8 || platformType == 9) {
+            // 50% chance of creating a normal platform
+            newPlatform.pType = 0;
+        } else if (platformType == 10 || platformType == 11 || platformType == 12 || platformType == 13 || platformType == 14 ||
+                    platformType == 15 || platformType == 16 || platformType == 17 || platformType == 18 || platformType == 19) {
+            // 50% chance of creating a moving platform
+            newPlatform.pType = 1;
+        }
+    // Level 2 Probability
+    } else if (player.trophyDetected == 1) {
+        if (platformType == 0 || platformType == 1 || platformType == 2 || platformType == 3 || platformType == 4
+        || platformType == 5 || platformType == 6 || platformType == 7 || platformType == 8 || platformType == 9) {
         // 50% chance of creating a normal platform
         newPlatform.pType = 0;
-    }
-    else if (platformType == 10 || platformType == 11 || platformType == 12 || platformType == 13)
-    {
-        // 10% chance of creating a moving platform
-        newPlatform.pType = 1;
-    }
-    else if (platformType == 14 || platformType == 15)
-    {
-        // 10% chance of creating a breaking platform
-        newPlatform.pType = 2;
-    }
-    else if (platformType == 16)
-    {
-        // 10% chance of creating an enemy on the platform
-        newPlatform.pType = 3;
-    }
-    else if (platformType == 17 && !newPlatform.blackholeExists)
-    {
-        // 10% chance of creating a special platform (e.g., black hole)
-        newPlatform.pType = 4;
-        newPlatform.pos[1] = rand() % (g.yres / 2) + (g.yres / 2); // Random y coordinate between half and the bottom of the screen
-        newPlatform.blackholeExists = true;
-    }
-    else if (platformType == 18 || platformType == 19)
-    {
-        // 10% chance of creating another special platform (e.g., platform type 5)
-        newPlatform.pType = 5;
+        } else if (platformType == 10 || platformType == 11 || platformType == 12 || platformType == 13 || platformType == 14) {
+            newPlatform.pType = 1;
+        } else if (platformType == 15 || platformType == 16 || platformType == 17 || platformType == 18 || platformType == 19) {
+            newPlatform.pType = 2;
+        }
+    // Level 3 Probability
+    } else if (player.trophyDetected == 2) {
+        if (platformType == 0 || platformType == 1 || platformType == 2 || platformType == 3 || platformType == 4
+        || platformType == 5 || platformType == 6 || platformType == 7 || platformType == 8 || platformType == 9) {
+        // 50% chance of creating a normal platform
+        newPlatform.pType = 0;
+        } else if (platformType == 10 || platformType == 11 || platformType == 12 || platformType == 13) {
+            // 10% chance of creating a moving platform
+            newPlatform.pType = 1;
+        } else if (platformType == 14 || platformType == 15 || platformType == 16 ) {
+            // 10% chance of creating a breaking platform
+            newPlatform.pType = 2;
+        } else if (platformType == 17 || platformType == 18 || platformType == 19) {
+            // 10% chance of creating an enemy on the platform
+            newPlatform.pType = 5;
+        }
+    // Level 4 Probability
+    } else if (player.trophyDetected == 3) {
+        if (platformType == 0 || platformType == 1 || platformType == 2 || platformType == 3 || platformType == 4
+        || platformType == 5 || platformType == 6 || platformType == 7 || platformType == 8 || platformType == 9) {
+        // 50% chance of creating a normal platform
+        newPlatform.pType = 0;
+        } else if (platformType == 10 || platformType == 11 || platformType == 12 || platformType == 13) {
+            // 10% chance of creating a moving platform
+            newPlatform.pType = 1;
+        } else if (platformType == 14 || platformType == 15) {
+            // 10% chance of creating a breaking platform
+            newPlatform.pType = 2;
+        } else if (platformType == 16 || platformType == 17) {
+            // 10% chance of creating an enemy on the platform
+            newPlatform.pType = 5;
+        } else if (platformType == 18 || platformType == 19) {
+            // 10% chance of creating a special platform (e.g., black hole)
+            newPlatform.pType = 4;
+            newPlatform.pos[1] = rand() % (g.yres / 2) + (g.yres / 2); // Random y coordinate between half and the bottom of the screen
+            newPlatform.blackholeExists = true;
+        }
+    // Level 5 Probability
+    } else if (player.trophyDetected == 4) {
+        if (platformType == 0 || platformType == 1 || platformType == 2 || platformType == 3 || platformType == 4
+            || platformType == 5 || platformType == 6 || platformType == 7 || platformType == 8 || platformType == 9)
+        {
+            // 50% chance of creating a normal platform
+            newPlatform.pType = 0;
+        }
+        else if (platformType == 10 || platformType == 11 || platformType == 12 || platformType == 13)
+        {
+            // 10% chance of creating a moving platform
+            newPlatform.pType = 1;
+        }
+        else if (platformType == 14 || platformType == 15)
+        {
+            // 10% chance of creating a breaking platform
+            newPlatform.pType = 2;
+        }
+        else if (platformType == 16)
+        {
+            // 10% chance of creating an enemy 
+            newPlatform.pType = 3;
+        }
+        else if (platformType == 17 && !newPlatform.blackholeExists)
+        {
+            // 10% chance of creating a special platform (e.g., black hole)
+            newPlatform.pType = 4;
+            newPlatform.pos[1] = rand() % (g.yres / 2) + (g.yres / 2); // Random y coordinate between half and the bottom of the screen
+            newPlatform.blackholeExists = true;
+        }
+        else if (platformType == 18 || platformType == 19)
+        {
+            // 10% chance of creating a plat form with an enemy
+            newPlatform.pType = 5;
+        }
     }
 
     platforms.push_back(newPlatform);

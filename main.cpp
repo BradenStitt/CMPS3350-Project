@@ -444,7 +444,7 @@ void init_opengl(void)
 	s.tex.yc[0] = 0.0;
 	s.tex.yc[1] = 1.0;
 
-	// Space
+	// Spacemake
 	glGenTextures(1, &soccer.tex.backTexture);
 	int wsoccer = soccer.tex.backImage->width;
 	int hsoccer = soccer.tex.backImage->height;
