@@ -1,3 +1,4 @@
+// Braden Stitt
 #include <iostream>
 #include <cmath>
 #include <GL/gl.h>
@@ -83,59 +84,40 @@ void Platform::draw_platform_fixed(float x, float y)
 {
     // Draw the platform using the specified coordinates
     glPushMatrix();
-    if (pType == -1)
-    {
+    if (pType == -1) {
         glColor3ub(0, 0, 0);
         width = 700.0f;
-    }
-    else if (pType == 1)
-    {
+    } else if (pType == 1)
         glColor3ub(0, 0, 250); // blue
-    }
     else if (pType == 2)
-    {
         glColor3ub(165, 42, 42); // brown
-    }
-    else if (pType == 3)
-    {
-        if (!isDestroyed)
-        {
+    else if (pType == 3) {
+        if (!isDestroyed) {
             glColor3ub(250, 0, 0); // red
             // set it to a square
             width = 15.0f;
             height = 15.0f;
-        }
-        else
-        {
+        } else {
             width = 0.0f;
             height = 0.0f;
         }
-    }
-    else if (pType == 4)
-    {
+    } else if (pType == 4) {
         glColor3ub(0, 0, 0);
         // set it to a square
         width = 15.0f;
         height = 15.0f;
-    }
-    else if (pType == 5)
-    {
+    } else if (pType == 5)
         glColor3ub(255, 0, 255);
-    }
     else if (pType == 6) {
-        if (player.trophyDetected != 0) {
+        if (player.trophyDetected != 0)
             glColor3ub(0, 255, 255); // cyan
-        }
         if (defaultTrophyColor)
             glColor3ub(250, 250, 20); // yellow
-        
         width = 10.0f;
         height = 10.0f;
-    }
-    else
-    {
+    } else
         glColor3ub(250, 250, 20); // yellow
-    } 
+
     if (pType == 6) {
         glTranslatef(x, y, 0.0f);
         makeTrophy();
@@ -164,48 +146,32 @@ void Platform::draw_platform_random()
     // Draw the platform using the specified coordinates
     glPushMatrix();
     if (pType == 1)
-    {
         glColor3ub(0, 0, 250); // blue
-    }
     else if (pType == 2)
-    {
         glColor3ub(165, 42, 42); // brown
-    }
-    else if (pType == 3)
-    {
-
-        if (!isDestroyed)
-        {
+    else if (pType == 3) {
+        if (!isDestroyed) {
             glColor3ub(250, 0, 0); // red
             // set it to a square
             width = 15.0f;
             height = 15.0f;
-        }
-        else
-        {
+        } else {
             width = 0.0f;
             height = 0.0f;
         }
-    }
-    else if (pType == 4)
-    {
+    } else if (pType == 4) {
         glColor3ub(0, 0, 0);
         // set it to a square
         width = 25.0f;
         height = 25.0f;
-    }
-    else if (pType == 5)
-    {
+    } else if (pType == 5)
         glColor3ub(255, 0, 255);
-    }
-    else if(pType == 6) {
+    else if (pType == 6) {
         width = 10.0f;
         height = 10.0f;
-    }
-    else
-    {
+    } else
         glColor3ub(250, 250, 20); // yellow
-    }
+
     glTranslatef(pos[0], pos[1], 0.0f);
     glBegin(GL_QUADS);
     glVertex2f(-width, -height);
@@ -223,16 +189,15 @@ void Platform::draw_platform_random()
     glEnd();
     glPopMatrix();
 }
+
 void Platform::physics_platform()
 {
     // Move the platform down the screen
-    if (pos[1] > -50.0f && pType != 4)
-    {
-        if (pType == 1 || pType == 3) {
+    if (pos[1] > -50.0f && pType != 4) {
+        if (pType == 1 || pType == 3)
             pos[1] -= 1.0f;
-        } else {
+        else
             pos[1] -= 2.0f;
-        }
 
         // Snehal's Test on Mac
         // pos[1] -= 2.0f;
@@ -240,63 +205,47 @@ void Platform::physics_platform()
     }
 
     // If the platform is a moving platform or an enemy, move it side to side
-    if (pType == 1 || pType == 3)
-    {
+    if (pType == 1 || pType == 3) {
         // Move the platform side to side, bouncing off edges of the screen
         pos[0] += velocity;
 
         // Bounce off the right wall
-        if (pos[0] + width > g.xres)
-        {
+        if (pos[0] + width > g.xres) {
             pos[0] = g.xres - width;
             velocity = -velocity; // Change direction
         }
 
         // Bounce off the left wall
-        if (pos[0] - width < 0)
-        {
+        if (pos[0] - width < 0) {
             pos[0] = width;
             velocity = -velocity; // Change direction
         }
-    }
-    else if (pType == 2)
-    {
+    } else if (pType == 2) {
         // Breaking platform
         if (isLanded == true)
-        {
-            // If the player is on the platform, break it
             pos[1] = -100.0f;
-        }
-    }
-    else if (pType == 4)
-    {
+    } else if (pType == 4) {
         // Show the platform for only 5 seconds
         disappearTimer++;
 
-        if (disappearTimer >= 200)
-        { // Assuming 60 frames per second, 300 frames is 5 seconds
+        if (disappearTimer >= 200) {
+            // Assuming 60 frames per second, 300 frames is 5 seconds
             // After 5 seconds, make the platform disappear
             pos[1] = -100.0f;
             blackholeExists = false;
         }
-    }
-    else if (pType == 5)
-    {
-        enemy.pos[1] = pos[1] + height; // Adjust the position as needed
+    } else if (pType == 5) {
+        enemy.pos[1] = pos[1] + height;
 
         // Move the enemy side to side along with the platform
         enemy.pos[0] += enemy.velocity;
 
-        // Check if the enemy reaches the right edge of the platform
-        if (enemy.pos[0] + enemy.width > pos[0] + width)
-        {
+        // Check if the enemy reaches the right & left edge of the platform
+        if (enemy.pos[0] + enemy.width > pos[0] + width) {
             // Reverse the direction when reaching the right edge
             enemy.pos[0] = pos[0] + width - enemy.width;
             enemy.velocity = -enemy.velocity;
-        }
-        // Check if the enemy reaches the left edge of the platform
-        else if (enemy.pos[0] - enemy.width < pos[0] - width)
-        {
+        } else if (enemy.pos[0] - enemy.width < pos[0] - width) {
             // Reverse the direction when reaching the left edge
             enemy.pos[0] = pos[0] - width + enemy.width;
             enemy.velocity = -enemy.velocity;
@@ -315,143 +264,97 @@ void GameManager::createPlatform()
 
     // Level 1 Probability
     if (player.trophyDetected == 0) {
-        if (platformType == 0 || platformType == 1 || platformType == 2 || platformType == 3 || platformType == 4
-            || platformType == 5 || platformType == 6 || platformType == 7 || platformType == 8 || platformType == 9) {
-            // 50% chance of creating a normal platform
+        if (platformType == 0 || platformType == 1 || platformType == 2 || platformType == 3 || platformType == 4 || platformType == 5 || platformType == 6 || platformType == 7 || platformType == 8 || platformType == 9)
             newPlatform.pType = 0;
-        } else if (platformType == 10 || platformType == 11 || platformType == 12 || platformType == 13 || platformType == 14 ||
-                    platformType == 15 || platformType == 16 || platformType == 17 || platformType == 18 || platformType == 19) {
-            // 50% chance of creating a moving platform
+        else if (platformType == 10 || platformType == 11 || platformType == 12 || platformType == 13 || platformType == 14 ||
+                 platformType == 15 || platformType == 16 || platformType == 17 || platformType == 18 || platformType == 19)
             newPlatform.pType = 1;
-        }
-    // Level 2 Probability
+        // Level 2 Probability
     } else if (player.trophyDetected == 1) {
-        if (platformType == 0 || platformType == 1 || platformType == 2 || platformType == 3 || platformType == 4
-        || platformType == 5 || platformType == 6 || platformType == 7 || platformType == 8 || platformType == 9) {
-        // 50% chance of creating a normal platform
-        newPlatform.pType = 0;
-        } else if (platformType == 10 || platformType == 11 || platformType == 12 || platformType == 13 || platformType == 14) {
-            newPlatform.pType = 1;
-        } else if (platformType == 15 || platformType == 16 || platformType == 17 || platformType == 18 || platformType == 19) {
-            newPlatform.pType = 2;
-        }
-    // Level 3 Probability
-    } else if (player.trophyDetected == 2) {
-        if (platformType == 0 || platformType == 1 || platformType == 2 || platformType == 3 || platformType == 4
-        || platformType == 5 || platformType == 6 || platformType == 7 || platformType == 8 || platformType == 9) {
-        // 50% chance of creating a normal platform
-        newPlatform.pType = 0;
-        } else if (platformType == 10 || platformType == 11 || platformType == 12 || platformType == 13) {
-            // 10% chance of creating a moving platform
-            newPlatform.pType = 1;
-        } else if (platformType == 14 || platformType == 15 || platformType == 16 ) {
-            // 10% chance of creating a breaking platform
-            newPlatform.pType = 2;
-        } else if (platformType == 17 || platformType == 18 || platformType == 19) {
-            // 10% chance of creating an enemy on the platform
-            newPlatform.pType = 5;
-        }
-    // Level 4 Probability
-    } else if (player.trophyDetected == 3) {
-        if (platformType == 0 || platformType == 1 || platformType == 2 || platformType == 3 || platformType == 4
-        || platformType == 5 || platformType == 6 || platformType == 7 || platformType == 8 || platformType == 9) {
-        // 50% chance of creating a normal platform
-        newPlatform.pType = 0;
-        } else if (platformType == 10 || platformType == 11 || platformType == 12 || platformType == 13) {
-            // 10% chance of creating a moving platform
-            newPlatform.pType = 1;
-        } else if (platformType == 14 || platformType == 15) {
-            // 10% chance of creating a breaking platform
-            newPlatform.pType = 2;
-        } else if (platformType == 16 || platformType == 17) {
-            // 10% chance of creating an enemy on the platform
-            newPlatform.pType = 5;
-        } else if (platformType == 18 || platformType == 19) {
-            // 10% chance of creating a special platform (e.g., black hole)
-            newPlatform.pType = 4;
-            newPlatform.pos[1] = rand() % (g.yres / 2) + (g.yres / 2); // Random y coordinate between half and the bottom of the screen
-            newPlatform.blackholeExists = true;
-        }
-    // Level 5 Probability
-    } else if (player.trophyDetected == 4) {
-        if (platformType == 0 || platformType == 1 || platformType == 2 || platformType == 3 || platformType == 4
-            || platformType == 5 || platformType == 6 || platformType == 7 || platformType == 8 || platformType == 9)
-        {
-            // 50% chance of creating a normal platform
+        if (platformType == 0 || platformType == 1 || platformType == 2 || platformType == 3 || platformType == 4 || platformType == 5 || platformType == 6 || platformType == 7 || platformType == 8 || platformType == 9)
             newPlatform.pType = 0;
-        }
-        else if (platformType == 10 || platformType == 11 || platformType == 12 || platformType == 13)
-        {
-            // 10% chance of creating a moving platform
+        else if (platformType == 10 || platformType == 11 || platformType == 12 || platformType == 13 || platformType == 14)
             newPlatform.pType = 1;
-        }
-        else if (platformType == 14 || platformType == 15)
-        {
-            // 10% chance of creating a breaking platform
+        else if (platformType == 15 || platformType == 16 || platformType == 17 || platformType == 18 || platformType == 19)
             newPlatform.pType = 2;
-        }
-        else if (platformType == 16)
-        {
-            // 10% chance of creating an enemy 
-            newPlatform.pType = 3;
-        }
-        else if (platformType == 17 && !newPlatform.blackholeExists)
-        {
-            // 10% chance of creating a special platform (e.g., black hole)
+        // Level 3 Probability
+    } else if (player.trophyDetected == 2) {
+        if (platformType == 0 || platformType == 1 || platformType == 2 || platformType == 3 || platformType == 4 || platformType == 5 || platformType == 6 || platformType == 7 || platformType == 8 || platformType == 9)
+            newPlatform.pType = 0;
+        else if (platformType == 10 || platformType == 11 || platformType == 12 || platformType == 13)
+            newPlatform.pType = 1;
+        else if (platformType == 14 || platformType == 15 || platformType == 16)
+            newPlatform.pType = 2;
+        else if (platformType == 17 || platformType == 18 || platformType == 19)
+            newPlatform.pType = 5;
+        // Level 4 Probability
+    } else if (player.trophyDetected == 3) {
+        if (platformType == 0 || platformType == 1 || platformType == 2 || platformType == 3 || platformType == 4 || platformType == 5 || platformType == 6 || platformType == 7 || platformType == 8 || platformType == 9)
+            newPlatform.pType = 0;
+        else if (platformType == 10 || platformType == 11 || platformType == 12 || platformType == 13)
+            newPlatform.pType = 1;
+        else if (platformType == 14 || platformType == 15)
+            newPlatform.pType = 2;
+        else if (platformType == 16 || platformType == 17)
+            newPlatform.pType = 5;
+        else if (platformType == 18 || platformType == 19) {
             newPlatform.pType = 4;
-            newPlatform.pos[1] = rand() % (g.yres / 2) + (g.yres / 2); // Random y coordinate between half and the bottom of the screen
+            newPlatform.pos[1] = rand() % (g.yres / 2) + (g.yres / 2);
             newPlatform.blackholeExists = true;
         }
-        else if (platformType == 18 || platformType == 19)
-        {
-            // 10% chance of creating a plat form with an enemy
+        // Level 5 Probability
+    } else if (player.trophyDetected == 4) {
+        if (platformType == 0 || platformType == 1 || platformType == 2 || platformType == 3 || platformType == 4 || platformType == 5 || platformType == 6 || platformType == 7 || platformType == 8 || platformType == 9)
+            newPlatform.pType = 0;
+        else if (platformType == 10 || platformType == 11 || platformType == 12 || platformType == 13)
+            newPlatform.pType = 1;
+        else if (platformType == 14 || platformType == 15)
+            newPlatform.pType = 2;
+        else if (platformType == 16)
+            newPlatform.pType = 3;
+        else if (platformType == 17 && !newPlatform.blackholeExists) {
+            newPlatform.pType = 4;
+            newPlatform.pos[1] = rand() % (g.yres / 2) + (g.yres / 2);
+            newPlatform.blackholeExists = true;
+        } else if (platformType == 18 || platformType == 19)
             newPlatform.pType = 5;
-        }
     }
 
     platforms.push_back(newPlatform);
     platformCreationTimer = 0; // Reset the timer
 }
 
-
 void GameManager::updatePhysics()
 {
     platformCreationTimer++;
-    if (platformCreationTimer >= PLATFORM_CREATION_INTERVAL)
-    {
+    if (platformCreationTimer >= PLATFORM_CREATION_INTERVAL) {
         createPlatform();
         platformCreationTimer = 0; // Reset the timer
     }
 
     // Remove platforms that are out of screen bounds
     platforms.erase(
-        remove_if(platforms.begin(), platforms.end(), [](const Platform &p)
-        {
-            return p.pos[1] < -50.0f; // Adjust the value based on your requirements
-        }),
+        remove_if(platforms.begin(), platforms.end(), [](const Platform &p) {
+                      return p.pos[1] < -50.0f; // Adjust the value based on your requirements
+                  }),
         platforms.end());
 
     // Update the physics for remaining platforms
     for (auto &platform : platforms)
-    {
         platform.physics_platform();
-    }
 }
 
 void GameManager::render()
 {
+    // 120 frames ~ 2 seconds (assuming 60 frames per second)
     platformCreationTimer++;
     if (platformCreationTimer >= 120)
-    { // 120 frames ~ 2 seconds (assuming 60 frames per second)
         createPlatform();
-    }
-    for (size_t i = 0; i < platforms.size(); i++)
-    {
+
+    for (size_t i = 0; i < platforms.size(); i++) {
         platforms[i].draw_platform_random();
         if (platforms[i].pType == 5)
-        {
             platforms[i].enemy.drawEnemy();
-        }
     }
 }
 
@@ -466,15 +369,12 @@ int total_running_time(const bool running)
 {
     static int first_run = 1;
     static int start_time;
-    if (first_run)
-    {
+    if (first_run) {
         start_time = time(NULL);
         first_run = 0;
     }
     if (running)
-    {
         return time(NULL) - start_time;
-    }
     return 0;
 }
 
@@ -482,23 +382,20 @@ int time_since_mouse_moved(const bool get)
 {
     static int first_run = 1;
     static int last_time;
-    if (first_run)
-    {
+    if (first_run) {
         first_run = 0;
         last_time = time(NULL);
     }
     if (get)
-    {
         return time(NULL) - last_time;
-    }
+
     last_time = time(NULL);
     return 0;
 }
 
-void render_hearts() {
+void render_hearts()
+{
     // Render the hearts
-    for (int i = 0; i <  player.lives; i++)
-    {
+    for (int i = 0; i < player.lives; i++)
         makeHeart(i);
-    }
 }
