@@ -227,21 +227,21 @@ void Bullet::draw_bullet()
 			// cyan
 			glColor3f(0.0, 1.0, 1.0);
 		else {
-		if (player.trophyDetected == 0) 
-			// red
-			glColor3f(1.0, 0.0, 0.0); 
-		if (player.trophyDetected == 1) 
-			// white
-			glColor3f(1.0, 1.0, 1.0);
-		if (player.trophyDetected == 2)
-			// yellow
-			glColor3f(1.0, 1.0, 0.0);
-		if (player.trophyDetected == 3)
-			// blue
-			glColor3f(0.0, 0.0, 1.0);
-		if (player.trophyDetected == 4)
-			// orange
-			glColor3f(1.0, 0.5, 0.0);
+			if (player.trophyDetected == 0) 
+				// red
+				glColor3f(1.0, 0.0, 0.0); 
+			if (player.trophyDetected == 1) 
+				// white
+				glColor3f(1.0, 1.0, 1.0);
+			if (player.trophyDetected == 2)
+				// yellow
+				glColor3f(1.0, 1.0, 0.0);
+			if (player.trophyDetected == 3)
+				// blue
+				glColor3f(0.0, 0.0, 1.0);
+			if (player.trophyDetected == 4)
+				// orange
+				glColor3f(1.0, 0.5, 0.0);
 		}
         // Adjust size of bullet
         glPointSize(4.0f);
