@@ -1,7 +1,7 @@
 /**
  * Author:    Snehal Kumar
  * Created:   09.29.2023
- **/
+**/
 
 #include <iostream>
 #include <GL/gl.h>
@@ -128,7 +128,8 @@ void Bullet::physics()
 							if (testEnemy->pType == 3) {
 								testEnemy->isDestroyed = true;
 								player.score += 30;
-								openALPlayer.playSound("./Audio/monster-crash.wav");
+								openALPlayer.
+								playSound("./Audio/monster-crash.wav");
 							}
 							testEnemy->hitCount = 0;
 							testEnemies.erase(testEnemies.begin() + k);
@@ -193,11 +194,13 @@ void Bullet::physics()
 								if (platform->pType == 3) {
 									platform->isDestroyed = true;
 									player.score += 30;
-									openALPlayer.playSound("./Audio/monster-crash.wav");
+									openALPlayer.
+									playSound("./Audio/monster-crash.wav");
 								} else {
 									platform->enemy.isDestroyed = true;
 									player.score += 30;
-									openALPlayer.playSound("./Audio/monster-crash.wav");
+									openALPlayer.
+									playSound("./Audio/monster-crash.wav");
 								}
 							}
 						}
@@ -425,7 +428,8 @@ void dynamic_collision_detection()
 							}
 
 							if (platform->pType == 2) {
-								openALPlayer.playSound("./Audio/eggCrack.wav");
+								openALPlayer.
+								playSound("./Audio/eggCrack.wav");
 							}
 
 							if (player.angle > 0.0 || player.angle < 0.0) {
